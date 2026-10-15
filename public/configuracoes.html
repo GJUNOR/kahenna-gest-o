@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipe | Dra. Kahenna Vieira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="/sidebar.css">
+    <link rel="stylesheet" href="/configuracoes.css">
+    <link rel="stylesheet" href="/mobile.css?v=1">
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"></head>
+<body class="team-page">
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-main">
+            <div class="logo">
+                <div class="logo-icon"><img class="clinic-logo" src="/logo.svg" alt="Dra. Kahenna Vieira"></div>
+                <div class="logo-text"><h2>Dra. Kahenna Vieira</h2></div>
+            </div>
+            <nav class="menu">
+                <a href="/dashboard.html"><i class="fa-solid fa-chart-column"></i><span>Visão Geral</span></a>
+                <a href="/leads.html"><i class="fa-solid fa-user-group"></i><span>Pacientes</span></a>
+                <a href="/agenda.html"><i class="fa-solid fa-calendar-days"></i><span>Agenda</span></a>
+                <a href="/configuracoes.html" class="active" aria-current="page"><i class="fa-solid fa-users-gear"></i><span>Equipe</span></a>
+            </nav>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="connection-status atlas-status" data-status="online">
+                <span class="status-dot"></span><div><strong>Acesso restrito</strong><small>Pacientes e agenda</small></div>
+            </div>
+            <button class="sidebar-logout" type="button" data-logout><i class="fa-solid fa-right-from-bracket"></i><span>Sair</span></button>
+        </div>
+    </aside>
+
+    <main class="content">
+        <header class="page-header">
+            <div><h1>Equipe</h1><p>Convide secretárias e controle quem pode acessar o sistema.</p></div>
+            <button class="primary-button" id="abrirConvite" type="button"><i class="fa-solid fa-user-plus"></i> Novo convite</button>
+        </header>
+
+        <section class="summary-card">
+            <div><strong id="totalEquipe">—</strong><span>Pessoas cadastradas</span></div>
+            <div><strong id="totalAtivos">—</strong><span>Acessos ativos</span></div>
+            <div><strong>Administrador</strong><span>Seu perfil</span></div>
+        </section>
+
+        <section class="team-card">
+            <div class="section-title"><div><h2>Membros da equipe</h2></div></div>
+            <div id="mensagem" class="message" hidden></div>
+            <div id="listaEquipe" class="team-list"><p class="loading">Carregando equipe...</p></div>
+        </section>
+    </main>
+</div>
+
+<div class="modal" id="modalConvite" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="tituloConvite">
+        <button class="close-button" id="fecharConvite" type="button" aria-label="Fechar">×</button>
+        <h2 id="tituloConvite">Convidar secretária</h2>
+        <p>Ela receberá um e-mail para criar a própria senha.</p>
+        <form id="formConvite" autocomplete="off">
+            <label>Nome completo<input id="nome" name="nome" type="text" required maxlength="100" autocomplete="off"></label>
+            <label>E-mail<input id="email" name="email" type="email" required maxlength="200" autocomplete="off"></label>
+            <div class="modal-actions"><button class="secondary-button" id="cancelarConvite" type="button">Cancelar</button><button class="primary-button" id="enviarConvite" type="submit">Enviar convite</button></div>
+        </form>
+    </div>
+</div>
+
+<script src="/auth-ui.js"></script>
+<script src="/configuracoes.js"></script>
+</body>
+</html>

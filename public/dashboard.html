@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visão Geral | Dra. Kahenna Vieira</title>
+<link rel="stylesheet" href="dashboard.css">
+<link rel="stylesheet" href="/sidebar.css">
+<link rel="stylesheet" href="/mobile.css?v=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"></head>
+<body>
+<div class="dashboard">
+<aside class="sidebar">
+    <div class="sidebar-main">
+        <div class="logo">
+            <div class="logo-icon">
+                <img class="clinic-logo" src="/logo.svg" alt="Dra. Kahenna Vieira">
+            </div>
+
+            <div class="logo-text">
+                <h2>Dra. Kahenna Vieira</h2>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="/dashboard.html" class="active" aria-current="page">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Visão Geral</span>
+            </a>
+
+            <a href="/leads.html">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Pacientes</span>
+            </a>
+
+            <a href="/agenda.html">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Agenda</span>
+            </a>
+
+            <a href="/configuracoes.html" data-admin-only hidden>
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Equipe</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="connection-status atlas-status" id="statusSupabase" data-status="verificando">
+            <span class="status-dot" aria-hidden="true"></span>
+
+            <div>
+                <strong id="statusSupabaseTitulo">Acesso restrito</strong>
+
+                <small id="statusSupabaseTexto">Pacientes e agenda</small>
+            </div>
+        </div>
+        <button class="sidebar-logout" type="button" data-logout>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </button>
+    </div>
+</aside>
+<div class="content">
+<header class="topbar">
+<div>
+<h1>Visão Geral</h1>
+</div>
+<div class="top-actions">
+<button class="btn btn-outline" id="btnAtualizar" type="button">
+<i class="fa-solid fa-rotate"></i>
+<span>Atualizar</span>
+</button>
+</div>
+</header>
+<main><section class="cards-grid routine-cards business-cards"><div class="card routine-card"><h3>Hoje</h3><strong id="agendamentosHoje">—</strong></div><article class="card routine-card revenue-card"><h3>Receita do dia</h3><strong id="receitaHoje">—</strong></article><article class="card routine-card revenue-card"><h3>Receita do mês</h3><strong id="receitaMes">—</strong></article></section><section class="widget"><div class="widget-header"><div><h2 class="widget-title">Sua agenda de hoje</h2></div><div class="routine-agenda-actions"><a href="/agenda.html" class="btn btn-primary">Abrir agenda</a><a href="/agenda.html?novo=1" class="btn btn-primary">Agendar paciente</a></div></div><p id="erroResumo" role="alert" hidden></p><div id="agendaResumo" class="summary-appointments"><p class="empty-state">Carregando os horários…</p></div></section><section class="widget tomorrow-agenda"><div class="widget-header"><div><h2 class="widget-title">Sua agenda de amanhã</h2></div><span class="tomorrow-count" id="amanhaContagem"></span></div><p id="erroAmanha" role="alert" hidden></p><div id="agendaAmanha" class="summary-appointments"><p class="empty-state">Carregando os horários…</p></div></section></main></div>
+</div>
+<script src="/auth-ui.js"></script><script src="/session-ui.js"></script><script src="/dashboard.js"></script></body>
+</html>
+

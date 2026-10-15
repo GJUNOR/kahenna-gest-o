@@ -1,0 +1,185 @@
+/* Camada responsiva compartilhada — carregada depois dos estilos de cada página. */
+
+@media (max-width: 760px) {
+    html { overflow-x: hidden; }
+    body { min-width: 0 !important; padding-bottom: 74px; overflow-x: hidden; }
+    button, input, select, textarea { max-width: 100%; }
+
+    /* A barra lateral vira navegação inferior no celular. */
+    .sidebar {
+        position: fixed !important;
+        inset: auto 0 0 0 !important;
+        z-index: 2500 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 68px !important;
+        min-height: 68px !important;
+        padding: 7px 8px !important;
+        overflow: hidden !important;
+        border: 0 !important;
+        border-top: 1px solid var(--atlas-sidebar-border, #263244) !important;
+        box-shadow: 0 -12px 30px rgba(2, 6, 23, .38);
+        transform: none !important;
+    }
+
+    .sidebar-main { min-width: 0; flex: 1 1 auto; display: block !important; overflow: hidden; }
+    .sidebar .logo, .sidebar .connection-status { display: none !important; }
+    .sidebar .menu {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        gap: 4px !important;
+        width: 100% !important;
+        overflow-x: auto;
+        scrollbar-width: none;
+        overscroll-behavior-x: contain;
+    }
+    .sidebar .menu::-webkit-scrollbar { display: none; }
+    .sidebar .menu a {
+        flex: 0 0 58px;
+        width: 58px !important;
+        min-height: 52px;
+        padding: 6px 3px !important;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        border-radius: 10px;
+        font-size: 9px;
+        line-height: 1;
+    }
+    .sidebar .menu a i { width: auto; font-size: 16px; }
+    .sidebar .menu a span {
+        display: block !important;
+        width: 100%;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .sidebar-bottom { flex: 0 0 auto; width: auto !important; margin: 0 !important; }
+    .sidebar-logout {
+        width: 48px;
+        min-height: 52px;
+        margin: 0 0 0 4px;
+        padding: 0;
+        border-radius: 10px;
+    }
+    .sidebar-logout span { display: none; }
+
+    .content,
+    .agenda-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        padding: 18px 14px 28px !important;
+    }
+
+    /* Cabeçalhos e ações. */
+    .topbar, .agenda-topbar, .page-header {
+        align-items: stretch !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        margin-bottom: 20px !important;
+    }
+    .topbar h1, .agenda-topbar h1, .page-header h1 { font-size: clamp(1.75rem, 9vw, 2.15rem) !important; }
+    .topbar-actions, .top-actions { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 9px !important; }
+    .topbar-actions button, .top-actions button, .page-header > button { width: 100%; justify-content: center; }
+
+    /* Pacientes. */
+    .cards, .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+    .cards .card, .cards-grid .card { min-width: 0; padding: 14px !important; }
+    .cards .card-icon { width: 38px; height: 38px; flex: 0 0 38px; }
+    .cards .card-content strong { font-size: 1.55rem !important; }
+    .cards .card-content h3 { font-size: .8rem !important; }
+    .cards .card-content small { font-size: .7rem !important; }
+    .patient-toolbar { align-items: stretch !important; flex-direction: column !important; gap: 12px !important; }
+    .search-box { width: 100% !important; max-width: none !important; }
+    .quick-filters { justify-content: flex-start !important; width: 100%; overflow-x: auto; padding: 0 0 5px; scrollbar-width: none; }
+    .quick-filters::-webkit-scrollbar { display: none; }
+    .filter-chip { flex: 0 0 auto; white-space: nowrap; }
+    .table-card { min-width: 0; overflow: hidden; }
+    .table-header { align-items: stretch !important; flex-direction: column !important; gap: 14px !important; }
+    .table-header .secondary-button { width: 100%; justify-content: center; }
+    .table-responsive { width: 100%; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+    .patients-table { min-width: 920px; }
+    .grupo-acoes-paciente { flex-wrap: nowrap !important; }
+    .patient-drawer { width: min(100%, 430px) !important; max-width: 100% !important; }
+
+    /* Modais de pacientes e financeiro. */
+    .modal-edicao-overlay { align-items: flex-end !important; padding: 8px !important; }
+    .modal-edicao-overlay .modal-edicao,
+    .modal-edicao-overlay .modal-edicao.modal-financeiro-paciente {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: calc(100dvh - 16px) !important;
+        border-radius: 18px 18px 12px 12px !important;
+    }
+    .modal-edicao-overlay .modal-edicao-header { padding: 17px 16px !important; }
+    .modal-edicao-overlay .modal-edicao-header h2 { padding-right: 8px; font-size: 1.15rem !important; }
+    .modal-edicao-overlay .modal-edicao-header p { margin-top: 4px; font-size: .76rem; }
+    .modal-edicao-overlay .modal-edicao-body,
+    .modal-edicao-overlay .modal-financeiro-paciente .modal-edicao-body { padding: 15px !important; }
+    .edicao-grid, .financeiro-form-grid { grid-template-columns: 1fr !important; }
+    .financeiro-form-card { min-height: auto !important; padding: 16px !important; }
+    .financeiro-resumo { padding: 14px !important; }
+    .financeiro-resumo strong { font-size: 1.4rem !important; }
+    .financeiro-item { align-items: flex-start !important; flex-direction: column !important; }
+    .financeiro-item > div:last-child { width: 100%; text-align: left !important; }
+    .modal-edicao-overlay .modal-edicao-footer { padding: 13px 15px !important; }
+
+    /* Dashboard. */
+    .dashboard .content main { padding: 0 !important; }
+    .analytics-grid, .dashboard-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+    .widget, .panel { min-width: 0; padding: 16px !important; }
+    .widget.large { grid-column: auto !important; }
+    .widget-header { align-items: stretch !important; flex-direction: column !important; gap: 12px !important; }
+    .calendar-filter { display: grid !important; grid-template-columns: 1fr !important; width: 100%; gap: 8px !important; }
+    .calendar-filter input, .calendar-filter button { width: 100%; }
+    .chart-box { min-height: 230px; height: 230px !important; }
+    .dashboard .table-responsive { margin: 0; }
+    .dashboard table { min-width: 620px; }
+    .modal-overlay .modal { width: calc(100% - 20px) !important; max-height: calc(100dvh - 20px); overflow-y: auto; }
+
+    /* Agenda. O calendário continua horizontal, com horários fixos à esquerda. */
+    .agenda-topbar .primary-button { width: 100%; }
+    .agenda-toolbar { grid-template-columns: 1fr !important; gap: 12px !important; padding: 12px !important; }
+    .period-navigation { display: grid; grid-template-columns: 44px 1fr 44px; width: 100%; }
+    .today-button { width: 100%; }
+    .period-title { text-align: center !important; }
+    .refresh-button { width: 100%; justify-self: stretch !important; }
+    .calendar-scroll { max-height: calc(100dvh - 300px) !important; min-height: 430px; }
+    .week-calendar { grid-template-columns: 62px repeat(7, minmax(135px, 1fr)); min-width: 1007px; }
+    .calendar-corner, .day-header { min-height: 67px; }
+    .time-label, .calendar-slot { min-height: 60px; }
+    .schedule-modal { align-items: end; padding: 8px; }
+    .schedule-modal-card { width: 100%; max-height: calc(100dvh - 16px); border-radius: 18px 18px 12px 12px; }
+    .schedule-modal-card > header { padding: 17px 16px; }
+    .schedule-modal form { padding: 16px; }
+    .schedule-modal footer { margin: 4px -16px -16px; padding: 14px 16px; }
+    .form-row { grid-template-columns: 1fr !important; }
+
+    /* Equipe e configurações. */
+    .page-header { max-width: none !important; }
+    .summary-card { grid-template-columns: 1fr !important; }
+    .summary-card div { padding: 18px !important; border-right: 0 !important; border-bottom: 1px solid #2d3b52; }
+    .summary-card div:last-child { border-bottom: 0; }
+    .section-title, .team-list { padding-left: 16px !important; padding-right: 16px !important; }
+    .member { grid-template-columns: 1fr !important; gap: 12px !important; }
+    .member .access-button { width: 100%; }
+    .modal { padding: 10px !important; }
+    .modal-card { max-height: calc(100dvh - 20px); padding: 23px 18px !important; overflow-y: auto; }
+    .modal-actions { flex-direction: column-reverse; }
+    .modal-actions button { width: 100%; }
+}
+
+@media (max-width: 390px) {
+    .content, .agenda-content { padding-left: 10px !important; padding-right: 10px !important; }
+    .cards, .cards-grid { grid-template-columns: 1fr !important; }
+    .topbar-actions, .top-actions { grid-template-columns: 1fr !important; }
+    .sidebar .menu a { flex-basis: 55px; width: 55px !important; }
+}

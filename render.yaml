@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: kahenna-gestao
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: KAHENNA_SUPABASE_URL
+        sync: false
+      - key: KAHENNA_SUPABASE_KEY
+        sync: false
+      - key: SITE_URL
+        value: https://app.kahenna.com.br
+      - key: ALLOWED_ORIGINS
+        value: https://app.kahenna.com.br

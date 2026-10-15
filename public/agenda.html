@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Agenda semanal da clínica Dra. Kahenna Vieira">
+    <title>Agenda | Dra. Kahenna Vieira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="/sidebar.css">
+    <link rel="stylesheet" href="/agenda.css?v=1">
+    <link rel="stylesheet" href="/mobile.css?v=1">
+    <style>
+        .patient-search { position: relative; }
+        .patient-search input[readonly] { color: #bfdbfe; background: #14233d; cursor: not-allowed; }
+        .patient-suggestions { position: absolute; top: calc(100% + 7px); left: 0; right: 0; z-index: 20; max-height: 290px; overflow-y: auto; border: 1px solid #36517b; border-radius: 11px; background: #101b2f; box-shadow: 0 18px 40px rgba(0,0,0,.4); }
+        .patient-suggestions[hidden] { display: none; }
+        .patient-suggestion { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; border: 0; border-bottom: 1px solid rgba(54,81,123,.55); color: #eff6ff; background: transparent; text-align: left; cursor: pointer; }
+        .patient-suggestion:last-child { border-bottom: 0; }
+        .patient-suggestion:hover, .patient-suggestion:focus { outline: 0; background: rgba(59,130,246,.2); }
+        .patient-suggestion strong, .patient-suggestion span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .patient-suggestion span { color: #93c5fd; font-size: .76rem; }
+        .patient-empty { padding: 15px; color: var(--muted); font-weight: 500; }
+    </style>
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"></head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-main">
+            <div class="logo">
+                <div class="logo-icon"><img class="clinic-logo" src="/logo.svg" alt="Dra. Kahenna Vieira"></div>
+                <div class="logo-text"><h2>Dra. Kahenna Vieira</h2></div>
+            </div>
+            <nav class="menu">
+                <a href="/dashboard.html"><i class="fa-solid fa-chart-column"></i><span>Visão Geral</span></a>
+                <a href="/leads.html"><i class="fa-solid fa-user-group"></i><span>Pacientes</span></a>
+                <a href="/agenda.html" class="active" aria-current="page"><i class="fa-solid fa-calendar-days"></i><span>Agenda</span></a>
+                <a href="/configuracoes.html" data-admin-only hidden><i class="fa-solid fa-users-gear"></i><span>Equipe</span></a>
+            </nav>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="connection-status atlas-status" data-status="online">
+                <span class="status-dot"></span><div><strong>Acesso restrito</strong><small>Pacientes e agenda</small></div>
+            </div>
+            <button class="sidebar-logout" type="button" data-logout><i class="fa-solid fa-right-from-bracket"></i><span>Sair</span></button>
+        </div>
+    </aside>
+
+    <main class="agenda-content">
+        <header class="agenda-topbar">
+            <div>
+                <h1>Agenda</h1>
+                </div>
+            <button class="primary-button" id="novoAgendamento" type="button"><i class="fa-solid fa-plus"></i> Novo agendamento</button>
+        </header>
+
+        <section class="agenda-toolbar" aria-label="Navegação da agenda">
+            <div class="period-navigation">
+                <button class="icon-button" id="semanaAnterior" type="button" aria-label="Semana anterior"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="today-button" id="irParaHoje" type="button">Hoje</button>
+                <button class="icon-button" id="proximaSemana" type="button" aria-label="Próxima semana"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="period-title"><strong id="tituloPeriodo">Carregando semana...</strong><span id="resumoAgenda">0 agendamentos</span></div>
+            <button class="refresh-button" id="atualizarAgenda" type="button"><i class="fa-solid fa-rotate"></i> Atualizar</button>
+        </section>
+
+        <div class="agenda-message" id="mensagemAgenda" hidden></div>
+
+        <section class="calendar-card">
+            <div class="calendar-scroll" id="rolagemCalendario">
+                <div class="week-calendar" id="calendarioSemanal" aria-label="Calendário semanal"></div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="schedule-modal" id="modalAgendamento" hidden>
+    <div class="schedule-modal-card" role="dialog" aria-modal="true" aria-labelledby="tituloModalAgendamento">
+        <header>
+            <div><h2 id="tituloModalAgendamento">Novo agendamento</h2></div>
+            <button class="modal-close" id="fecharModalAgendamento" type="button" aria-label="Fechar">×</button>
+        </header>
+        <form id="formAgendamento" autocomplete="off">
+            <label>Paciente
+                <div class="patient-search" id="buscaPacienteAgenda">
+                    <input id="nomePacienteAgendamento" type="search" placeholder="Digite o nome ou telefone do paciente" autocomplete="off" aria-autocomplete="list" aria-controls="sugestoesPacientesAgenda" required autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_nomePacienteAgendamento">
+                    <input id="pacienteAgendamento" type="hidden">
+                    <div class="patient-suggestions" id="sugestoesPacientesAgenda" role="listbox" hidden></div>
+                </div>
+            </label>
+            <div class="form-row">
+                <label>Data<input id="dataAgendamento" type="date" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_dataAgendamento"></label>
+                <label>Horário<input id="horaAgendamento" type="time" step="1800" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_horaAgendamento"></label>
+            </div>
+            <label>Observação<textarea id="observacaoAgendamento" rows="3" placeholder="Informação opcional sobre o atendimento" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_observacaoAgendamento"></textarea></label>
+            <div class="modal-feedback" id="feedbackAgendamento" hidden></div>
+            <footer>
+                <button class="danger-button" id="cancelarAgendamento" type="button" hidden><i class="fa-solid fa-ban"></i> Cancelar horário</button>
+                <span class="footer-spacer"></span>
+                <button class="secondary-button" id="fecharSemSalvar" type="button">Voltar</button>
+                <button class="primary-button" id="salvarAgendamento" type="submit"><i class="fa-solid fa-calendar-check"></i> Salvar horário</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+<script src="/auth-ui.js"></script>
+<script src="/agenda.js?v=2"></script>
+</body>
+</html>

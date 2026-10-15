@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Central de pacientes do Kahenna Gestão">
+
+    <title>Pacientes | Kahenna · Gestão</title>
+
+
+    <!-- Fonte -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+
+    <!-- Ícones -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+    <!-- CSS principal -->
+
+    <link rel="stylesheet" href="/style.css?v=9">
+
+    <link rel="stylesheet" href="/sidebar.css">
+    <link rel="stylesheet" href="/mobile.css?v=1">
+
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"></head>
+
+<body>
+
+
+<div class="layout">
+
+
+    <!-- ========================================== -->
+    <!-- SIDEBAR -->
+    <!-- ========================================== -->
+
+    <aside class="sidebar">
+    <div class="sidebar-main">
+        <div class="logo">
+            <div class="logo-icon">
+                <img class="clinic-logo" src="/logo.svg" alt="Dra. Kahenna Vieira">
+            </div>
+
+            <div class="logo-text">
+                <h2>Dra. Kahenna Vieira</h2>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="/dashboard.html">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Visão Geral</span>
+            </a>
+
+            <a href="/leads.html" class="active" aria-current="page">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Pacientes</span>
+            </a>
+
+            <a href="/agenda.html">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Agenda</span>
+            </a>
+
+            <a href="/configuracoes.html" data-admin-only hidden>
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Equipe</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="connection-status atlas-status" data-status="online">
+            <span class="status-dot" aria-hidden="true"></span>
+
+            <div>
+                <strong>Acesso restrito</strong>
+                <small>Pacientes e agenda</small>
+            </div>
+        </div>
+        <button class="sidebar-logout" type="button" data-logout>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </button>
+    </div>
+</aside>
+
+
+
+
+
+
+    <!-- ========================================== -->
+    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- ========================================== -->
+
+    <main class="content">
+
+
+        <!-- ====================================== -->
+        <!-- CABEÇALHO -->
+        <!-- ====================================== -->
+
+        <header class="topbar">
+
+
+            <div class="page-heading">
+
+                <h1>Pacientes</h1>
+
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+
+                <button id="btnAtualizar" class="secondary-button" type="button">
+
+                    <i class="fa-solid fa-rotate"></i>
+
+                    Atualizar
+
+                </button>
+
+
+                <button id="btnNovoPaciente" class="primary-button" type="button">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Novo paciente
+
+                </button>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- ====================================== -->
+        <!-- INDICADORES PRINCIPAIS -->
+        <!-- ====================================== -->
+
+        <!-- ====================================== -->
+        <!-- BUSCA E FILTROS -->
+        <!-- ====================================== -->
+
+        <section class="patient-toolbar">
+
+
+            <!-- BUSCA -->
+
+            <div class="search-box patient-search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+
+                <input id="pesquisa" type="search" placeholder="Pesquisar por nome ou telefone..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_pesquisa">
+
+            </div>
+
+
+            <!-- FILTROS -->
+
+            </section>
+
+        <!-- ====================================== -->
+        <!-- LISTA DE PACIENTES -->
+        <!-- ====================================== -->
+
+        <section class="table-card">
+
+
+            <div class="table-header">
+
+
+                <div>
+
+                    <h2>Lista de pacientes</h2>
+
+                    <span id="contadorPacientes">
+
+                        0 registros encontrados
+
+                    </span>
+
+                </div>
+
+
+                <button id="btnExportar" class="secondary-button" type="button">
+
+                    <i class="fa-solid fa-file-export"></i>
+
+                    Exportar
+
+                </button>
+
+
+            </div>
+
+
+
+            <div class="table-responsive">
+
+
+                <table class="patients-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Paciente</th>
+
+                            <th>Contato</th>
+
+                            <th>Origem</th>
+
+                            <th id="cabecalhoResumoFinanceiro" class="coluna-financeiro-hoje" hidden>
+                                Fechou hoje
+                            </th>
+
+                            <th id="cabecalhoPagamentoFinanceiro" class="coluna-financeiro-hoje" hidden>
+                                Pagamento
+                            </th>
+
+                            <th class="actions-column">
+
+                                Ações
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tabelaPacientes">
+
+
+                        <tr>
+
+                            <td colspan="6" class="loading">
+
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                                Carregando pacientes...
+
+                            </td>
+
+                        </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- ========================================== -->
+<!-- FUNDO DO DRAWER -->
+<!-- ========================================== -->
+
+<div id="drawerOverlay" class="drawer-overlay" onclick="fecharDrawer()"></div>
+
+<!-- ========================================== -->
+<!-- DRAWER DO PACIENTE -->
+<!-- ========================================== -->
+
+<aside id="patientDrawer" class="patient-drawer" aria-hidden="true">
+    <!-- CABEÇALHO -->
+
+    <div class="drawer-header">
+        <div class="drawer-header-text">
+            <h2 id="drawerNome">Paciente</h2>
+            <small id="drawerCodigoLead"></small>
+        </div>
+
+        <button class="drawer-close" type="button" onclick="fecharDrawer()" aria-label="Fechar painel">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- CONTEÚDO COM ROLAGEM -->
+
+    <div class="drawer-body">
+        <!-- INFORMAÇÕES -->
+
+        <section class="drawer-section">
+            <h3>
+                <i class="fa-solid fa-user"></i>
+                Informações
+            </h3>
+
+            <div class="info-grid">
+                <div>
+                    <span>Telefone</span>
+                    <strong id="drawerTelefone">-</strong>
+                </div>
+
+                <div>
+                    <span>Cadastro</span>
+                    <strong id="drawerCadastro">-</strong>
+                </div>
+
+                <div>
+                    <span>Origem</span>
+                    <strong id="drawerOrigem">-</strong>
+                </div>
+
+                </div>
+        </section>
+
+        <!-- MARKETING -->
+
+        <!-- DADOS DE RASTREAMENTO -->
+
+        </div>
+
+    <div class="drawer-footer">
+        <button class="secondary-button" type="button" onclick="fecharDrawer()">
+            Fechar
+        </button>
+    </div>
+</aside>
+
+<script>
+
+</script>
+
+<!-- ========================================== -->
+<!-- BIBLIOTECAS E JAVASCRIPT -->
+<!-- ========================================== -->
+
+<script src="/leads.js?v=9"></script>
+
+<div class="modal-edicao-overlay" id="modalEdicaoOverlay" aria-hidden="true">
+    <div class="modal-edicao modal-financeiro-paciente" role="dialog" aria-modal="true" aria-labelledby="tituloModalEdicao">
+
+        <div class="modal-edicao-header">
+
+            <div>
+                <h2 id="tituloModalEdicao">
+                    Financeiro do paciente
+                </h2>
+
+                </div>
+
+            <button type="button" class="modal-edicao-fechar" id="fecharModalEdicao" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-edicao-body">
+
+            <div class="edicao-grid" id="painelDadosPaciente" hidden>
+                <div class="campo-edicao">
+                    <label for="editarNomePaciente">
+                        Nome do paciente
+                    </label>
+
+                    <input type="text" id="editarNomePaciente" name="atlas_editar_nome" placeholder="Nome do paciente" autocomplete="off" autocapitalize="off" data-form-type="other" data-lpignore="true" autocorrect="off" spellcheck="false" data-1p-ignore="true">
+                </div>
+
+                <div class="campo-edicao">
+                    <label for="editarTelefonePaciente">
+                        Telefone / WhatsApp
+                    </label>
+
+                    <input type="text" id="editarTelefonePaciente" name="atlas_editar_telefone" placeholder="(62) 99999-9999" inputmode="tel" autocomplete="off" data-form-type="other" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true">
+                </div>
+
+                <div class="campo-edicao">
+                    <label for="editarOrigemPaciente">
+                        Alterar origem
+                    </label>
+
+                    <select id="editarOrigemPaciente" name="atlas_editar_origem" autocomplete="off">
+                        <option value="">Manter origem atual</option>
+                        <option value="indicacao">Indicação</option>
+                        <option value="clinica">Conheceu a clínica</option>
+                        <option value="instagram_organico">Instagram (sem anúncio)</option>
+                        <option value="google_organico">Google (sem anúncio)</option>
+                        <option value="outros">Outro</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <section class="painel-financeiro" id="painelFinanceiroPaciente">
+                <div class="financeiro-divisor financeiro-divisor-modal">
+                    <span>Financeiro</span>
+                    </div>
+
+                <div class="financeiro-resumo">
+                    <div><span>Total pago na clínica</span><strong id="financeiroTotalPaciente">R$ 0,00</strong></div>
+                </div>
+
+                <div class="financeiro-feedback" id="financeiroFeedback" hidden></div>
+
+                <div class="financeiro-form-grid"><div class="financeiro-form-card"><h3>Registrar atendimento</h3><label>Descrição<input id="financeiroDescricao" maxlength="200" placeholder="Avaliação ou procedimento" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroDescricao"></label><label>Valor recebido (R$)<input id="financeiroValorLivre" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroValorLivre" maxlength="17" aria-label="Valor recebido em reais"></label><label>Pagamento<select id="financeiroPagamentoAvaliacao"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Cartão de débito</option><option value="credito">Cartão de crédito</option></select></label><button type="button" class="btn-financeiro" id="registrarAvaliacao">Registrar pagamento</button></div></div><div class="financeiro-historico">
+                    <h3>Histórico financeiro</h3>
+                    <div id="listaFinanceiroPaciente"><p class="financeiro-vazio">Nenhum lançamento registrado.</p></div>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="modal-edicao-footer" id="rodapeDadosPaciente" hidden>
+
+            <button type="button" class="btn-cancelar-edicao" id="cancelarEdicaoPaciente">
+                Cancelar
+            </button>
+
+            <button type="button" class="btn-salvar-edicao" id="salvarEdicaoPaciente">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="modal-edicao-overlay" id="modalIdentificacaoOverlay" aria-hidden="true">
+    <div class="modal-edicao modal-identificacao" role="dialog" aria-modal="true" aria-labelledby="tituloModalIdentificacao">
+        <div class="modal-edicao-header">
+            <div>
+                <h2 id="tituloModalIdentificacao">Editar paciente</h2>
+                </div>
+            <button type="button" class="modal-edicao-fechar" id="fecharModalIdentificacao" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="modal-edicao-body">
+            <div class="edicao-grid edicao-grid-identificacao">
+                <div class="campo-edicao">
+                    <label for="editarNomeIdentificacao">Nome do paciente</label>
+                    <input type="text" id="editarNomeIdentificacao" autocomplete="off" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true" name="kahenna_editarNomeIdentificacao">
+                </div>
+                <div class="campo-edicao">
+                    <label for="editarTelefoneIdentificacao">Telefone / WhatsApp</label>
+                    <input type="text" id="editarTelefoneIdentificacao" inputmode="tel" autocomplete="off" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true" name="kahenna_editarTelefoneIdentificacao">
+                </div>
+            </div>
+        </div>
+        <div class="modal-edicao-footer">
+            <button type="button" class="btn-cancelar-edicao" id="cancelarIdentificacaoPaciente">Cancelar</button>
+            <button type="button" class="btn-salvar-edicao" id="salvarIdentificacaoPaciente">
+                <i class="fa-solid fa-floppy-disk"></i> Salvar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL NOVO PACIENTE -->
+<!-- ========================================== -->
+
+<div class="modal-edicao-overlay" id="modalNovoPacienteOverlay" aria-hidden="true">
+    <div class="modal-edicao" role="dialog" aria-modal="true" aria-labelledby="tituloModalNovoPaciente">
+        <div class="modal-edicao-header">
+            <div>
+                <h2 id="tituloModalNovoPaciente">
+                    Novo paciente
+                </h2>
+
+                </div>
+
+            <button type="button" class="modal-edicao-fechar" id="fecharModalNovoPaciente" aria-label="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="modal-edicao-body">
+            <div class="campo-edicao">
+                <label for="novoPacienteNome">
+                    Nome do paciente
+                </label>
+
+                <input type="text" id="novoPacienteNome" placeholder="Digite o nome" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteNome">
+            </div>
+
+            <div class="campo-edicao">
+                <label for="novoPacienteTelefone">
+                    Telefone / WhatsApp
+                </label>
+
+                <input type="text" id="novoPacienteTelefone" placeholder="(62) 99999-9999" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteTelefone" inputmode="tel">
+            </div>
+
+            <div class="campo-edicao">
+                <label for="novoPacienteOrigem">
+                    Como conheceu a clínica?
+                </label>
+
+                <select id="novoPacienteOrigem" autocomplete="off">
+                    <option value="" selected disabled>Selecione a origem</option>
+                    <option value="indicacao">Indicação</option>
+                    <option value="clinica">Conheceu a clínica</option>
+                    <option value="instagram_organico">Instagram (sem anúncio)</option>
+                    <option value="google_organico">Google (sem anúncio)</option>
+                    <option value="outros">Outro</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-edicao-footer">
+            <button type="button" class="btn-cancelar-edicao" id="cancelarNovoPaciente">
+                Cancelar
+            </button>
+
+            <button type="button" class="btn-salvar-edicao" id="salvarNovoPaciente">
+                <i class="fa-solid fa-user-plus"></i>
+                Cadastrar paciente
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/auth-ui.js"></script>
+<script src="/session-ui.js"></script>
+<dialog id="reminderDialog" class="reminder-dialog"><form id="reminderForm" autocomplete="off"><header><div><h2>Lembrete de atendimento</h2></div><button type="button" id="closeReminder" class="reminder-close" aria-label="Fechar lembrete">×</button></header><p id="reminderPatient" class="reminder-patient"></p><p id="reminderHint" role="status"></p><div class="reminder-fields"><label>Data<input id="reminderDate" type="date" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderDate"></label><label>Horário<input id="reminderTime" type="time" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderTime"></label></div><label class="reminder-message-label">Mensagem para revisar<textarea id="reminderMessage" rows="6" maxlength="3000" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderMessage"></textarea></label><p id="reminderError" role="alert" hidden></p><footer><button class="secondary-button" id="cancelReminder" type="button">Voltar</button><button class="primary-button" id="openReminderWhatsapp" type="submit">Abrir no WhatsApp</button></footer></form></dialog><script src="/reminders.js"></script></body>
+
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Entrar | Dra. Kahenna Vieira</title>
+    <link rel="stylesheet" href="/login.css">
+<link rel="stylesheet" href="/kahenna-theme.css?v=31"><link rel="stylesheet" href="/mobile-refined.css?v=33"></head>
+<body>
+    <main class="login-page">
+        <section class="login-card" aria-labelledby="tituloLogin">
+            <img class="login-logo" src="/logo.svg" alt="Dra. Kahenna Vieira">
+
+            <div class="login-heading">
+                <span>Área restrita</span>
+                <h1 id="tituloLogin">Bem-vinda ao seu espaço</h1>
+                <p>Acesse sua conta para cuidar da sua rotina.</p>
+            </div>
+
+            <form id="formLogin" novalidate>
+                <label for="usuario">Usuário</label>
+                <input id="usuario" name="usuario" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Seu usuário" maxlength="254" required>
+
+                <label for="senha">Senha</label>
+                <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+
+                <p class="login-message" id="mensagemLogin" role="alert" aria-live="polite"></p>
+
+                <button id="btnEntrar" type="submit">
+                    Entrar
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <script src="/login.js?v=34"></script>
+</body>
+</html>
