@@ -2,6 +2,7 @@
 
 const supabase = require("../config/supabase");
 const { randomUUID } = require("crypto");
+const { normalizarNascimento } = require("../public/aniversarios");
 
 const ORIGENS_MANUAIS = new Set([
     "indicacao",
@@ -164,6 +165,9 @@ async function atualizarVisitante(
     }
 
     const dadosPermitidos = {};
+    if (dadosRecebidos.data_nascimento !== undefined) {
+        dadosPermitidos.data_nascimento = normalizarNascimento(dadosRecebidos.data_nascimento);
+    }
 
     if (
         dadosRecebidos.nome !== undefined &&
@@ -291,6 +295,7 @@ async function criarVisitante(
         visitante_id: randomUUID(),
         nome,
         telefone,
+        data_nascimento: normalizarNascimento(dadosRecebidos.data_nascimento),
         status: status || "novo",
         criado_em: agora,
         primeira_visita: agora,

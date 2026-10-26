@@ -302,6 +302,7 @@ function abrirModalNovoPaciente() {
     campoNome.value = "";
     campoTelefone.value = "";
     campoOrigem.value = "";
+    definirValor("novoPacienteNascimento", "");
 
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
@@ -411,6 +412,7 @@ async function cadastrarNovoPaciente() {
                     nome,
                     telefone,
                     status: "novo",
+                    data_nascimento: obterValorElemento("novoPacienteNascimento"),
                     origem
                 })
             }
@@ -1467,6 +1469,7 @@ function abrirModalIdentificacao(lead) {
     leadIdentificacaoEmEdicao = lead;
     definirValor("editarNomeIdentificacao", obterPrimeiroValor(lead.nome, ""));
     definirValor("editarTelefoneIdentificacao", obterPrimeiroValor(lead.telefone, ""));
+    definirValor("editarNascimentoIdentificacao", lead.data_nascimento || "");
 
     const modal = obterElemento("modalIdentificacaoOverlay");
     modal?.classList.add("open");
@@ -1500,16 +1503,16 @@ async function salvarIdentificacaoPaciente() {
         const resposta = await fetch(`${API_LEADS}/${encodeURIComponent(id)}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ nome, telefone })
+            body: JSON.stringify({ nome, telefone, data_nascimento: obterValorElemento("editarNascimentoIdentificacao") })
         });
         if (!resposta.ok) {
             throw new Error(await lerMensagemDeErro(resposta) || "Não foi possível editar o paciente.");
         }
 
         const retorno = await resposta.json();
-        atualizarLeadLocal(id, { nome, telefone }, retorno);
+        atualizarLeadLocal(id, { nome, telefone, data_nascimento: obterValorElemento("editarNascimentoIdentificacao") || null }, retorno);
         fecharModalIdentificacao();
-        mostrarMensagem("Nome e telefone atualizados com sucesso.", "sucesso");
+        mostrarMensagem("Cadastro atualizado com sucesso.", "sucesso");
     } catch (erro) {
         mostrarMensagem(erro.message || "Não foi possível editar o paciente.", "erro");
     } finally {
@@ -1852,8 +1855,8 @@ function criarLinhaLead(lead) {
                 type="button"
                 class="btn-editar-identificacao"
                 data-id="${escaparAtributo(id)}"
-                aria-label="Editar nome e telefone"
-                title="Editar nome e telefone"
+                aria-label="Editar cadastro"
+                title="Editar cadastro"
             >
                 <i class="fa-solid fa-pen"></i>
             </button>
@@ -3482,4 +3485,11 @@ document.addEventListener("DOMContentLoaded", () => {
     campo?.addEventListener("input", () => {
         campo.value = formatarValorDigitado(campo.value);
     });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const hoje = window.KahennaAniversarios.hojeBrasil();
+    for (const id of ["novoPacienteNascimento", "editarNascimentoIdentificacao"]) {
+        document.getElementById(id)?.setAttribute("max", hoje);
+    }
 });

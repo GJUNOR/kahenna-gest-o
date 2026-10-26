@@ -13,7 +13,10 @@ async function resumo(){carregarReceitaRotina();const btn=document.getElementByI
  const tomorrow=new Date(day.getTime()+86400000);
  const end=new Date(day.getTime()+2*86400000);
  const params=new URLSearchParams({inicio:day.toISOString(),fim:end.toISOString()});
- const [patients,bookings]=await Promise.all([ler('/api/leads'),ler('/api/agendamentos?'+params)]);const ps=dados(patients),bs=dados(bookings);
+ const [patients,bookings]=await Promise.allSettled([ler('/api/leads'),ler('/api/agendamentos?'+params)]);
+ if(patients.status==='rejected'){document.getElementById('aniversariosEstado').textContent='Não foi possível consultar os aniversários. Tente atualizar.';document.getElementById('aniversariosLista').replaceChildren();document.getElementById('aniversariosContagem').textContent='—';throw patients.reason;}
+ const ps=dados(patients.value);renderizarAniversarios(ps);
+ if(bookings.status==='rejected')throw bookings.reason;const bs=dados(bookings.value);
  const today=bs.filter(x=>new Date(x.data_avaliacao)>=day&&new Date(x.data_avaliacao)<new Date(day.getTime()+86400000)&&x.status!=='cancelado');
  document.getElementById('agendamentosHoje').textContent=today.length;
  const tomorrowItems=bs.filter(x=>new Date(x.data_avaliacao)>=tomorrow&&new Date(x.data_avaliacao)<end&&x.status!=='cancelado');
@@ -47,3 +50,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   finally{group.removeAttribute('aria-busy');group.querySelectorAll('button').forEach(b=>b.disabled=false);}
  });
 });
+
+function renderizarAniversarios(pacientes) {
+ const itens=window.KahennaAniversarios.aniversariantesHoje(pacientes);
+ const card=document.getElementById('aniversariosCard');
+ const lista=document.getElementById('aniversariosLista');lista.replaceChildren();
+ document.getElementById('aniversariosContagem').textContent=String(itens.length);
+ const estado=document.getElementById('aniversariosEstado');
+ estado.textContent=itens.length?'':'Nenhum aniversário cadastrado para hoje.';estado.hidden=Boolean(itens.length);
+ if(!card.dataset.carregado){card.open=Boolean(itens.length);card.dataset.carregado='true';}
+ for(const paciente of itens){
+  const item=document.createElement('li');const nome=document.createElement('span');nome.textContent=paciente.nome||'Paciente';item.append(nome);
+  const url=window.KahennaAniversarios.linkParabens(paciente);
+  if(url){const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Dar parabéns';link.title='Revisar a mensagem no WhatsApp antes de enviar';link.setAttribute('aria-label',`Preparar parabéns para ${paciente.nome||'paciente'} no WhatsApp`);item.append(link);}
+  else{const aviso=document.createElement('small');aviso.textContent='Confira o telefone no cadastro';item.append(aviso);}
+  lista.append(item);
+ }
+}

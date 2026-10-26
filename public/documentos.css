@@ -1,14 +1,52 @@
-
-.documentos-dialog { width:min(620px,calc(100vw - 32px)); max-height:85vh; overflow:auto; border:0; border-radius:18px; padding:24px; color:#35282b; background:#fffaf8; box-shadow:0 24px 80px #0004; }
-.documentos-dialog::backdrop { background:#251c246e; }
-.documentos-dialog header { display:flex; justify-content:space-between; align-items:center; gap:16px; }
-.documentos-dialog h2 { margin:0; font-size:1.35rem; }
-.documentos-dialog button,.btn-documentos-paciente,.documentos-lista a { border:1px solid #cbb9be; border-radius:8px; padding:9px 12px; background:#fff; color:#742b46; cursor:pointer; font:inherit; }
-.documentos-dialog button:disabled { opacity:.6; cursor:wait; }
-.documentos-dialog label { display:block; margin:18px 0 8px; font-weight:600; }
-.documentos-dialog input { display:block; width:100%; margin-bottom:12px; }
-.documentos-dialog small { display:block; color:#65575d; margin:8px 0; }
-.documentos-dialog [role=status] { min-height:24px; margin:16px 0; }
-.documentos-lista { padding:0; list-style:none; }
-.documentos-lista li { border-top:1px solid #e4d8dc; padding:16px 0; overflow-wrap:anywhere; }
-.documentos-lista a { display:inline-block; text-decoration:none; }
+/* Patient documents: the same ivory, burgundy and serif headings as the CRM. */
+.documentos-dialog {
+    width: min(640px, calc(100vw - 32px));
+    max-height: min(85vh, 850px);
+    max-height: min(85dvh, 850px);
+    margin: auto;
+    padding: 32px;
+    overflow: auto;
+    border: 1px solid var(--line, #e4d8d5);
+    border-radius: 22px;
+    background: var(--surface, #fffdfb);
+    color: var(--text, #38272b);
+    box-shadow: 0 24px 80px rgba(67, 31, 40, .18);
+    text-align: center;
+}
+.documentos-dialog::backdrop { background: rgba(38, 25, 30, .42); backdrop-filter: blur(4px); }
+.documentos-dialog header { position: relative; padding: 5px 38px 0; }
+.documentos-dialog h2 { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 29px; font-weight: 400; line-height: 1.25; letter-spacing: -.5px; }
+.documentos-dialog #documentosFechar { position: absolute; top: -12px; right: -12px; width: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 50%; background: #f2e4e7; color: #681c2b; font-size: 24px; font-weight: 400; }
+#documentosPaciente { margin: 10px 0 26px; color: var(--muted, #847176); font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+#documentosForm { padding: 24px; border: 1px dashed #d9bdc5; border-radius: 16px; background: #faf6f3; }
+.documentos-dialog label { display: block; margin-bottom: 16px; color: #574048; font-size: 14px; font-weight: 500; }
+.documentos-upload-icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 13px; background: #f2e4e7; color: #681c2b; font-size: 19px; }
+.documentos-dialog input[type=file] { display: block; width: 100%; min-width: 0; margin: 0; padding: 8px; border: 1px solid #ddced2; border-radius: 10px; font: inherit; font-size: 12px; }
+.documentos-dialog input::file-selector-button { margin-right: 10px; padding: 10px 12px; border: 0; border-radius: 7px; background: #f2e4e7; color: #681c2b; font: inherit; font-weight: 500; cursor: pointer; }
+.documentos-dialog small { display: block; margin: 12px auto 0; max-width: 360px; color: #847176; font-size: 12px; line-height: 1.7; }
+.documentos-dialog button, .documentos-lista a, .btn-documentos-paciente { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 10px 16px; border: 1px solid #ddced2; border-radius: 10px; font: inherit; font-size: 13px; font-weight: 500; line-height: 1.4; cursor: pointer; text-decoration: none; transition: background .18s, border-color .18s; }
+.documentos-dialog #documentosEnviar { min-width: 172px; margin-top: 20px; background: #681c2b; color: #fff; border-color: #681c2b; box-shadow: 0 5px 16px rgba(104, 28, 43, .12); }
+.documentos-dialog #documentosEnviar:hover { background: #501321; border-color: #501321; }
+.documentos-dialog button:disabled { opacity: .55; cursor: wait; }
+.documentos-dialog :is(button, input, a):focus-visible, .btn-documentos-paciente:focus-visible { outline: 2px solid #681c2b; outline-offset: 3px; }
+#documentosStatus { min-height: 22px; margin: 22px 0 16px; color: #847176; font-size: 12px; line-height: 1.7; }
+.documentos-lista { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.documentos-lista li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 20px; padding: 18px; border: 1px solid #e4d8d5; border-radius: 12px; background: #fffdfb; text-align: left; }
+.documentos-lista strong { min-width: 0; font-size: 13px; font-weight: 500; line-height: 1.6; overflow-wrap: anywhere; }
+.documentos-lista small { grid-column: 1; margin: 4px 0 0; font-size: 11px; }
+.documentos-lista a { grid-column: 2; grid-row: 1 / 3; white-space: nowrap; background: #f2e4e7; color: #681c2b; border-color: #ead5db; }
+.documentos-lista a:hover, .btn-documentos-paciente:hover { background: #e9d4da; border-color: #d9bdc5; }
+.btn-documentos-paciente { min-height: 36px; padding: 8px 12px; background: #f2e4e7; color: #681c2b; font-size: 12px; }
+.btn-documentos-paciente::before { content: '\f1c1'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+@media (max-width: 520px) {
+    .documentos-dialog { width: calc(100vw - 24px); padding: 24px 18px; border-radius: 18px; }
+    .documentos-dialog header { padding: 6px 26px 0; }
+    .documentos-dialog h2 { font-size: 25px; }
+    .documentos-dialog #documentosFechar { top: -12px; right: -6px; }
+    #documentosForm { padding: 20px 14px; }
+    .documentos-dialog #documentosEnviar { width: 100%; }
+    .documentos-lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; text-align: center; }
+    .documentos-lista small { margin: 0 auto; }
+    .documentos-lista a { grid-column: 1; grid-row: auto; width: 100%; margin-top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .documentos-dialog button, .documentos-lista a, .btn-documentos-paciente { transition: none; } }

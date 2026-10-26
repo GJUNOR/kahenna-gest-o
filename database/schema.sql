@@ -2,6 +2,7 @@ begin;
 create table public.visitantes (
  visitante_id uuid primary key default gen_random_uuid(),
  nome text not null check(length(btrim(nome)) between 1 and 200),
+ data_nascimento date check(data_nascimento >= date '1900-01-01' and data_nascimento <= (now() at time zone 'America/Sao_Paulo')::date),
  telefone text not null check(telefone ~ '^[0-9]{8,15}$'),
  status text not null default 'novo',
  criado_em timestamptz not null default now(),
