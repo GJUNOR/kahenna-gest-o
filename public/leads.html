@@ -473,15 +473,15 @@
                     <label for="editarNomeIdentificacao">Nome do paciente</label>
                     <input type="text" id="editarNomeIdentificacao" autocomplete="off" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true" name="kahenna_editarNomeIdentificacao">
                 </div>
+                <div class="campo-edicao">
+                    <label for="editarTelefoneIdentificacao">Telefone / WhatsApp</label>
+                    <input type="text" id="editarTelefoneIdentificacao" inputmode="tel" autocomplete="off" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true" name="kahenna_editarTelefoneIdentificacao">
+                </div>
             <div class="campo-edicao nascimento-opcional">
                 <label for="editarNascimentoIdentificacao">Data de nascimento <span>(opcional)</span></label>
                 <input type="date" id="editarNascimentoIdentificacao" min="1900-01-01" autocomplete="off">
                 <small>Somente para lembrar o aniversário na Visão Geral.</small>
             </div>
-                <div class="campo-edicao">
-                    <label for="editarTelefoneIdentificacao">Telefone / WhatsApp</label>
-                    <input type="text" id="editarTelefoneIdentificacao" inputmode="tel" autocomplete="off" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true" name="kahenna_editarTelefoneIdentificacao">
-                </div>
             </div>
         </div>
         <div class="modal-edicao-footer">
@@ -520,11 +520,6 @@
 
                 <input type="text" id="novoPacienteNome" placeholder="Digite o nome" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteNome">
             </div>
-            <div class="campo-edicao nascimento-opcional">
-                <label for="novoPacienteNascimento">Data de nascimento <span>(opcional)</span></label>
-                <input type="date" id="novoPacienteNascimento" min="1900-01-01" autocomplete="off">
-                <small>Somente para lembrar o aniversário na Visão Geral.</small>
-            </div>
 
             <div class="campo-edicao">
                 <label for="novoPacienteTelefone">
@@ -547,6 +542,11 @@
                     <option value="google_organico">Google (sem anúncio)</option>
                     <option value="outros">Outro</option>
                 </select>
+            </div>
+            <div class="campo-edicao nascimento-opcional">
+                <label for="novoPacienteNascimento">Data de nascimento <span>(opcional)</span></label>
+                <input type="date" id="novoPacienteNascimento" min="1900-01-01" autocomplete="off">
+                <small>Somente para lembrar o aniversário na Visão Geral.</small>
             </div>
         </div>
 

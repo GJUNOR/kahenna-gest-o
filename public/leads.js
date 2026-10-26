@@ -1855,8 +1855,8 @@ function criarLinhaLead(lead) {
                 type="button"
                 class="btn-editar-identificacao"
                 data-id="${escaparAtributo(id)}"
-                aria-label="Editar nome e telefone"
-                title="Editar nome e telefone"
+                aria-label="Editar cadastro"
+                title="Editar cadastro"
             >
                 <i class="fa-solid fa-pen"></i>
             </button>
