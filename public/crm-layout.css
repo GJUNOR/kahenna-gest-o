@@ -84,3 +84,10 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
 .crm-page :is(.widget,.table-card,.team-card,.summary-card,.calendar-card,.stock-panel){border-radius:18px!important;box-shadow:0 8px 30px rgba(67,31,40,.04)!important}
 .crm-page .week-calendar{grid-template-columns:64px repeat(7,minmax(110px,1fr));min-width:834px}
 @media(max-width:1050px){.crm-page .team-list .member{grid-template-columns:minmax(0,1fr);gap:14px}.crm-page .team-list .member>.access-button{justify-self:start;width:auto}}
+/* Avoid page-to-page fading and scaling of text while navigating. */
+.crm-page .content,.crm-page .agenda-content,.crm-page .card,.crm-page .widget,.crm-page .table-card,.crm-page .stock-panel,.crm-page .summary-card,.crm-page .team-card{animation:none!important;opacity:1!important;transform:none!important}
+.crm-page .grupo-acoes-paciente{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important}
+.crm-page .grupo-acoes-paciente button{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-height:38px!important;padding:8px 12px!important;border-radius:10px!important;font-size:12px!important;font-weight:500!important;line-height:20px!important;white-space:nowrap}
+.crm-page .grupo-acoes-paciente button span{font-size:12px!important;line-height:20px!important}
+.crm-page .modal-edicao-footer,.crm-page .modal-actions{gap:12px!important}
+.crm-page .grupo-acoes-paciente button[hidden]{display:none!important}
