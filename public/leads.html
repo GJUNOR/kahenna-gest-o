@@ -33,7 +33,8 @@
     <link rel="stylesheet" href="/sidebar.css">
     <link rel="stylesheet" href="/mobile.css?v=1">
 
-<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"></head>
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/documentos.css">
+</head>
 
 <body>
 
@@ -359,7 +360,13 @@
 <!-- BIBLIOTECAS E JAVASCRIPT -->
 <!-- ========================================== -->
 
-<script src="/leads.js?v=9"></script>
+<script src="/leads.js?v=10"></script>
+<dialog id="documentosDialog" class="documentos-dialog" aria-labelledby="documentosTitulo">
+<header><h2 id="documentosTitulo">Documentos do paciente</h2><button type="button" id="documentosFechar" aria-label="Fechar documentos">Fechar</button></header>
+<p id="documentosPaciente"></p>
+<form id="documentosForm"><label for="documentosArquivo">Adicionar PDF escaneado</label><input id="documentosArquivo" type="file" accept=".pdf,application/pdf" required><small>Até 15 MB por arquivo. Cada envio mantém os documentos anteriores.</small><button id="documentosEnviar" type="submit">Salvar PDF</button></form>
+<p id="documentosStatus" role="status" aria-live="polite"></p><ul id="documentosLista" class="documentos-lista"></ul>
+</dialog><script src="/documentos.js"></script>
 
 <div class="modal-edicao-overlay" id="modalEdicaoOverlay" aria-hidden="true">
     <div class="modal-edicao modal-financeiro-paciente" role="dialog" aria-modal="true" aria-labelledby="tituloModalEdicao">

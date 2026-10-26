@@ -508,7 +508,7 @@ async function carregarLeads() {
         todosOsLeads = normalizarResposta(retorno);
         leadsFiltrados = [...todosOsLeads];
 
-        console.log("Pacientes recebidos:", todosOsLeads);
+
 
         renderizarTudo();
     } catch (erro) {
@@ -1882,7 +1882,7 @@ function criarLinhaLead(lead) {
         ${colunasFinanceiras}
 
         <td class="coluna-acoes">
-            <div class="grupo-acoes-paciente"><button type="button" class="btn-reminder-paciente" aria-label="Preparar lembrete"><span class="reminder-action-icon"><i class="fa-regular fa-bell" aria-hidden="true"></i></span><span>Lembrete</span></button>
+            <div class="grupo-acoes-paciente"><button type="button" class="btn-documentos-paciente" data-documentos-paciente="${escaparAtributo(id)}" data-documentos-nome="${escaparAtributo(nome)}" aria-label="Documentos do paciente">PDFs</button><button type="button" class="btn-reminder-paciente" aria-label="Preparar lembrete"><span class="reminder-action-icon"><i class="fa-regular fa-bell" aria-hidden="true"></i></span><span>Lembrete</span></button>
 
                 <button
                     type="button"
@@ -2592,10 +2592,7 @@ definirTexto(
     )
 );
 
-    console.log(
-        "Dados exibidos no drawer:",
-        lead
-    );
+
 }
 
 // ======================================================
