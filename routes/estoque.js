@@ -1,0 +1,10 @@
+"use strict";
+const express=require('express');
+const {criarServico}=require('../services/estoque');
+const {exigirAdministradorApi}=require('../middleware/auth');
+module.exports=function(db,autorizar=exigirAdministradorApi){const router=express.Router(),servico=criarServico(db);router.use(autorizar);
+ router.get('/painel',async(req,res)=>res.json({sucesso:true,...await servico.painel(req.query)}));
+ router.post('/produtos',async(req,res)=>res.status(201).json({sucesso:true,produto:await servico.criar(req.body||{})}));
+ router.put('/produtos/:id',async(req,res)=>res.json({sucesso:true,produto:await servico.editar(req.params.id,req.body||{})}));
+ router.post('/movimentos',async(req,res)=>res.status(201).json({sucesso:true,movimento:await servico.movimentar(req.body||{},req.usuario)}));
+ router.use((err,req,res,next)=>{const status=err.statusCode||500;if(status>=500)console.error('Falha ao consultar ou movimentar estoque.');res.status(status).json({sucesso:false,mensagem:status>=500?'Não foi possível concluir a operação de estoque. Tente novamente.':err.message});});return router;};
