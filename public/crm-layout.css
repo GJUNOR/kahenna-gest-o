@@ -96,3 +96,8 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
  .crm-page .content>.topbar>div:first-child,.crm-page .agenda-content>.agenda-topbar>div:first-child,.crm-page .content>.page-header>div:first-child,.crm-page .content>.stock-header>div:first-child{grid-column:1!important;grid-row:1!important}
  .crm-page .content>.topbar>.top-actions,.crm-page .content>.topbar>.topbar-actions,.crm-page .agenda-topbar>button,.crm-page .page-header>button,.crm-page .stock-header>button{grid-column:1!important;grid-row:2!important;justify-self:center!important;justify-content:center!important}
 }
+@media(max-width:760px){
+ .crm-page .sidebar .menu{align-items:stretch!important}
+ .crm-page .sidebar .menu a{height:60px!important;min-height:60px!important;padding:5px 2px!important;gap:3px!important}
+ .crm-page .sidebar .menu a span{width:100%!important;max-width:none!important;min-height:24px;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;text-align:center!important}
+}
