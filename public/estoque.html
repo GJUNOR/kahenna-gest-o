@@ -1,0 +1,67 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Estoque | Dra. Kahenna Vieira</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="/sidebar.css"><link rel="stylesheet" href="/mobile.css?v=1"><link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/estoque.css?v=1"></head><body><div class="layout"><aside class="sidebar">
+    <div class="sidebar-main">
+        <div class="logo">
+            <div class="logo-icon">
+                <img class="clinic-logo" src="/logo.svg" alt="Dra. Kahenna Vieira">
+            </div>
+
+            <div class="logo-text">
+                <h2>Dra. Kahenna Vieira</h2>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="/dashboard.html" >
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Visão Geral</span>
+            </a>
+
+            <a href="/leads.html">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Pacientes</span>
+            </a>
+
+            <a href="/agenda.html">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Agenda</span>
+            </a>
+
+            <a href="/estoque.html" class="active" aria-current="page"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i><span>Estoque</span></a>
+<a href="/configuracoes.html" data-admin-only hidden>
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Equipe</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="connection-status atlas-status" id="statusSupabase" data-status="verificando">
+            <span class="status-dot" aria-hidden="true"></span>
+
+            <div>
+                <strong id="statusSupabaseTitulo">Acesso restrito</strong>
+
+                <small id="statusSupabaseTexto">Pacientes e agenda</small>
+            </div>
+        </div>
+        <button class="sidebar-logout" type="button" data-logout>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </button>
+    </div>
+</aside>
+<main class="content stock-content">
+<header class="stock-header"><div><span class="stock-eyebrow">CUIDADO EM CADA DETALHE</span><h1>Estoque</h1><p>Organize os produtos da clínica e acompanhe cada custo.</p></div><button type="button" class="stock-primary" id="novoProduto"><i class="fa-solid fa-plus" aria-hidden="true"></i> Novo produto</button></header>
+<div class="stock-period"><p>Seu estoque atual. Compras e consumo no mês escolhido.</p><label for="mesEstoque">Período <input type="month" id="mesEstoque" min="2000-01" max="2099-12" required></label><button type="button" class="stock-icon-button" id="atualizarEstoque" aria-label="Atualizar estoque"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button></div>
+<p id="stockFeedback" class="stock-feedback" role="status" hidden></p>
+<section class="stock-metrics" aria-label="Resumo do estoque"><article><span class="stock-metric-icon"><i class="fa-solid fa-box-open" aria-hidden="true"></i></span><p>Valor em estoque</p><strong id="valorEstoque">—</strong><small>Produtos disponíveis agora</small></article><article><span class="stock-metric-icon"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></span><p>Compras do mês</p><strong id="comprasMes">—</strong><small>Entradas registradas no período</small></article><article><span class="stock-metric-icon"><i class="fa-solid fa-leaf" aria-hidden="true"></i></span><p>Custo do uso</p><strong id="usoMes">—</strong><small>Consumo pelo custo médio</small></article><article class="stock-reorder"><span class="stock-metric-icon"><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i></span><p>Precisam de reposição</p><strong id="reporEstoque">—</strong><small id="semEstoque">No mínimo definido ou abaixo dele</small></article></section>
+<section class="stock-panel" aria-labelledby="tituloProdutos"><div class="stock-panel-heading"><div><h2 id="tituloProdutos">Produtos da clínica</h2><p id="contagemProdutos">Carregando os produtos…</p></div></div><div class="stock-toolbar"><label class="stock-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="buscaEstoque" type="search" aria-label="Buscar produto" placeholder="Buscar produto…" maxlength="120"></label><select id="categoriaEstoque" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select><div class="stock-tabs" aria-label="Situação dos produtos"><button type="button" data-filtro="todos" class="is-active" aria-pressed="true">Todos</button><button type="button" data-filtro="baixo" aria-pressed="false">Estoque baixo</button><button type="button" data-filtro="arquivados" aria-pressed="false">Arquivados</button></div></div>
+<div id="listaProdutos" aria-live="polite"></div><div class="stock-pagination"><button type="button" id="produtosAnterior" class="stock-secondary">Anterior</button><span id="paginaProdutos"></span><button type="button" id="produtosProximo" class="stock-secondary">Próxima</button></div></section>
+<section class="stock-panel stock-history" aria-labelledby="tituloMovimentos"><div class="stock-panel-heading"><div><h2 id="tituloMovimentos">Movimentações</h2><p>Um histórico de tudo o que entrou e foi utilizado.</p></div><span class="stock-history-key"><span>+ Compra</span><span>− Uso</span></span></div><div id="listaMovimentos" aria-live="polite"></div><div class="stock-pagination"><button type="button" id="historicoAnterior" class="stock-secondary">Anterior</button><span id="paginaHistorico"></span><button type="button" id="historicoProximo" class="stock-secondary">Próxima</button></div></section>
+<p class="stock-footnote"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> O custo médio acompanha suas compras. Registrar uso reduz o saldo e mantém o histórico.</p>
+</main></div>
+<dialog id="produtoDialog" class="stock-dialog" aria-labelledby="produtoTitulo"><header><h2 id="produtoTitulo">Novo produto</h2><button type="button" class="stock-dialog-close" data-fechar aria-label="Fechar cadastro de produto">×</button></header><p id="produtoIntro" class="stock-dialog-intro">Comece pelo produto. Depois, registre a compra para adicionar o saldo.</p><form id="produtoForm"><label>Nome do produto<input name="nome" id="produtoNome" maxlength="120" required placeholder="Ex.: Luvas de procedimento"></label><div class="stock-form-grid"><label>Categoria<input name="categoria" id="produtoCategoria" list="categoriasSugeridas" maxlength="60" placeholder="Ex.: Descartáveis"></label><label>Unidade de controle<select name="unidade" id="produtoUnidade"><option value="un">Unidade</option><option value="caixa">Caixa</option><option value="frasco">Frasco</option><option value="pacote">Pacote</option><option value="ml">Mililitro (ml)</option><option value="g">Grama (g)</option></select></label></div><p class="stock-field-help">Escolha como você conta este produto. Compras e uso serão registrados nessa mesma unidade.</p><label>Avisar quando o saldo chegar a<input name="estoque_minimo" id="produtoMinimo" type="number" min="0" max="999999.999" step="0.001" value="0" required><small>Estoque mínimo para lembrar a reposição.</small></label><p id="produtoErro" role="alert" class="stock-form-error" hidden></p><footer><button type="button" data-fechar class="stock-secondary">Cancelar</button><button type="submit" id="produtoSalvar" class="stock-primary">Cadastrar produto</button></footer></form></dialog>
+<dialog id="movimentoDialog" class="stock-dialog" aria-labelledby="movimentoTitulo"><header><h2 id="movimentoTitulo">Registrar compra</h2><button type="button" class="stock-dialog-close" data-fechar aria-label="Fechar movimentação">×</button></header><p id="movimentoProduto" class="stock-dialog-intro"></p><p id="movimentoSaldo" class="stock-available"></p><form id="movimentoForm"><div class="stock-form-grid"><label id="quantidadeLabel">Quantidade<input name="quantidade" id="movimentoQuantidade" type="number" min="0.001" max="999999.999" step="0.001" required></label><label>Data<input name="ocorrido_em" id="movimentoData" type="date" min="1900-01-01" required></label></div><div id="camposCompra"><label id="custoLabel">Custo por unidade (R$)<input name="custo_unitario" id="movimentoCusto" type="number" min="0" max="999999.9999" step="0.0001"></label><label>Fornecedor <span>(opcional)</span><input name="fornecedor" id="movimentoFornecedor" maxlength="120" placeholder="Onde foi comprado"></label></div><label>Observação <span>(opcional)</span><input name="motivo" id="movimentoMotivo" maxlength="300" placeholder="Ex.: Atendimento, reposição ou perda"></label><div class="stock-calculation"><span id="calculoLabel">Total da compra</span><strong id="movimentoTotal">R$ 0,00</strong></div><p id="movimentoErro" role="alert" class="stock-form-error" hidden></p><footer><button type="button" data-fechar class="stock-secondary">Cancelar</button><button type="submit" id="movimentoSalvar" class="stock-primary">Registrar compra</button></footer></form></dialog>
+<datalist id="categoriasSugeridas"><option value="Descartáveis"><option value="Produtos"><option value="Materiais"><option value="Higiene"><option value="Outros"></datalist>
+<script src="/auth-ui.js"></script><script src="/session-ui.js"></script><script src="/aniversarios.js?v=1"></script><script src="/estoque.js?v=1"></script></body></html>

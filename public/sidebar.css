@@ -292,3 +292,6 @@
         width: calc(100% - var(--atlas-sidebar-width)) !important;
     }
 }
+
+.sidebar .menu [data-admin-only][hidden] { display: none !important; }
+
