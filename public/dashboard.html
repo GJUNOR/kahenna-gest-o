@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/sidebar.css">
 <link rel="stylesheet" href="/mobile.css?v=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"></head>
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/aniversarios.css?v=1"></head>
 <body>
 <div class="dashboard">
 <aside class="sidebar">
@@ -74,8 +74,12 @@
 </button>
 </div>
 </header>
-<main><section class="cards-grid routine-cards business-cards"><div class="card routine-card"><h3>Hoje</h3><strong id="agendamentosHoje">—</strong></div><article class="card routine-card revenue-card"><h3>Receita do dia</h3><strong id="receitaHoje">—</strong></article><article class="card routine-card revenue-card"><h3>Receita do mês</h3><strong id="receitaMes">—</strong></article></section><section class="widget"><div class="widget-header"><div><h2 class="widget-title">Sua agenda de hoje</h2></div><div class="routine-agenda-actions"><a href="/agenda.html" class="btn btn-primary">Abrir agenda</a><a href="/agenda.html?novo=1" class="btn btn-primary">Agendar paciente</a></div></div><p id="erroResumo" role="alert" hidden></p><div id="agendaResumo" class="summary-appointments"><p class="empty-state">Carregando os horários…</p></div></section><section class="widget tomorrow-agenda"><div class="widget-header"><div><h2 class="widget-title">Sua agenda de amanhã</h2></div><span class="tomorrow-count" id="amanhaContagem"></span></div><p id="erroAmanha" role="alert" hidden></p><div id="agendaAmanha" class="summary-appointments"><p class="empty-state">Carregando os horários…</p></div></section></main></div>
+<main><section class="cards-grid routine-cards business-cards"><div class="card routine-card"><h3>Hoje</h3><strong id="agendamentosHoje">—</strong></div><article class="card routine-card revenue-card"><h3>Receita do dia</h3><strong id="receitaHoje">—</strong></article><article class="card routine-card revenue-card"><h3>Receita do mês</h3><strong id="receitaMes">—</strong></article></section><section class="widget"><div class="widget-header"><div><h2 class="widget-title">Sua agenda de hoje</h2></div><div class="routine-agenda-actions"><a href="/agenda.html" class="btn btn-primary">Abrir agenda</a><a href="/agenda.html?novo=1" class="btn btn-primary">Agendar paciente</a></div></div><p id="erroResumo" role="alert" hidden></p><div id="agendaResumo" class="summary-appointments"><p class="empty-state">Carregando os horários…</p></div></section><section class="widget tomorrow-agenda"><div class="widget-header"><div><h2 class="widget-title">Sua agenda de amanhã</h2></div><span class="tomorrow-count" id="amanhaContagem"></span></div><p id="erroAmanha" role="alert" hidden></p><div id="agendaAmanha" class="summary-appointments"><p class="empty-state">Carregando os horários…</p></div></section><details class="aniversarios-card" id="aniversariosCard">
+<summary><span class="aniversarios-titulo"><i class="fa-solid fa-cake-candles" aria-hidden="true"></i> Aniversariantes de hoje</span><span id="aniversariosContagem" class="aniversarios-contagem">—</span></summary>
+<p class="aniversarios-nota">Um carinho para quem faz aniversário hoje.</p>
+<p id="aniversariosEstado" role="status">Carregando…</p><ul id="aniversariosLista"></ul>
+</details></main></div>
 </div>
-<script src="/auth-ui.js"></script><script src="/session-ui.js"></script><script src="/dashboard.js"></script></body>
+<script src="/auth-ui.js"></script><script src="/session-ui.js"></script><script src="/aniversarios.js?v=1"></script><script src="/dashboard.js?v=2"></script></body>
 </html>
 

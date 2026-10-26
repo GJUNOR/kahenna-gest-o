@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="/sidebar.css">
     <link rel="stylesheet" href="/mobile.css?v=1">
 
-<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/documentos.css">
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/documentos.css?v=2"><link rel="stylesheet" href="/aniversarios.css?v=1">
 </head>
 
 <body>
@@ -360,11 +360,11 @@
 <!-- BIBLIOTECAS E JAVASCRIPT -->
 <!-- ========================================== -->
 
-<script src="/leads.js?v=10"></script>
+<script src="/aniversarios.js?v=1"></script><script src="/leads.js?v=11"></script>
 <dialog id="documentosDialog" class="documentos-dialog" aria-labelledby="documentosTitulo">
-<header><h2 id="documentosTitulo">Documentos do paciente</h2><button type="button" id="documentosFechar" aria-label="Fechar documentos">Fechar</button></header>
+<header><h2 id="documentosTitulo">Documentos do paciente</h2><button type="button" id="documentosFechar" aria-label="Fechar documentos"><span aria-hidden="true">×</span></button></header>
 <p id="documentosPaciente"></p>
-<form id="documentosForm"><label for="documentosArquivo">Adicionar PDF escaneado</label><input id="documentosArquivo" type="file" accept=".pdf,application/pdf" required><small>Até 15 MB por arquivo. Cada envio mantém os documentos anteriores.</small><button id="documentosEnviar" type="submit">Salvar PDF</button></form>
+<form id="documentosForm"><label for="documentosArquivo"><span class="documentos-upload-icon" aria-hidden="true"><i class="fa-regular fa-file-pdf"></i></span>Adicionar PDF escaneado</label><input id="documentosArquivo" type="file" accept=".pdf,application/pdf" required><small>Até 15 MB por arquivo. Cada envio mantém os documentos anteriores.</small><button id="documentosEnviar" type="submit"><i class="fa-solid fa-arrow-up-from-bracket" aria-hidden="true"></i> Salvar PDF</button></form>
 <p id="documentosStatus" role="status" aria-live="polite"></p><ul id="documentosLista" class="documentos-lista"></ul>
 </dialog><script src="/documentos.js"></script>
 
@@ -473,6 +473,11 @@
                     <label for="editarNomeIdentificacao">Nome do paciente</label>
                     <input type="text" id="editarNomeIdentificacao" autocomplete="off" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true" name="kahenna_editarNomeIdentificacao">
                 </div>
+            <div class="campo-edicao nascimento-opcional">
+                <label for="editarNascimentoIdentificacao">Data de nascimento <span>(opcional)</span></label>
+                <input type="date" id="editarNascimentoIdentificacao" min="1900-01-01" autocomplete="off">
+                <small>Somente para lembrar o aniversário na Visão Geral.</small>
+            </div>
                 <div class="campo-edicao">
                     <label for="editarTelefoneIdentificacao">Telefone / WhatsApp</label>
                     <input type="text" id="editarTelefoneIdentificacao" inputmode="tel" autocomplete="off" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true" name="kahenna_editarTelefoneIdentificacao">
@@ -514,6 +519,11 @@
                 </label>
 
                 <input type="text" id="novoPacienteNome" placeholder="Digite o nome" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteNome">
+            </div>
+            <div class="campo-edicao nascimento-opcional">
+                <label for="novoPacienteNascimento">Data de nascimento <span>(opcional)</span></label>
+                <input type="date" id="novoPacienteNascimento" min="1900-01-01" autocomplete="off">
+                <small>Somente para lembrar o aniversário na Visão Geral.</small>
             </div>
 
             <div class="campo-edicao">
