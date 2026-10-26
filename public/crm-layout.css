@@ -1,0 +1,86 @@
+/* Final, shared visual contract for the five private CRM pages. */
+html:has(body.crm-page){font-size:16px}
+body.crm-page{--atlas-sidebar-width:232px;--crm-space:32px;margin:0;background:#f7f4f1!important;color:#38272b!important;font-family:Inter,'Segoe UI',sans-serif!important;font-size:14px;line-height:1.55}
+.crm-page *:not(i):not([class*="fa-"]){font-family:Inter,'Segoe UI',sans-serif}
+.crm-page .content,.crm-page .agenda-content{box-sizing:border-box!important;min-width:0!important;max-width:none!important;width:calc(100% - var(--atlas-sidebar-width))!important;margin-left:var(--atlas-sidebar-width)!important;padding:0 var(--crm-space) 32px!important;--heading-inset-x:0px;--heading-inset-y:0px}
+.crm-page .content>main{padding:0!important;max-width:none!important}
+.crm-page .sidebar{width:var(--atlas-sidebar-width)!important;min-width:var(--atlas-sidebar-width)!important;max-width:var(--atlas-sidebar-width)!important;padding:24px 16px!important;align-items:stretch!important}
+.crm-page .sidebar .logo{padding:0!important;min-height:60px!important;height:auto!important}
+.crm-page .sidebar .clinic-logo{max-width:200px!important;display:block;margin:auto}
+.crm-page .sidebar .menu{display:flex!important;flex-direction:column!important;gap:8px!important}
+.crm-page .sidebar .menu a{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;width:100%!important;min-height:46px!important;height:46px!important;margin:0!important;padding:12px 14px!important;border-radius:11px!important;font-size:14px!important;font-weight:400!important;line-height:20px!important;box-shadow:none!important;transform:none!important}
+.crm-page .sidebar .menu a span{display:inline!important;font-size:14px!important;line-height:20px!important}
+.crm-page .sidebar .menu a i{width:18px!important;text-align:center;font-size:16px!important;flex:0 0 18px}
+.crm-page .sidebar .menu a.active{background:#f2e4e7!important;color:#681c2b!important;border-color:#dcc0c7!important;font-weight:500!important}
+.crm-page .sidebar-bottom{width:100%!important}
+.crm-page .sidebar .connection-status strong{font-size:12px!important;font-weight:500!important;line-height:1.5!important}
+.crm-page .sidebar .connection-status small{font-size:11px!important;line-height:1.5!important}
+.crm-page .sidebar-logout{height:44px!important;min-height:44px!important;font-size:13px!important;font-weight:500!important}
+/* Identical header geometry, including Estoque. */
+.crm-page .content>.topbar,.crm-page .agenda-content>.agenda-topbar,.crm-page .content>.page-header,.crm-page .content>.stock-header{box-sizing:border-box!important;position:relative!important;inset:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;gap:16px!important;width:auto!important;max-width:none!important;height:auto!important;min-height:104px!important;margin:0 calc(-1 * var(--crm-space)) 28px!important;padding:24px var(--crm-space)!important;background:transparent!important;border:0!important;border-bottom:1px solid #e4d8d5!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;z-index:20!important}
+.crm-page .content>.topbar>div:first-child,.crm-page .agenda-content>.agenda-topbar>div:first-child,.crm-page .content>.page-header>div:first-child,.crm-page .content>.stock-header>div:first-child{grid-column:2!important;grid-row:1!important;align-self:center!important;justify-self:center!important;min-width:0!important;min-height:0!important;width:auto!important;margin:0!important;padding:0!important;text-align:center!important}
+.crm-page .content>.topbar h1,.crm-page .agenda-content>.agenda-topbar h1,.crm-page .content>.page-header h1,.crm-page .content>.stock-header h1{position:static!important;inset:auto!important;transform:none!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;font-family:Georgia,'Times New Roman',serif!important;font-weight:400!important;font-size:36px!important;line-height:44px!important;letter-spacing:-.7px!important;color:#38272b!important;text-align:center!important;white-space:nowrap}
+.crm-page .content>.topbar>div:first-child>p,.crm-page .agenda-topbar>div:first-child>p,.crm-page .page-header>div:first-child>p,.crm-page .stock-header>div:first-child>p,.crm-page .stock-header .stock-eyebrow{display:none!important}
+.crm-page .content>.topbar>.top-actions,.crm-page .content>.topbar>.topbar-actions,.crm-page .agenda-topbar>button,.crm-page .page-header>button,.crm-page .stock-header>button{position:static!important;grid-column:3!important;grid-row:1!important;justify-self:end!important;align-self:center!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;width:auto!important;min-width:0!important;margin:0!important;transform:none!important;flex-wrap:wrap}
+.crm-page :is(.primary-button,.secondary-button,.btn,.refresh-button,.today-button,.icon-button,.stock-primary,.stock-secondary,.stock-icon-button){display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:46px!important;padding:11px 16px!important;border-radius:10px!important;font-family:Inter,'Segoe UI',sans-serif!important;font-size:13px!important;font-weight:500!important;line-height:22px!important;text-align:center;white-space:nowrap}
+.crm-page :is(.icon-button,.stock-icon-button){width:46px!important;min-width:46px!important;max-width:46px!important;padding:0!important}
+.crm-page :is(input,select,textarea){box-sizing:border-box;font-family:Inter,'Segoe UI',sans-serif!important;font-size:13px!important;font-weight:400!important;line-height:1.5!important}
+.crm-page input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=file]),.crm-page select{height:46px!important;min-height:46px!important;min-width:0;max-width:100%;border-radius:10px!important}
+.crm-page select{display:inline-flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important}
+.crm-page select::picker-icon{align-self:center;margin-left:auto;flex:0 0 auto}
+.crm-page label{font-size:13px!important;font-weight:400!important;line-height:1.6!important}
+.crm-page .content h2,.crm-page .agenda-content h2{font-family:Georgia,'Times New Roman',serif!important;font-size:24px!important;font-weight:400!important;line-height:1.3!important;letter-spacing:-.4px!important}
+.crm-page :is(.widget-header,.stock-panel-heading,.section-title,.table-header){text-align:left!important}
+.crm-page .widget-header{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:18px!important}
+.crm-page .aniversarios-titulo{font-family:Georgia,'Times New Roman',serif!important}
+.crm-page .routine-card>strong,.crm-page .stock-metrics strong,.crm-page .summary-card>div>strong{font-family:Georgia,'Times New Roman',serif!important;font-size:32px!important;font-weight:400!important;line-height:1.25!important;letter-spacing:-.5px!important}
+.crm-page .routine-card h3,.crm-page .stock-metrics p{font-family:Inter,'Segoe UI',sans-serif!important;font-size:11px!important;font-weight:500!important;line-height:1.6!important}
+.crm-page .summary-card>div:last-child>strong{font-family:Inter,'Segoe UI',sans-serif!important;font-size:16px!important}
+.crm-page :is(dialog,[role=dialog]) h2{font-family:Georgia,'Times New Roman',serif!important;font-size:26px!important;font-weight:400!important;line-height:1.3!important;letter-spacing:-.4px!important}
+.crm-page .stock-calculation strong{font-family:Georgia,'Times New Roman',serif!important}
+.crm-page .agenda-toolbar{margin-bottom:18px!important;padding:16px!important;border-radius:18px!important;gap:16px!important}
+.crm-page .period-title strong{font-family:Inter,'Segoe UI',sans-serif!important;font-size:14px!important;font-weight:500!important;line-height:1.5!important}
+.crm-page .period-title span{font-size:12px!important;line-height:1.5!important}
+.crm-page .stock-period{margin-top:0!important}
+.crm-page .stock-dialog input,.crm-page .stock-dialog select,.crm-page .stock-search input#buscaEstoque{height:46px!important;min-height:46px!important}
+.crm-page .stock-tabs button{font-family:Inter,'Segoe UI',sans-serif!important;font-size:12px!important;font-weight:500!important;line-height:20px!important}
+.crm-page .stock-table :is(th,td){font-size:12px!important}
+.crm-page .stock-table th{font-size:10px!important}
+.crm-page .stock-small-button{font-size:12px!important;line-height:18px!important}
+.crm-page .stock-footnote{font-size:11px!important;line-height:1.8!important}
+.crm-page .stock-dialog .stock-dialog-intro{font-size:12px!important;line-height:1.7!important}
+.crm-page .stock-dialog label small{font-size:11px!important}
+@media(max-width:1050px){
+ .crm-page .content,.crm-page .agenda-content{--crm-space:24px}
+ .crm-page .widget-header{flex-wrap:wrap}
+ .crm-page .routine-agenda-actions{display:flex!important;flex-wrap:wrap!important;gap:10px!important}
+}
+@media(max-width:760px){
+ body.crm-page{--crm-space:16px;padding-bottom:calc(84px + env(safe-area-inset-bottom));font-size:14px}
+ .crm-page .content,.crm-page .agenda-content{--crm-space:16px;margin-left:0!important;width:100%!important;max-width:100%!important;padding:0 16px 28px!important}
+ .crm-page .sidebar{inset:auto 0 0!important;width:100%!important;min-width:0!important;max-width:none!important;height:calc(72px + env(safe-area-inset-bottom))!important;min-height:72px!important;padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important;align-items:center!important}
+ .crm-page .sidebar .menu{flex-direction:row!important;gap:3px!important}
+ .crm-page .sidebar .menu a{flex:1 1 0!important;flex-direction:column!important;justify-content:center!important;gap:5px!important;min-width:0!important;width:auto!important;height:auto!important;min-height:54px!important;padding:7px 2px!important;font-size:10px!important;line-height:12px!important}
+ .crm-page .sidebar .menu a span{display:block!important;font-size:10px!important;line-height:12px!important}
+ .crm-page .sidebar .menu a i{width:auto!important;flex:0 0 auto;font-size:17px!important}
+ .crm-page .sidebar-bottom{width:40px!important;flex:0 0 40px!important}
+ .crm-page .sidebar-logout{width:40px!important;min-height:44px!important;padding:0!important}
+ .crm-page .content>.topbar,.crm-page .agenda-content>.agenda-topbar,.crm-page .content>.page-header,.crm-page .content>.stock-header{grid-template-columns:minmax(0,1fr)!important;min-height:110px!important;gap:16px!important;padding:20px 16px!important;margin-bottom:22px!important}
+ .crm-page .content>.topbar>div:first-child,.crm-page .agenda-content>.agenda-topbar>div:first-child,.crm-page .content>.page-header>div:first-child,.crm-page .content>.stock-header>div:first-child{grid-column:1!important;grid-row:1!important}
+ .crm-page .content>.topbar>.top-actions,.crm-page .content>.topbar>.topbar-actions,.crm-page .agenda-topbar>button,.crm-page .page-header>button,.crm-page .stock-header>button{grid-column:1!important;grid-row:2!important;justify-self:center!important;justify-content:center!important}
+ .crm-page .content>.topbar h1,.crm-page .agenda-content>.agenda-topbar h1,.crm-page .content>.page-header h1,.crm-page .content>.stock-header h1{font-size:30px!important;line-height:38px!important}
+ .crm-page input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=file]),.crm-page select,.crm-page textarea{font-size:16px!important}
+ .crm-page .content h2,.crm-page .agenda-content h2{font-size:23px!important}
+ .crm-page .widget-header{flex-direction:column!important;align-items:stretch!important;text-align:left!important}
+ .crm-page .routine-card>strong,.crm-page .stock-metrics strong{font-size:27px!important}
+ .crm-page .calendar-scroll{max-height:65vh}
+}
+/* Visibility is a state, never a side effect of flex/grid styling. */
+body.crm-page [hidden]{display:none!important}
+html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!important}
+/* Shared panels and navigation also stay visible at intermediate widths. */
+.crm-page .sidebar{display:flex!important}
+.crm-page .summary-card,.crm-page .team-card{width:100%!important;max-width:none!important}
+.crm-page :is(.widget,.table-card,.team-card,.summary-card,.calendar-card,.stock-panel){border-radius:18px!important;box-shadow:0 8px 30px rgba(67,31,40,.04)!important}
+.crm-page .week-calendar{grid-template-columns:64px repeat(7,minmax(110px,1fr));min-width:834px}
+@media(max-width:1050px){.crm-page .team-list .member{grid-template-columns:minmax(0,1fr);gap:14px}.crm-page .team-list .member>.access-button{justify-self:start;width:auto}}

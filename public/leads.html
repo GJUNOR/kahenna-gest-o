@@ -18,7 +18,7 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    
 
 
     <!-- Ícones -->
@@ -34,9 +34,10 @@
     <link rel="stylesheet" href="/mobile.css?v=1">
 
 <link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/documentos.css?v=2"><link rel="stylesheet" href="/aniversarios.css?v=1">
-</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="/crm-layout.css?v=1"></head>
 
-<body>
+<body class="crm-page">
 
 
 <div class="layout">
@@ -567,8 +568,8 @@
 
 
 
-<script src="/auth-ui.js"></script>
-<script src="/session-ui.js"></script>
+<script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script>
+
 <dialog id="reminderDialog" class="reminder-dialog"><form id="reminderForm" autocomplete="off"><header><div><h2>Lembrete de atendimento</h2></div><button type="button" id="closeReminder" class="reminder-close" aria-label="Fechar lembrete">×</button></header><p id="reminderPatient" class="reminder-patient"></p><p id="reminderHint" role="status"></p><div class="reminder-fields"><label>Data<input id="reminderDate" type="date" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderDate"></label><label>Horário<input id="reminderTime" type="time" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderTime"></label></div><label class="reminder-message-label">Mensagem para revisar<textarea id="reminderMessage" rows="6" maxlength="3000" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderMessage"></textarea></label><p id="reminderError" role="alert" hidden></p><footer><button class="secondary-button" id="cancelReminder" type="button">Voltar</button><button class="primary-button" id="openReminderWhatsapp" type="submit">Abrir no WhatsApp</button></footer></form></dialog><script src="/reminders.js"></script></body>
 
 </html>
