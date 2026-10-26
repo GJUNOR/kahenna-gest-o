@@ -91,3 +91,8 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
 .crm-page .grupo-acoes-paciente button span{font-size:12px!important;line-height:20px!important}
 .crm-page .modal-edicao-footer,.crm-page .modal-actions{gap:12px!important}
 .crm-page .grupo-acoes-paciente button[hidden]{display:none!important}
+@media(min-width:761px) and (max-width:1050px){
+ .crm-page .content>.topbar,.crm-page .agenda-content>.agenda-topbar,.crm-page .content>.page-header,.crm-page .content>.stock-header{grid-template-columns:minmax(0,1fr)!important}
+ .crm-page .content>.topbar>div:first-child,.crm-page .agenda-content>.agenda-topbar>div:first-child,.crm-page .content>.page-header>div:first-child,.crm-page .content>.stock-header>div:first-child{grid-column:1!important;grid-row:1!important}
+ .crm-page .content>.topbar>.top-actions,.crm-page .content>.topbar>.topbar-actions,.crm-page .agenda-topbar>button,.crm-page .page-header>button,.crm-page .stock-header>button{grid-column:1!important;grid-row:2!important;justify-self:center!important;justify-content:center!important}
+}
