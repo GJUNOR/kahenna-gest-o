@@ -1,0 +1,14 @@
+
+.documentos-dialog { width:min(620px,calc(100vw - 32px)); max-height:85vh; overflow:auto; border:0; border-radius:18px; padding:24px; color:#35282b; background:#fffaf8; box-shadow:0 24px 80px #0004; }
+.documentos-dialog::backdrop { background:#251c246e; }
+.documentos-dialog header { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.documentos-dialog h2 { margin:0; font-size:1.35rem; }
+.documentos-dialog button,.btn-documentos-paciente,.documentos-lista a { border:1px solid #cbb9be; border-radius:8px; padding:9px 12px; background:#fff; color:#742b46; cursor:pointer; font:inherit; }
+.documentos-dialog button:disabled { opacity:.6; cursor:wait; }
+.documentos-dialog label { display:block; margin:18px 0 8px; font-weight:600; }
+.documentos-dialog input { display:block; width:100%; margin-bottom:12px; }
+.documentos-dialog small { display:block; color:#65575d; margin:8px 0; }
+.documentos-dialog [role=status] { min-height:24px; margin:16px 0; }
+.documentos-lista { padding:0; list-style:none; }
+.documentos-lista li { border-top:1px solid #e4d8dc; padding:16px 0; overflow-wrap:anywhere; }
+.documentos-lista a { display:inline-block; text-decoration:none; }

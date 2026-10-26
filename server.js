@@ -14,6 +14,7 @@ app.get(['/dashboard','/agenda','/pacientes'],(req,res)=>res.redirect({'/dashboa
 app.get('/configuracoes.html',exigirAdministradorPagina,(req,res)=>res.sendFile(path.join(__dirname,'public/configuracoes.html')));
 app.get(['/dashboard.html','/agenda.html','/leads.html'],exigirAutenticacaoPagina,(req,res)=>res.sendFile(path.join(__dirname,'public',req.path.slice(1))));
 app.use('/api',exigirAutenticacaoApi);
+app.use('/api/pacientes',require('./routes/documentos')(require('./config/supabase')));
 app.use('/',require('./routes/leads'));
 app.use('/',require('./routes/agendamentos'));
 app.use('/api/conversoes',require('./routes/conversoes'));
