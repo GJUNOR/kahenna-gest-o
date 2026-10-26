@@ -1,0 +1,43 @@
+-- Integration checks on the actual database; every synthetic change is rolled back.
+begin;
+select set_config('kahenna.teste_usuario',(select id::text from auth.users limit 1),true);
+set local role service_role;
+do $test$
+declare u uuid; p uuid=gen_random_uuid(); a uuid=gen_random_uuid(); b uuid=gen_random_uuid(); c uuid=gen_random_uuid(); r jsonb; q numeric; v numeric; n integer; rejeitou boolean;
+begin
+ u=current_setting('kahenna.teste_usuario')::uuid;
+ if u is null then raise exception 'Teste requer uma conta existente.'; end if;
+ insert into public.estoque_produtos(id,nome,categoria,unidade,estoque_minimo) values(p,'TESTE TRANSACIONAL ESTOQUE '||p,'Testes','un',3);
+ perform public.kahenna_movimentar_estoque(a,p,'entrada',10,20,current_date,'Teste compra 1','Fictício',u);
+ perform public.kahenna_movimentar_estoque(b,p,'entrada',10,30,current_date,'Teste compra 2','Fictício',u);
+ perform public.kahenna_movimentar_estoque(b,p,'entrada',10,30,current_date,'Teste compra 2','Fictício',u);
+ select quantidade,valor_estoque into q,v from public.estoque_produtos where id=p;
+ select count(*) into n from public.estoque_movimentos where produto_id=p;
+ if q<>20 or v<>500 or n<>2 then raise exception 'Falha no custo médio ou idempotência.'; end if;
+ r=public.kahenna_movimentar_estoque(c,p,'saida',4,null,current_date,'Teste uso','',u);
+ if (r->>'valor_total')::numeric<>100 or (r->>'saldo_apos')::numeric<>16 then raise exception 'Custo de uso incorreto.'; end if;
+ rejeitou=false;
+ begin perform public.kahenna_movimentar_estoque(gen_random_uuid(),p,'saida',17,null,current_date,'Excesso','',u);
+ exception when raise_exception then if sqlerrm like 'Saldo insuficiente%' then rejeitou=true; else raise; end if; end;
+ if not rejeitou then raise exception 'Permitiu estoque negativo.'; end if;
+ rejeitou=false;
+ begin perform public.kahenna_movimentar_estoque(b,p,'entrada',11,30,current_date,'Teste compra 2','Fictício',u);
+ exception when raise_exception then if sqlerrm like 'Esta identificação%' then rejeitou=true; else raise; end if; end;
+ if not rejeitou then raise exception 'Idempotência aceitou conteúdo diferente.'; end if;
+ rejeitou=false;
+ begin update public.estoque_produtos set ativo=false where id=p;
+ exception when check_violation then rejeitou=true; end;
+ if not rejeitou then raise exception 'Arquivou produto com saldo.'; end if;
+ perform public.kahenna_movimentar_estoque(gen_random_uuid(),p,'saida',16,null,current_date,'Teste saldo final','',u);
+ select quantidade,valor_estoque into q,v from public.estoque_produtos where id=p;
+ if q<>0 or v<>0 then raise exception 'Zeragem deixou resíduo de custo.'; end if;
+ update public.estoque_produtos set ativo=false where id=p;
+ rejeitou=false;
+ begin perform public.kahenna_movimentar_estoque(gen_random_uuid(),p,'entrada',1,20,current_date,'Teste arquivado','',u);
+ exception when raise_exception then if sqlerrm like 'Reative%' then rejeitou=true; else raise; end if; end;
+ if not rejeitou then raise exception 'Movimentou produto arquivado.'; end if;
+ r=public.kahenna_estoque_resumo(date_trunc('month',current_date)::date,(date_trunc('month',current_date)+interval '1 month')::date);
+ if (r->>'compras_mes')::numeric<500 or (r->>'uso_mes')::numeric<500 then raise exception 'Resumo mensal incorreto.'; end if;
+end $test$;
+select 'OK: custo médio, consumo, idempotência, saldo negativo, arquivamento e resumo' as validacao;
+rollback;
