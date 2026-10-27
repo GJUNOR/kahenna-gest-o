@@ -1,4 +1,12 @@
 /* Final, shared visual contract for the five private CRM pages. */
+/* Four compact, equally sized patient actions; labels remain accessible. */
+.crm-page .patients-table .grupo-acoes-paciente { display:flex!important; flex-direction:row!important; flex-wrap:nowrap!important; justify-content:center!important; align-items:center!important; gap:8px!important; }
+.crm-page .patients-table .grupo-acoes-paciente button { display:inline-flex!important; flex:0 0 34px!important; flex-direction:row!important; width:34px!important; min-width:34px!important; max-width:34px!important; height:34px!important; min-height:34px!important; padding:0!important; gap:0!important; border-radius:8px!important; font-size:0!important; line-height:1!important; }
+.crm-page .patients-table .grupo-acoes-paciente button > span:not(.reminder-action-icon) { display:none!important; }
+.crm-page .patients-table .grupo-acoes-paciente button i, .crm-page .patients-table .btn-documentos-paciente::before { font-size:14px!important; line-height:1!important; }
+.crm-page .patients-table .reminder-action-icon { display:inline-flex!important; align-items:center!important; justify-content:center!important; width:auto!important; height:auto!important; background:transparent!important; }
+@media(min-width:761px) { .crm-page .patients-table tbody td { padding-top:10px!important; padding-bottom:10px!important; } }
+@media(max-width:760px) { .crm-page .patients-table .grupo-acoes-paciente { justify-content:flex-start!important; } .crm-page .patients-table .grupo-acoes-paciente button { flex-basis:40px!important; width:40px!important; min-width:40px!important; max-width:40px!important; height:40px!important; min-height:40px!important; } }
 /* Light scrollbars follow the existing ivory and burgundy palette. */
 html:has(body.crm-page), body.crm-page, .crm-page * { scrollbar-width:thin; scrollbar-color:#c3a7af #f5efec; color-scheme:light; }
 .crm-page ::-webkit-scrollbar, html:has(body.crm-page)::-webkit-scrollbar { width:8px; height:8px; }
@@ -17,7 +25,7 @@ html:has(body.crm-page), body.crm-page, .crm-page * { scrollbar-width:thin; scro
  .crm-page .patients-table :is(th.actions-column,td.coluna-acoes) { width:38%!important; }
  .crm-page .paciente-dados { min-width:0; }
  .crm-page .paciente-dados strong { white-space:normal!important; overflow:visible!important; text-overflow:clip!important; }
- .crm-page .patients-table .grupo-acoes-paciente { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr)); justify-content:stretch!important; }
+
  .crm-page .grupo-acoes-paciente button { width:100%; min-width:0; padding:8px!important; }
 }
 html:has(body.crm-page){font-size:16px}
