@@ -24,10 +24,8 @@ async function buscarAgendamentoPaciente(
                 "visitante_id",
                 visitanteId
             )
-            .neq(
-                "status",
-                "cancelado"
-            )
+            .eq("status", "agendado")
+            .gte("data_avaliacao", new Date().toISOString())
             .order(
                 "criado_em",
                 {
@@ -48,7 +46,8 @@ async function buscarAgendamentoPaciente(
 async function criarOuAtualizarAgendamento({
     visitanteId,
     dataAvaliacao,
-    observacao
+    observacao,
+    agendamentoId
 }) {
     if (!visitanteId) {
         const erro = new Error(
@@ -84,10 +83,14 @@ async function criarOuAtualizarAgendamento({
         throw erro;
     }
 
-    const existente =
-        await buscarAgendamentoPaciente(
-            visitanteId
-        );
+    let existente = null;
+    if (agendamentoId !== undefined && agendamentoId !== null) {
+        if (!Number.isSafeInteger(Number(agendamentoId)) || Number(agendamentoId) < 1) throw Object.assign(new Error("Agendamento inválido."), { statusCode: 400 });
+        const consulta = await supabase.from("agendamentos").select("*").eq("id", agendamentoId).eq("visitante_id", visitanteId).eq("status", "agendado").maybeSingle();
+        if (consulta.error) throw consulta.error;
+        if (!consulta.data) throw Object.assign(new Error("Agendamento não encontrado ou já encerrado."), { statusCode: 409 });
+        existente = consulta.data;
+    }
 
     let consultaConflito = supabase
         .from("agendamentos")
@@ -140,10 +143,12 @@ async function criarOuAtualizarAgendamento({
                     "id",
                     existente.id
                 )
+                .eq("status", "agendado")
                 .select("*")
                 .single();
 
         if (error) {
+            if (error.code === "23505") throw Object.assign(new Error("Este horário já está ocupado."), { statusCode: 409 });
             throw error;
         }
 
@@ -160,6 +165,7 @@ async function criarOuAtualizarAgendamento({
             .single();
 
     if (error) {
+        if (error.code === "23505") throw Object.assign(new Error("Este horário já está ocupado."), { statusCode: 409 });
         throw error;
     }
 
