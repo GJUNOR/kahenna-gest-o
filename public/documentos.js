@@ -10,7 +10,7 @@
         function limparVisualizacao() {
             visualizacao++; renderTask?.cancel(); renderTask = null;
             pdfTask?.destroy().catch(() => {}); pdfTask = null; pdfDocument = null; vistas.clear(); pagina = 1;
-            el("documentosZoom").value = "1"; el("documentosPagina").style.width = "100%";
+            el("documentosZoom").value = "0.8"; el("documentosPagina").style.width = "80%";
             el("documentosPagina").width = 0; el("documentosPaginaAtual").textContent = "";
             selecionado = null; el("documentosAbrir").removeAttribute("href");
             if (blobUrl) URL.revokeObjectURL(blobUrl); blobUrl = null;
@@ -102,7 +102,7 @@
                 el("documentosConfirmacao").hidden = doc.estado !== "pendente" && !doc.limpeza_pendente;
                 el("documentosFinalizar").textContent = doc.estado === "pendente" ? "Finalizar e arquivar" : "Liberar cópia temporária";
                 el("documentosConferencia").hidden = false; selecionado = { ...doc, sha256: hash };
-                mensagem(doc.estado === "pendente" ? "Percorra todas as páginas e confira a digitalização antes de finalizar. Se precisar, envie um novo PDF." : "PDF recuperado do arquivo definitivo.");
+                mensagem("");
             } catch (e) { limparVisualizacao(); mensagem(e.message); }
             finally { bloquear(false); }
         }

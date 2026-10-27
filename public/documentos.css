@@ -69,3 +69,40 @@
 #documentosConfirmacao small { margin-left:0; }
 .documentos-dialog [hidden] { display:none !important; }
 @media(max-width:520px) { .documentos-lista li > button { grid-column:1; grid-row:auto; } .documentos-abas { flex-wrap:wrap; } }
+/* Compact document workspace, aligned with the existing CRM panels. */
+.documentos-dialog { box-sizing:border-box; width:min(1280px,94vw); max-height:92dvh; padding:24px 28px; border-radius:18px; text-align:left; color-scheme:light; }
+.documentos-dialog header { padding:0 42px 0 0; }
+.documentos-dialog h2 { text-align:left; }
+.documentos-dialog #documentosFechar { top:-4px; right:0; border:1px solid #e4d8d5; background:#fffdfb; color:#681c2b; }
+#documentosPaciente { margin:6px 0 20px; }
+#documentosForm { display:grid; grid-template-columns:auto minmax(160px,1fr) auto; align-items:center; gap:16px; padding:16px; border-style:solid; background:#faf7f5; }
+.documentos-dialog #documentosForm label { display:flex; gap:10px; align-items:center; margin:0; white-space:nowrap; }
+.documentos-upload-icon { width:32px; height:36px; margin:0; font-size:16px; }
+.documentos-dialog #documentosEnviar { margin:0; min-width:0; box-shadow:none; }
+.documentos-abas { justify-content:flex-start; gap:8px; margin-top:20px; }
+.documentos-abas button { background:#fffdfb; color:#6b5058; }
+#documentosStatus { margin:12px 0; min-height:0; }
+#documentosStatus:empty { display:none; }
+.documentos-lista { margin-top:14px; }
+.documentos-lista li { padding:12px 16px; gap:6px 16px; }
+#documentosConferencia { margin-top:20px; padding-top:20px; border-top:1px solid #e4d8d5; }
+#documentosConferencia h3 { margin:0; font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:400; }
+#documentosConferenciaNome { margin:4px 0 14px; color:#847176; font-size:12px; }
+#documentosVisualizador { box-sizing:border-box; max-height:58dvh; padding:20px; background:#f1eae6; border-color:#e4d8d5; border-radius:12px; overscroll-behavior:contain; }
+#documentosPagina { width:80%; margin:0 auto; box-shadow:0 2px 12px rgba(67,31,40,.1); }
+.documentos-paginacao { justify-content:center; gap:10px; margin:14px 0; }
+.documentos-dialog .documentos-zoom select { min-height:38px!important; height:38px!important; padding:6px 10px; color:#574048; background:#fffdfb; }
+#documentosAbrir { color:#681c2b; font-size:12px; text-underline-offset:3px; }
+#documentosConfirmacao { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; padding:16px; background:#faf7f5; }
+#documentosConfirmacao label { flex:1 1 340px; margin:0; font-size:12px; }
+#documentosConferido { accent-color:#681c2b; }
+.documentos-dialog button:disabled { cursor:default; }
+@media(max-width:760px) {
+ .documentos-dialog { width:calc(100vw - 20px); padding:20px 16px; max-height:94dvh; }
+ #documentosForm { grid-template-columns:1fr; gap:12px; padding:14px; }
+ .documentos-dialog #documentosEnviar { width:100%; }
+ #documentosVisualizador { padding:10px; max-height:55dvh; }
+ #documentosConfirmacao { padding:14px; }
+ #documentosFinalizar { width:100%; }
+ .documentos-paginacao { gap:8px; }
+}
