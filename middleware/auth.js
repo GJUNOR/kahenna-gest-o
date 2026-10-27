@@ -21,7 +21,7 @@ function lerCookies(req) {
         const valor = parte.slice(separador + 1).trim();
 
         if (nome) {
-            cookies[nome] = decodeURIComponent(valor);
+            try { cookies[nome] = decodeURIComponent(valor); } catch { /* Ignore malformed cookies. */ }
         }
     });
 
@@ -74,6 +74,7 @@ async function obterUsuario(req, res) {
             await clienteAuth.auth.getUser(accessToken);
 
         if (!error && data.user) {
+            req.tokenAutenticado = accessToken;
             return data.user;
         }
     }
@@ -96,6 +97,7 @@ async function obterUsuario(req, res) {
 
     accessToken = data.session.access_token;
     salvarSessao(res, data.session);
+    req.tokenAutenticado = accessToken;
 
     return data.user;
 }
