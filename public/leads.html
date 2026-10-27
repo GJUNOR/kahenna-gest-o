@@ -33,9 +33,9 @@
     <link rel="stylesheet" href="/sidebar.css">
     <link rel="stylesheet" href="/mobile.css?v=1">
 
-<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/documentos.css?v=2"><link rel="stylesheet" href="/aniversarios.css?v=1">
+<link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/documentos.css?v=3"><link rel="stylesheet" href="/aniversarios.css?v=1">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
-<link rel="stylesheet" href="/crm-layout.css?v=1"></head>
+<link rel="stylesheet" href="/crm-layout.css?v=2"></head>
 
 <body class="crm-page">
 
@@ -367,17 +367,17 @@
 <dialog id="documentosDialog" class="documentos-dialog" aria-labelledby="documentosTitulo">
 <header><h2 id="documentosTitulo">Documentos do paciente</h2><button type="button" id="documentosFechar" aria-label="Fechar documentos"><span aria-hidden="true">×</span></button></header>
 <p id="documentosPaciente"></p>
-<form id="documentosForm"><label for="documentosArquivo"><span class="documentos-upload-icon" aria-hidden="true"><i class="fa-regular fa-file-pdf"></i></span>Adicionar PDF escaneado</label><input id="documentosArquivo" type="file" accept=".pdf,application/pdf" required><small>Até 15 MB. O PDF ficará aguardando sua conferência. Novos envios preservam os anteriores.</small><button id="documentosEnviar" type="submit">Salvar para conferência</button></form>
+<form id="documentosForm"><label for="documentosArquivo"><span class="documentos-upload-icon" aria-hidden="true"><i class="fa-regular fa-file-pdf"></i></span>Adicionar PDF escaneado</label><input id="documentosArquivo" type="file" accept=".pdf,application/pdf" required><button id="documentosEnviar" type="submit">Salvar para conferência</button></form>
 <div class="documentos-abas" role="group" aria-label="Situação dos documentos"><button type="button" id="documentosPendentes" aria-pressed="true">Para conferir</button><button type="button" id="documentosArquivados" aria-pressed="false">Arquivados</button></div>
 <p id="documentosStatus" role="status" aria-live="polite"></p><ul id="documentosLista" class="documentos-lista"></ul>
 <section id="documentosConferencia" hidden aria-labelledby="documentosConferenciaTitulo">
 <h3 id="documentosConferenciaTitulo">Conferir digitalização</h3><p id="documentosConferenciaNome"></p>
 <div id="documentosVisualizador" aria-label="Página digitalizada"><canvas id="documentosPagina" role="img" aria-label="Página do PDF"></canvas></div>
-<div class="documentos-paginacao"><button type="button" id="documentosAnterior">Página anterior</button><span id="documentosPaginaAtual" role="status" aria-live="polite"></span><label class="documentos-zoom">Ampliação <select id="documentosZoom"><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select></label><button type="button" id="documentosProxima">Próxima página</button></div>
+<div class="documentos-paginacao"><button type="button" id="documentosAnterior">Página anterior</button><span id="documentosPaginaAtual" role="status" aria-live="polite"></span><label class="documentos-zoom">Ampliação <select id="documentosZoom"><option value="0.8" selected>80%</option><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select></label><button type="button" id="documentosProxima">Próxima página</button></div>
 <a id="documentosAbrir" target="_blank" rel="noopener">Abrir PDF em outra aba</a>
-<div id="documentosConfirmacao"><label><input type="checkbox" id="documentosConferido"> Conferi todas as páginas: estão legíveis, completas, com as assinaturas necessárias e pertencem a este paciente.</label><button type="button" id="documentosFinalizar" disabled>Finalizar e arquivar</button><small>O documento só será enviado ao arquivo definitivo após esta confirmação.</small></div>
+<div id="documentosConfirmacao"><label><input type="checkbox" id="documentosConferido"> Conferi todas as páginas: estão legíveis, completas, com as assinaturas necessárias e pertencem a este paciente.</label><button type="button" id="documentosFinalizar" disabled>Finalizar e arquivar</button></div>
 </section>
-</dialog><script src="/documentos.js"></script>
+</dialog><script src="/documentos.js?v=3"></script>
 
 <div class="modal-edicao-overlay" id="modalEdicaoOverlay" aria-hidden="true">
     <div class="modal-edicao modal-financeiro-paciente" role="dialog" aria-modal="true" aria-labelledby="tituloModalEdicao">
