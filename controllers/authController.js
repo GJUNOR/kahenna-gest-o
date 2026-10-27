@@ -100,11 +100,14 @@ async function consultarSessao(req, res) {
 }
 
 async function sair(req, res) {
-    limparSessao(res);
-
-    return res.status(200).json({
-        sucesso: true
-    });
+    try {
+        const usuario = await obterUsuario(req, res);
+        if (usuario && req.tokenAutenticado) {
+            const { error } = await supabaseAdmin.auth.admin.signOut(req.tokenAutenticado, "local");
+            if (error) return res.status(503).json({ sucesso: false, mensagem: "Não foi possível revogar a sessão no servidor. Tente novamente." });
+        }
+        return res.status(200).json({ sucesso: true });
+    } finally { limparSessao(res); }
 }
 
 async function definirSenha(req, res) {
@@ -121,7 +124,7 @@ async function definirSenha(req, res) {
     const clienteAuth = criarClienteAuth();
     const { data, error } = await clienteAuth.auth.getUser(accessToken);
 
-    if (error || !data.user) {
+    if (error || !data.user || data.user.app_metadata?.ativo !== true || !["administrador", "secretaria"].includes(obterPapel(data.user))) {
         return res.status(401).json({
             sucesso: false,
             mensagem: "Este convite expirou. Peça um novo convite ao administrador."

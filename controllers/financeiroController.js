@@ -13,22 +13,22 @@ async function listarMovimentacoesDoDia(req, res) {
         console.error("Erro listando movimentações financeiras:", erro);
         return res.status(erro.statusCode || 500).json({
             sucesso: false,
-            mensagem: erro.message
+            mensagem: (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.")
         });
     }
 }
 
 async function listar(req, res) {
     try { return res.json({ sucesso: true, ...await financeiro.listar(req.params.visitanteId) }); }
-    catch (erro) { console.error("Erro listando financeiro:", erro); return res.status(500).json({ sucesso: false, mensagem: erro.message }); }
+    catch (erro) { console.error("Erro listando financeiro:", erro); return res.status(500).json({ sucesso: false, mensagem: (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") }); }
 }
 async function registrar(req, res) {
     try { const dados = await financeiro.registrar(req.params.visitanteId, req.body, req.usuario); return res.status(201).json({ sucesso: true, dados }); }
-    catch (erro) { console.error("Erro registrando financeiro:", erro); return res.status(erro.statusCode || 500).json({ sucesso: false, mensagem: erro.message }); }
+    catch (erro) { console.error("Erro registrando financeiro:", erro); return res.status(erro.statusCode || 500).json({ sucesso: false, mensagem: (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") }); }
 }
 async function reembolsar(req, res) {
     try { const dados = await financeiro.reembolsar(req.params.visitanteId, req.body, req.usuario); return res.status(201).json({ sucesso: true, dados }); }
-    catch (erro) { console.error("Erro registrando reembolso:", erro); return res.status(erro.statusCode || 500).json({ sucesso: false, mensagem: erro.message }); }
+    catch (erro) { console.error("Erro registrando reembolso:", erro); return res.status(erro.statusCode || 500).json({ sucesso: false, mensagem: (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") }); }
 }
 module.exports = {
     listar,

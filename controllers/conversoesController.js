@@ -20,7 +20,7 @@ async function listarConversoes(req, res) {
         return res.status(500).json({
             sucesso: false,
             erro:
-                error.message ||
+                (error.statusCode && error.statusCode < 500 ? error.message : "Não foi possível concluir a operação.") ||
                 "Erro buscando conversões."
         });
     }
@@ -46,7 +46,7 @@ async function criarConversao(req, res) {
         return res.status(500).json({
             sucesso: false,
             erro:
-                error.message ||
+                (error.statusCode && error.statusCode < 500 ? error.message : "Não foi possível concluir a operação.") ||
                 "Erro criando conversão."
         });
     }
@@ -80,7 +80,7 @@ async function atualizarStatus(req, res) {
         return res.status(500).json({
             sucesso: false,
             erro:
-                error.message ||
+                (error.statusCode && error.statusCode < 500 ? error.message : "Não foi possível concluir a operação.") ||
                 "Erro atualizando status."
         });
     }
@@ -111,7 +111,7 @@ async function obterResumoReceita(req, res) {
         return res.status(500).json({
             sucesso: false,
             erro:
-                error.message ||
+                (error.statusCode && error.statusCode < 500 ? error.message : "Não foi possível concluir a operação.") ||
                 "Erro calculando a receita."
         });
     }
@@ -142,7 +142,7 @@ async function buscarConversaoPaciente(
         return res.status(500).json({
             sucesso: false,
             erro:
-                error.message ||
+                (error.statusCode && error.statusCode < 500 ? error.message : "Não foi possível concluir a operação.") ||
                 "Erro buscando a conversão."
         });
     }
@@ -174,7 +174,7 @@ async function salvarConversaoPaciente(
         return res.status(500).json({
             sucesso: false,
             erro:
-                error.message ||
+                (error.statusCode && error.statusCode < 500 ? error.message : "Não foi possível concluir a operação.") ||
                 "Erro salvando a conversão."
         });
     }

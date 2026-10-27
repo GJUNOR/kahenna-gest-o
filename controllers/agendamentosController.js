@@ -14,7 +14,8 @@ async function criarAgendamento(req, res) {
                     dataAvaliacao:
                         req.body.data_avaliacao,
                     observacao:
-                        req.body.observacao
+                        req.body.observacao,
+                    agendamentoId: req.body.agendamento_id
                 });
 
         return res.status(200).json({
@@ -34,7 +35,7 @@ async function criarAgendamento(req, res) {
             .json({
                 sucesso: false,
                 mensagem:
-                    erro.message ||
+                    (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                     "Erro salvando agendamento."
             });
     }
@@ -80,7 +81,7 @@ async function listarAgendamentosHoje(
         return res.status(500).json({
             sucesso: false,
             mensagem:
-                erro.message ||
+                (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                 "Erro listando agendamentos."
         });
     }
@@ -115,7 +116,7 @@ async function buscarAgendamentoPaciente(
             .json({
                 sucesso: false,
                 mensagem:
-                    erro.message ||
+                    (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                     "Erro buscando agendamento."
             });
     }
@@ -138,7 +139,7 @@ async function listarAgendamentosPeriodo(req, res) {
         console.error("Erro listando agenda:", erro);
         return res.status(erro.statusCode || 500).json({
             sucesso: false,
-            mensagem: erro.message || "Erro listando agenda."
+            mensagem: (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") || "Erro listando agenda."
         });
     }
 }
@@ -156,7 +157,7 @@ async function cancelarAgendamento(req, res) {
         console.error("Erro cancelando agendamento:", erro);
         return res.status(erro.statusCode || 500).json({
             sucesso: false,
-            mensagem: erro.message || "Erro cancelando agendamento."
+            mensagem: (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") || "Erro cancelando agendamento."
         });
     }
 }
@@ -164,7 +165,7 @@ async function cancelarAgendamento(req, res) {
 
 async function atualizarAcompanhamento(req,res){
  try{const data=await agendamentosService.atualizarAcompanhamento(req.params.id,req.body);return res.json({sucesso:true,data});}
- catch(error){return res.status(error.statusCode||500).json({sucesso:false,mensagem:error.statusCode?error.message:'Não foi possível salvar a marcação.'});}
+ catch(error){return res.status(error.statusCode||500).json({sucesso:false,mensagem:error.statusCode?(error.statusCode && error.statusCode < 500 ? error.message : "Não foi possível concluir a operação."):'Não foi possível salvar a marcação.'});}
 }
 module.exports = {
     atualizarAcompanhamento,
