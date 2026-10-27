@@ -1,6 +1,6 @@
 /* Final, shared visual contract for the five private CRM pages. */
 /* Light scrollbars follow the existing ivory and burgundy palette. */
-html:has(body.crm-page), .crm-page * { scrollbar-width:thin; scrollbar-color:#c3a7af #f5efec; }
+html:has(body.crm-page), body.crm-page, .crm-page * { scrollbar-width:thin; scrollbar-color:#c3a7af #f5efec; color-scheme:light; }
 .crm-page ::-webkit-scrollbar, html:has(body.crm-page)::-webkit-scrollbar { width:8px; height:8px; }
 .crm-page ::-webkit-scrollbar-track, html:has(body.crm-page)::-webkit-scrollbar-track { background:#f5efec; border-radius:12px; }
 .crm-page ::-webkit-scrollbar-thumb, html:has(body.crm-page)::-webkit-scrollbar-thumb { background:#c3a7af; border:2px solid #f5efec; border-radius:12px; }
