@@ -241,6 +241,7 @@ async function salvarAgendamento(evento) {
             headers: { "Content-Type": "application/json", Accept: "application/json" },
             body: JSON.stringify({
                 visitante_id: visitanteId,
+                agendamento_id: agendamentoSelecionado?.id,
                 data_avaliacao: dataAvaliacao.toISOString(),
                 observacao: observacao || null
             })

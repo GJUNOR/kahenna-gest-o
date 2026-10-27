@@ -983,6 +983,7 @@ atualizarResumoReceita();
 }
 
 async function abrirModalEdicao(lead) {
+    document.getElementById("editarDataAvaliacao").dataset.agendamentoId = "";
     if (!lead) {
         mostrarMensagem(
             "Não foi possível localizar o paciente.",
@@ -1144,6 +1145,7 @@ async function abrirModalEdicao(lead) {
         if (!agendamento) {
             return;
         }
+        document.getElementById("editarDataAvaliacao").dataset.agendamentoId = agendamento.id;
 
         definirValor(
             "editarDataAvaliacao",
@@ -1276,6 +1278,7 @@ async function salvarAgendamentoDaEdicao(
             },
             body: JSON.stringify({
                 visitante_id: visitanteId,
+                agendamento_id: document.getElementById("editarDataAvaliacao").dataset.agendamentoId || undefined,
                 data_avaliacao:
                     new Date(
                         dataAvaliacao
@@ -1657,15 +1660,23 @@ function definirCarregamentoFinanceiro(botao, carregando) {
     }
 }
 
+const operacoesFinanceirasPendentes = new Map();
+function chaveOperacaoFinanceira(paciente, dados) {
+    const assinatura = JSON.stringify([paciente, dados]);
+    if (!operacoesFinanceirasPendentes.has(assinatura)) operacoesFinanceirasPendentes.set(assinatura, crypto.randomUUID());
+    return { assinatura, id: operacoesFinanceirasPendentes.get(assinatura) };
+}
 async function enviarLancamentoFinanceiro(dados, botao) {
+    if (botao?.disabled) return;
     const visitanteId = obterIdLead(leadEmEdicao);
     if (!visitanteId) throw new Error("Paciente não identificado.");
+    const operacao = chaveOperacaoFinanceira(visitanteId, dados);
     definirCarregamentoFinanceiro(botao, true);
     try {
         const resposta = await fetch(`/api/financeiro/paciente/${encodeURIComponent(visitanteId)}`, {
             method: "POST",
             headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify(dados)
+            body: JSON.stringify({ ...dados, operacao_id: operacao.id })
         });
         if (!resposta.ok) throw new Error(await lerMensagemDeErro(resposta));
         const retorno = await resposta.json();
@@ -1678,6 +1689,7 @@ async function enviarLancamentoFinanceiro(dados, botao) {
         await carregarFinanceiroPaciente();
         atualizarResumoReceita();
         aplicarFiltros();
+        operacoesFinanceirasPendentes.delete(operacao.assinatura);
         mostrarFeedbackFinanceiro("Lançamento registrado e adicionado ao histórico.");
     } finally {
         definirCarregamentoFinanceiro(botao, false);
@@ -1739,22 +1751,28 @@ function renderizarHistoricoFinanceiro(lancamentos) {
 }
 
 async function registrarReembolso(botao) {
+    if (botao.disabled) return;
     const valorTexto = window.prompt("Valor do reembolso:", Number(botao.dataset.valor).toFixed(2).replace(".", ","));
     if (valorTexto === null) return;
     const motivo = window.prompt("Informe o motivo do reembolso (ficará salvo no histórico):");
     if (!motivo) return;
     try {
         const visitanteId = obterIdLead(leadEmEdicao);
+        const dados = { lancamento_id: Number(botao.dataset.reembolsar), valor: converterValorNumerico(valorTexto), observacao: motivo };
+        const operacao = chaveOperacaoFinanceira(visitanteId, dados);
+        botao.disabled = true;
         const resposta = await fetch(`/api/financeiro/paciente/${encodeURIComponent(visitanteId)}/reembolsos`, {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ lancamento_id: Number(botao.dataset.reembolsar), valor: converterValorNumerico(valorTexto), observacao: motivo })
+            body: JSON.stringify({ ...dados, operacao_id: operacao.id })
         });
         if (!resposta.ok) throw new Error(await lerMensagemDeErro(resposta));
         idsMovimentacaoFinanceiraHoje.add(String(visitanteId));
         await Promise.all([carregarFinanceiroPaciente(), atualizarResumoReceita()]);
         aplicarFiltros();
+        operacoesFinanceirasPendentes.delete(operacao.assinatura);
         mostrarMensagem("Reembolso registrado no histórico.", "sucesso");
     } catch (erro) { mostrarMensagem(erro.message, "erro"); }
+    finally { botao.disabled = false; }
 }
 
 function renderizarTabela(leads) {
