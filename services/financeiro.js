@@ -82,92 +82,30 @@ async function listarMovimentacoesDoPeriodo(inicioRecebido, fimRecebido) {
     };
 }
 
-async function registrar(visitanteId, dados, usuario) {
-    const tipo = String(dados.tipo || "").trim().toLowerCase();
-    const forma = pagamento(dados.forma_pagamento);
-    const parcelas = forma === "credito" ? Number(dados.parcelas || 1) : 1;
-    let registro;
-    let statusPaciente;
-
-
-    const { data: pacienteAtual, error: erroPaciente } = await supabase
-        .from("visitantes")
-        .select("visitante_id, status, telefone")
-        .eq("visitante_id", visitanteId)
-        .maybeSingle();
-
-    if (erroPaciente) throw erroPaciente;
-    if (!pacienteAtual) throw erro("Paciente não encontrado.", 404);
-
-    const statusAtual = String(pacienteAtual.status || "novo")
-        .trim()
-        .toLowerCase();
-
-    const valor = Number(dados.valor);
-    const descricao = String(dados.descricao || "").trim();
-    if (tipo !== "atendimento" || !Number.isFinite(valor) || valor <= 0 || valor > 1000000 || !descricao || descricao.length > 200) throw erro("Informe a descrição e um valor válido para o atendimento.");
-    if (!Number.isInteger(parcelas) || parcelas < 1 || parcelas > 12) throw erro("Número de parcelas inválido.");
-    statusPaciente = "convertido";
-    registro = { visitante_id: visitanteId, tipo, descricao, valor, forma_pagamento: forma, parcelas, observacao: dados.observacao || null };
-
-    const { data, error } = await supabase.from("lancamentos_financeiros")
-        .insert({ ...registro, ...responsavel(usuario) }).select("*").single();
-    if (error) throw error;
-
-    const { data: paciente, error: erroStatus } = await supabase
-        .from("visitantes")
-        .update({ status: statusPaciente })
-        .eq("visitante_id", visitanteId)
-        .select("visitante_id, status")
-        .maybeSingle();
-
-    if (erroStatus || !paciente) {
-        const { error: erroDesfazer } = await supabase
-            .from("lancamentos_financeiros")
-            .delete()
-            .eq("id", data.id);
-
-        if (erroDesfazer) {
-            console.error(
-                "Não foi possível desfazer o lançamento após falha no status:",
-                erroDesfazer
-            );
-        }
-
-        if (erroStatus) throw erroStatus;
-        throw erro("Paciente não encontrado para conversão.", 404);
-    }
-
-    return { lancamento: data, paciente };
+function operacao(dados) {
+    const id = dados.operacao_id;
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(id || ""))) throw erro("Identificador da operação ausente. Atualize a página e tente novamente.");
+    return id;
 }
-
-async function reembolsar(visitanteId, dados, usuario) {
-    const lancamentoId = Number(dados.lancamento_id);
-    const valor = Number(dados.valor);
-    const observacao = String(dados.observacao || "").trim();
-    if (!lancamentoId || !Number.isFinite(valor) || valor <= 0 || !observacao) {
-        throw erro("Informe o lançamento, o valor e o motivo do reembolso.");
+async function executar(nome, visitanteId, dados, usuario) {
+    const { data, error } = await supabase.rpc(nome, { p_paciente: visitanteId, p_dados: { ...dados, ...responsavel(usuario) }, p_usuario: usuario.id, p_operacao: operacao(dados) });
+    if (error) {
+        if (error.code === "P0001") throw erro(error.message, 409);
+        throw erro("Não foi possível registrar a operação financeira. Tente novamente.", 503);
     }
-    const { data: original, error } = await supabase.from("lancamentos_financeiros")
-        .select("*").eq("id", lancamentoId).eq("visitante_id", visitanteId)
-        .neq("tipo", "reembolso").maybeSingle();
-    if (error) throw error;
-    if (!original) throw erro("Lançamento original não encontrado.", 404);
-    const { data: anteriores, error: erroAnteriores } = await supabase
-        .from("lancamentos_financeiros").select("valor")
-        .eq("reembolso_de_id", lancamentoId).eq("tipo", "reembolso");
-    if (erroAnteriores) throw erroAnteriores;
-    const reembolsado = (anteriores || []).reduce((soma, item) => soma + Number(item.valor), 0);
-    if (reembolsado + valor > Number(original.valor)) {
-        throw erro("O reembolso ultrapassa o valor disponível deste lançamento.");
-    }
-    const { data, error: erroInsert } = await supabase.from("lancamentos_financeiros")
-        .insert({ visitante_id: visitanteId, tipo: "reembolso",
-            descricao: `Reembolso: ${original.descricao}`, valor,
-            reembolso_de_id: lancamentoId, observacao, ...responsavel(usuario) })
-        .select("*").single();
-    if (erroInsert) throw erroInsert;
     return data;
+}
+async function registrar(visitanteId, dados, usuario) {
+    const forma = pagamento(dados.forma_pagamento);
+    const valor = Number(dados.valor), descricao = String(dados.descricao || "").trim();
+    const parcelas = forma === "credito" ? Number(dados.parcelas || 1) : 1;
+    if (dados.tipo !== "atendimento" || !Number.isFinite(valor) || valor <= 0 || valor > 1000000 || !descricao || descricao.length > 200 || Math.abs(valor * 100 - Math.round(valor * 100)) > 0.000001) throw erro("Informe a descrição e um valor válido para o atendimento.");
+    if (!Number.isInteger(parcelas) || parcelas < 1 || parcelas > 12) throw erro("Número de parcelas inválido.");
+    return executar("kahenna_registrar_financeiro", visitanteId, { ...dados, descricao, valor, forma_pagamento: forma, parcelas }, usuario);
+}
+async function reembolsar(visitanteId, dados, usuario) {
+    if (!Number.isSafeInteger(Number(dados.lancamento_id)) || Number(dados.lancamento_id) < 1 || !Number.isFinite(Number(dados.valor)) || Number(dados.valor) <= 0 || !String(dados.observacao || "").trim()) throw erro("Informe o lançamento, valor e motivo do reembolso.");
+    return executar("kahenna_reembolsar_financeiro", visitanteId, dados, usuario);
 }
 
 module.exports = {

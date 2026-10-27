@@ -2,9 +2,9 @@
 const express = require("express");
 const { criarServico, MAX_BYTES } = require("../services/documentos");
 const { exigirAdministradorApi } = require("../middleware/auth");
-function criarRotas(supabase, autorizar = exigirAdministradorApi) {
+function criarRotas(supabase, autorizar = exigirAdministradorApi, arquivoS3) {
     const router = express.Router();
-    const servico = criarServico(supabase);
+    const servico = criarServico(supabase, arquivoS3);
     router.use(autorizar);
     // Bound memory use while raw PDF bodies and downloads are in flight.
     let ativos = 0;
@@ -30,6 +30,16 @@ function criarRotas(supabase, autorizar = exigirAdministradorApi) {
         const doc = await servico.baixar(req.params.pacienteId, req.params.documentoId, req.usuario);
         res.set({ "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "sandbox", "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="documento.pdf"; filename*=UTF-8''${encodeURIComponent(doc.nome).replace(/['()*]/g, c => '%' + c.charCodeAt(0).toString(16))}` });
         res.send(doc.buffer);
+    });
+    router.get("/:pacienteId/documentos/:documentoId/conferir", async (req, res) => {
+        const doc = await servico.baixar(req.params.pacienteId, req.params.documentoId, req.usuario, "conferir");
+        res.set({ "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff", "Content-Type": "application/pdf",
+            "Content-Disposition": "inline; filename=\"documento.pdf\"", "X-Document-SHA256": doc.sha256 });
+        res.send(doc.buffer);
+    });
+    router.post("/:pacienteId/documentos/:documentoId/finalizar", express.json({ limit: "2kb" }), async (req, res) => {
+        const documento = await servico.finalizar(req.params.pacienteId, req.params.documentoId, req.usuario, req.body);
+        res.json({ sucesso: true, documento });
     });
     router.use((err, req, res, next) => {
         const status = err.status || err.statusCode || 500;

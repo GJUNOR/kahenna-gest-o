@@ -22,7 +22,7 @@ async function listarVisitantes(req, res) {
         return res.status(500).json({
             sucesso: false,
             mensagem:
-                erro.message ||
+                (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                 "Erro ao carregar visitantes."
         });
     }
@@ -56,7 +56,7 @@ async function criarVisitante(req, res) {
         ).json({
             sucesso: false,
             mensagem:
-                erro.message ||
+                (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                 "Erro ao cadastrar paciente."
         });
     }
@@ -93,7 +93,7 @@ async function atualizarVisitante(req, res) {
         ).json({
             sucesso: false,
             mensagem:
-                erro.message ||
+                (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                 "Erro ao atualizar paciente."
         });
     }

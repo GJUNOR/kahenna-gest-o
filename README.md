@@ -19,3 +19,8 @@ Node 24, `npm ci` e `npm start`. Preencher as variáveis de `.env.example` em am
 Sintaxe de JavaScript, proteção das páginas/APIs sem autenticação, login por usuário com dependências simuladas, criação/leitura/atualização do esquema em transação revertida e permissões das tabelas verificadas. Dependências instaladas e auditadas sem vulnerabilidades após atualização do lockfile. O fluxo completo com login real e persistência via Render ainda precisa ser testado depois da publicação.
 
 Os arquivos database/*.sql documentam a configuração já aplicada. Não executar schema.sql novamente no projeto existente. Não há integração com Meta, campanhas ou envio automático de WhatsApp.
+
+
+## Conferência de PDFs e correções locais
+
+O fluxo manual de conferência e arquivamento S3 está implementado no código local. A configuração remota ainda precisa ser aplicada. Consulte CONFERENCIA-PDFS.md para a migração, permissões IAM, variáveis, testes e limitações. O estado relatado nas seções anteriores descreve a preparação original e não comprova uma implantação atual.
