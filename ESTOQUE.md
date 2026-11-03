@@ -8,18 +8,18 @@ Escolher uma unidade de controle por produto (unidade, caixa, frasco, pacote, ml
 
 Custo médio = valor do saldo / quantidade disponível. Compras acrescentam valor; baixas usam a média corrente. A baixa de todo o saldo retira exatamente o valor restante, sem resíduo de arredondamento. Datas retroativas classificam a movimentação no mês escolhido; o custo médio é calculado na ordem em que os registros são feitos. Compras registradas não equivalem a pagamentos conciliados ou parcelamentos, e esta aba não altera a receita dos atendimentos.
 
-Produtos zerados podem ser arquivados e reativados, conservando o histórico. Movimentações já registradas não são editadas nem apagadas pela interface. Não há baixa automática vinculada a agendamentos nesta versão.
+Produtos podem ser excluídos da lista ativa mesmo com saldo, com confirmação e restauração em Excluídos. Saldo, custo e histórico são preservados; a exclusão não estorna compras ou usos do mês. Movimentações já registradas não são editadas nem apagadas pela interface. Não há baixa automática vinculada a agendamentos nesta versão.
 
 ## Banco e segurança
 
 Aplicar a migração gerada pelo CLI `supabase/migrations/20261026130322_estoque.sql` uma única vez no projeto exclusivo Kahenna. Não reaplicar schema.sql nem executar no Atlas. As novas tabelas têm RLS e nenhuma permissão para anon/authenticated; o servidor privado autoriza os administradores. As funções são SECURITY INVOKER e têm search_path fixo.
 
-A função de movimentação trava a linha do produto, valida saldo, registra o histórico e atualiza quantidade/valor em uma transação. A mesma identificação de requisição retorna a operação original sem repetir o movimento. A interface conserva essa identificação ao repetir o envio no mesmo formulário e bloqueia cliques durante o salvamento. Não existe operação de exclusão de produtos ou movimentos no módulo.
+A função de movimentação trava a linha do produto, valida saldo, registra o histórico e atualiza quantidade/valor em uma transação. A mesma identificação de requisição retorna a operação original sem repetir o movimento. A interface conserva essa identificação ao repetir o envio no mesmo formulário e bloqueia cliques durante o salvamento. A exclusão de produto é recuperável (ativo=false), restrita a administradores. Não há exclusão física nem remoção de movimentos. Aplicar também a migração 20261103013557_estoque_exclusao_recuperavel.sql.
 
 ## Validação
 
 `npm test`: validação de produto, precisão/data/unidade, campos permitidos, identidade da sessão e autorização das rotas, junto à regressão dos PDFs e aniversários.
 
-`tests/estoque-db.sql`: teste transacional com ROLLBACK no banco real, no papel service_role. Confere média móvel, custo de consumo, idempotência, bloqueio de saldo negativo, impedimento de arquivamento com saldo, saldo zerado sem resíduos, proteção de produto arquivado e resumo mensal.
+`tests/estoque-db.sql`: teste transacional com ROLLBACK no banco real, no papel service_role. Confere média móvel, custo de consumo, idempotência, bloqueio de saldo negativo, exclusão e restauração com saldo, saldo zerado sem resíduos, proteção de produto arquivado e resumo mensal.
 
 `tests/estoque-preview.cjs`: prévia local com dados exclusivamente fictícios. Não é importada pelo servidor de produção. Os testes de interface com compras, uso e arquivamento devem usar essa prévia para não misturar valores fictícios aos gastos reais.
