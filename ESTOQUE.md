@@ -8,7 +8,7 @@ Escolher uma unidade de controle por produto (unidade, caixa, frasco, pacote, ml
 
 Custo médio = valor do saldo / quantidade disponível. Compras acrescentam valor; baixas usam a média corrente. A baixa de todo o saldo retira exatamente o valor restante, sem resíduo de arredondamento. Datas retroativas classificam a movimentação no mês escolhido; o custo médio é calculado na ordem em que os registros são feitos. Compras registradas não equivalem a pagamentos conciliados ou parcelamentos, e esta aba não altera a receita dos atendimentos.
 
-Produtos podem ser excluídos da lista ativa mesmo com saldo, com confirmação e restauração em Excluídos. Saldo, custo e histórico são preservados; a exclusão não estorna compras ou usos do mês. Movimentações já registradas não são editadas nem apagadas pela interface. Não há baixa automática vinculada a agendamentos nesta versão.
+Produtos podem ser excluídos da lista ativa mesmo com saldo, com confirmação, sem aba de excluídos na interface. É possível cadastrar outro produto com o mesmo nome; o novo cadastro começa com saldo zero e um identificador próprio. Saldo, custo e histórico são preservados; a exclusão não estorna compras ou usos do mês. Movimentações já registradas não são editadas nem apagadas pela interface. Não há baixa automática vinculada a agendamentos nesta versão.
 
 ## Banco e segurança
 

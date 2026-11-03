@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
     <title>Entrar | Dra. Kahenna Vieira</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
     <link rel="stylesheet" href="/login.css">
     <link rel="stylesheet" href="/kahenna-theme.css?v=31">
     <link rel="stylesheet" href="/mobile-refined.css?v=33">
-</head>
-<body>
+<link rel="stylesheet" href="/crm-controls.css?v=1"></head>
+<body class="login-screen">
     <main class="login-page">
         <section class="login-card" aria-labelledby="tituloLogin">
             <img class="login-logo" src="/logo.svg" alt="Dra. Kahenna Vieira">
@@ -18,7 +19,7 @@
             </div>
             <form id="formLogin" novalidate>
                 <label for="usuario">Usuário</label>
-                <input id="usuario" name="usuario" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Seu usuário" maxlength="254" required>
+                <input id="usuario" name="usuario" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="254" required>
                 <label for="senha">Senha</label>
                 <input id="senha" name="senha" type="password" autocomplete="current-password" required>
                 <p class="login-message" id="mensagemLogin" role="alert" aria-live="polite"></p>

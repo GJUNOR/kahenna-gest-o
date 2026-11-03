@@ -55,6 +55,14 @@ test('Postgres: exclusão com saldo é recuperável e preserva os custos histór
   await db.query('update estoque_produtos set ativo=true where id=$1',[produtoId]);r=(await resumo()).rows[0].r;assert.equal(r.valor_estoque,50);
   assert.equal((await db.query('select quantidade::float as q from estoque_produtos')).rows[0].q,5);
   assert.equal((await db.query('select count(*)::int as n from estoque_movimentos')).rows[0].n,1);
+  await db.exec('reset role');
+  await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261103015409_estoque_recriar_produto_excluido.sql'),'utf8'));
+  await db.exec('set role service_role');
+  await db.query('update estoque_produtos set ativo=false where id=$1',[produtoId]);
+  await db.query("insert into estoque_produtos(nome,unidade) values('Produto fictício','un')");
+  assert.equal((await db.query('select count(*)::int as n from estoque_produtos')).rows[0].n,2);
+  await assert.rejects(db.query("insert into estoque_produtos(nome,unidade) values(' Produto fictício ','un')"),/duplicate key/);
+  assert.equal((await db.query('select quantidade::int as n from estoque_produtos where ativo')).rows[0].n,0);
   await db.exec('set role anon');await assert.rejects(db.query('update estoque_produtos set ativo=false'),/permission denied/);
  }finally{await db.close();}
 });

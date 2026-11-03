@@ -25,7 +25,7 @@
         .patient-empty { padding: 15px; color: var(--muted); font-weight: 500; }
     </style>
 <link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
-<link rel="stylesheet" href="/crm-layout.css?v=4"></head>
+<link rel="stylesheet" href="/crm-layout.css?v=4"><link rel="stylesheet" href="/crm-controls.css?v=1"></head>
 <body class="crm-page">
 <div class="layout">
     <aside class="sidebar">
@@ -88,7 +88,7 @@
         <form id="formAgendamento" autocomplete="off">
             <label>Paciente
                 <div class="patient-search" id="buscaPacienteAgenda">
-                    <input id="nomePacienteAgendamento" type="search" placeholder="Digite o nome ou telefone do paciente" autocomplete="off" aria-autocomplete="list" aria-controls="sugestoesPacientesAgenda" required autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_nomePacienteAgendamento">
+                    <input id="nomePacienteAgendamento" type="search" autocomplete="off" aria-autocomplete="list" aria-controls="sugestoesPacientesAgenda" required autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_nomePacienteAgendamento">
                     <input id="pacienteAgendamento" type="hidden">
                     <div class="patient-suggestions" id="sugestoesPacientesAgenda" role="listbox" hidden></div>
                 </div>
@@ -97,7 +97,7 @@
                 <label>Data<input id="dataAgendamento" type="date" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_dataAgendamento"></label>
                 <label>Horário<input id="horaAgendamento" type="time" step="1800" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_horaAgendamento"></label>
             </div>
-            <label>Observação<textarea id="observacaoAgendamento" rows="3" placeholder="Informação opcional sobre o atendimento" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_observacaoAgendamento"></textarea></label>
+            <label>Observação<textarea id="observacaoAgendamento" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_observacaoAgendamento"></textarea></label>
             <div class="modal-feedback" id="feedbackAgendamento" hidden></div>
             <footer>
                 <button class="danger-button" id="cancelarAgendamento" type="button" hidden><i class="fa-solid fa-ban"></i> Cancelar horário</button>
