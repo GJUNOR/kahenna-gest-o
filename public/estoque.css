@@ -94,3 +94,29 @@
 
 .stock-small-button.danger{color:#8b253b;border-color:#e5bcc5}.stock-small-button.danger:hover{background:#f9ebee}#excluirDialog>footer{display:flex;justify-content:flex-end;gap:12px;margin-top:24px}#excluirNome{font-weight:600;overflow-wrap:anywhere}
 #excluirExplicacao{display:block!important;color:#74696b;font-size:14px;line-height:1.6;margin:16px 0;white-space:normal}
+
+.stock-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.stock-actions{display:grid;grid-template-columns:auto auto 36px 36px;align-items:center;gap:8px;width:max-content;max-width:100%}
+.stock-actions .stock-small-button{height:36px;min-height:36px;padding:7px 12px;border-radius:9px;font-weight:500}
+.stock-actions .stock-small-button[data-action=entrada]{color:#681c2b;border-color:#e5cfd6;background:#fffdfb}
+.stock-actions .stock-small-button.use{background:#f2e5e9;border-color:#f2e5e9}
+.stock-actions .stock-small-button.edit,.stock-actions .stock-small-button.danger{width:36px;padding:0;background:transparent;border-color:transparent}
+.stock-actions .stock-small-button.edit{color:#8a7079}.stock-actions .stock-small-button.danger{color:#a2767e}
+.stock-actions .stock-small-button.edit:hover{background:#f3eeeb}.stock-actions .stock-small-button.danger:hover{background:#faedef;color:#9a3048}
+@media(max-width:760px){.stock-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 36px 36px;width:100%}.stock-actions .stock-small-button:not(.edit){min-height:36px}.stock-actions .stock-small-button.danger{flex:none}}
+.stock-dialog-wide{width:min(650px,calc(100vw - 28px))}
+.stock-dialog fieldset{min-width:0;margin:22px 0 0;padding:6px 18px 20px;border:1px solid #e6d9da;border-radius:14px}
+.stock-dialog legend{padding:0 8px;color:#681c2b;font-size:13px;font-weight:600}
+.stock-dialog label.stock-check{display:flex;align-items:center;gap:10px;line-height:1.5}
+.stock-dialog .stock-check input{appearance:auto;width:18px!important;height:18px!important;min-height:18px!important;flex:0 0 18px;margin:0!important;padding:0!important;accent-color:#681c2b}
+.stock-dialog details{margin-top:20px;font-size:13px;color:#75515f}.stock-dialog summary{cursor:pointer}
+.stock-purchase-summary{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;padding:18px;background:#f5efec;border-radius:12px}
+.stock-purchase-summary>div:last-child{grid-column:1/-1;border-top:1px solid #e6d9da;padding-top:14px}
+.stock-purchase-summary span{display:block;font-size:12px;color:#847176}.stock-purchase-summary strong{display:block;margin-top:7px;color:#681c2b;font-size:18px;font-weight:600;overflow-wrap:anywhere}
+.stock-dialog output{display:block;margin-top:15px}
+.stock-material-picker{display:flex;align-items:flex-end;gap:10px}.stock-material-picker label{flex:1;min-width:0}.stock-material-picker button{min-height:46px;margin-bottom:0}
+.stock-material-row{margin-top:20px;padding:18px;border:1px solid #e6d9da;border-radius:14px}.stock-material-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.stock-material-title strong{font-size:14px;overflow-wrap:anywhere}
+.stock-material-cost{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size:12px;color:#847176;flex-wrap:wrap}
+.stock-attendance{border-top:1px solid #eee4e1;padding:18px 24px}.stock-attendance summary{display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;font-size:14px}.stock-attendance summary>strong{white-space:nowrap;color:#681c2b}.stock-attendance small{display:block;font-size:12px;color:#847176;margin-top:5px}.stock-attendance-item{display:flex;justify-content:space-between;gap:18px;padding:13px 0;font-size:12px;border-top:1px solid #eee4e1}.stock-attendance>div{margin-top:16px}
+@media(max-width:760px){.stock-header-actions{justify-content:center;width:100%}.stock-header-actions button{flex:1}.stock-dialog fieldset{padding:4px 12px 16px}.stock-dialog-wide footer{flex-wrap:wrap}.stock-dialog-wide footer button{white-space:normal!important}.stock-attendance{padding:18px}.stock-attendance-item{flex-wrap:wrap}}
+@media(max-width:480px){.stock-dialog-wide .stock-form-grid{grid-template-columns:minmax(0,1fr);gap:0}.stock-purchase-summary{grid-template-columns:1fr}.stock-material-picker{flex-wrap:wrap}.stock-material-picker label,.stock-material-picker button{flex-basis:100%}.stock-header-actions button{flex-basis:100%}}
