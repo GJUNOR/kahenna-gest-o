@@ -1,0 +1,22 @@
+// PostgreSQL-backed local fixture. No external database connections or real records.
+const {PGlite}=require('@electric-sql/pglite'),fs=require('node:fs'),path=require('node:path');
+const usuario='33333333-3333-4333-8333-333333333333',paciente='11111111-1111-4111-8111-111111111111';
+async function preparar(){const pg=new PGlite();await pg.exec('create role anon;create role authenticated;create role service_role bypassrls;create schema auth;create table auth.users(id uuid primary key);create table public.visitantes(visitante_id uuid primary key,nome text);grant usage on schema public,auth to service_role;grant select,update on public.visitantes to service_role;');await pg.query('insert into auth.users values($1)',[usuario]);await pg.query("insert into visitantes values($1,'Paciente local fictício')",[paciente]);for(const f of ['20261026130322_estoque.sql','20261103013557_estoque_exclusao_recuperavel.sql','20261103015409_estoque_recriar_produto_excluido.sql','20261103023124_estoque_compras_lotes_atendimentos.sql'])await pg.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations',f),'utf8'));await pg.exec('set role service_role');return pg;}
+function adapter(pg){
+ const ident=v=>{if(!/^[a-z_]+$/.test(v))throw Error('Invalid local SQL identifier');return '"'+v+'"';};
+ class Query{constructor(table){this.table=table;this.filters=[];this.orders=[];this.start=0;this.end=999;this.cols='*';this.singleRow=false;this.patch=null;this.creation=null;}
+ select(cols='*'){this.cols=cols;return this;}eq(k,v){this.filters.push([k,'=',v]);return this;}gt(k,v){this.filters.push([k,'>',v]);return this;}gte(k,v){this.filters.push([k,'>=',v]);return this;}lt(k,v){this.filters.push([k,'<',v]);return this;}ilike(k,v){this.filters.push([k,'ilike',v]);return this;}in(k,v){this.filters.push([k,'in',v]);return this;}
+ order(k,o={}){this.orders.push([k,o]);return this;}range(a,b){this.start=a;this.end=b;return this;}limit(n){this.end=n-1;return this;}maybeSingle(){this.singleRow=true;return this;}single(){this.singleRow=true;return this;}insert(p){this.creation=p;return this;}update(p){this.patch=p;return this;}
+ then(resolve,reject){return this.run().then(resolve,reject);}
+ async run(){try{const args=[],bind=v=>{args.push(v);return '$'+args.length;},filters=this.filters.map(([k,op,v])=>op==='in'?`t.${ident(k)} = any(${bind(v)}::uuid[])`:`t.${ident(k)} ${op} ${bind(v)}`).join(' and '),where=filters?' where '+filters:'',table=ident(this.table);
+ if(this.patch||this.creation){const p=this.patch||this.creation,keys=Object.keys(p),sql=this.patch?'update '+table+' t set '+keys.map(k=>ident(k)+'='+bind(p[k])).join(',')+where+' returning *':'insert into '+table+' ('+keys.map(ident).join(',')+') values ('+keys.map(k=>bind(p[k])).join(',')+') returning *';const r=await pg.query(sql,args);return {data:this.singleRow?r.rows[0]||null:r.rows};}
+ let cols=this.cols==='*'||this.cols.includes(':')?'t.*':this.cols.split(',').map(c=>'t.'+ident(c)).join(',');
+ if(this.cols.includes('produto:'))cols='t.*, (select jsonb_build_object(\'nome\',p.nome,\'unidade\',p.unidade) from estoque_produtos p where p.id=t.produto_id) as produto';
+ if(this.table==='estoque_atendimentos')cols="t.*, (select jsonb_build_object('nome',v.nome) from visitantes v where v.visitante_id=t.paciente_id) as paciente, coalesce((select jsonb_agg(to_jsonb(m)||jsonb_build_object('produto',jsonb_build_object('nome',p.nome))) from estoque_movimentos m join estoque_produtos p on p.id=m.produto_id where m.atendimento_id=t.id),'[]'::jsonb) as itens";
+ const count=Number((await pg.query('select count(*) as n from '+table+' t'+where,args)).rows[0].n),order=this.orders.length?' order by '+this.orders.map(([k,o])=>'t.'+ident(k)+(o.ascending===false?' desc':' asc')+(o.nullsFirst===false?' nulls last':'')).join(','):'';
+ const r=await pg.query('select '+cols+' from '+table+' t'+where+order+' limit '+(this.end-this.start+1)+' offset '+this.start,args);return {data:this.singleRow?r.rows[0]||null:r.rows,count};
+ }catch(e){return {error:{code:e.code,message:e.message}};}}
+ }
+ return {from:t=>new Query(t),async rpc(name,params){try{const keys=Object.keys(params);const r=await pg.query('select '+ident(name)+'('+keys.map((k,i)=>ident(k)+'=> $'+(i+1)).join(',')+') as r',keys.map(k=>typeof params[k]==='object'&&params[k]!==null?JSON.stringify(params[k]):params[k]));return {data:r.rows[0].r};}catch(e){return {error:{code:e.code,message:e.message}};}}};
+}
+module.exports={preparar,adapter,usuario,paciente};
