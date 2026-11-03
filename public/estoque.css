@@ -91,3 +91,6 @@
 #movimentoDialog #camposCompra{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 #movimentoDialog .stock-calculation{margin-top:18px}
 @media(max-width:480px){#movimentoDialog #camposCompra{grid-template-columns:minmax(0,1fr);gap:0}}
+
+.stock-small-button.danger{color:#8b253b;border-color:#e5bcc5}.stock-small-button.danger:hover{background:#f9ebee}#excluirDialog>footer{display:flex;justify-content:flex-end;gap:12px;margin-top:24px}#excluirNome{font-weight:600;overflow-wrap:anywhere}
+#excluirExplicacao{display:block!important;color:#74696b;font-size:14px;line-height:1.6;margin:16px 0;white-space:normal}
