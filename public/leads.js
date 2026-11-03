@@ -983,7 +983,6 @@ atualizarResumoReceita();
 }
 
 async function abrirModalEdicao(lead) {
-    document.getElementById("editarDataAvaliacao").dataset.agendamentoId = "";
     if (!lead) {
         mostrarMensagem(
             "Não foi possível localizar o paciente.",
@@ -993,6 +992,12 @@ async function abrirModalEdicao(lead) {
     }
 
     leadEmEdicao = lead;
+    const campoAgendamento = obterElemento("editarDataAvaliacao");
+    if (campoAgendamento) campoAgendamento.dataset.agendamentoId = "";
+    const feedback = obterElemento("financeiroFeedback");
+    if (feedback) feedback.hidden = true;
+    definirTexto("financeiroTotalPaciente", "Carregando…");
+    definirTexto("listaFinanceiroPaciente", "Carregando o histórico…");
 
     definirTexto(
         "tituloModalEdicao",
@@ -1062,7 +1067,7 @@ async function abrirModalEdicao(lead) {
 
     window.setTimeout(() => {
         obterElemento(
-            "editarNomePaciente"
+            "financeiroDescricao"
         )?.focus();
     }, 50);
 
@@ -1074,11 +1079,17 @@ async function abrirModalEdicao(lead) {
     }
 
     carregarFinanceiroPaciente().catch((erro) => {
+        if (leadEmEdicao !== lead) return;
+        definirTexto("financeiroTotalPaciente", "—");
+        definirTexto("listaFinanceiroPaciente", "Não foi possível carregar o histórico.");
         mostrarFeedbackFinanceiro(
             erro.message || "Não foi possível carregar o histórico financeiro.",
             "erro"
         );
     });
+
+    // O financeiro não depende dos campos antigos de agendamento/conversão.
+    if (!campoAgendamento) return;
 
     try {
         const resposta = await fetch(
@@ -1145,7 +1156,7 @@ async function abrirModalEdicao(lead) {
         if (!agendamento) {
             return;
         }
-        document.getElementById("editarDataAvaliacao").dataset.agendamentoId = agendamento.id;
+        campoAgendamento.dataset.agendamentoId = agendamento.id;
 
         definirValor(
             "editarDataAvaliacao",
@@ -1731,6 +1742,7 @@ async function carregarFinanceiroPaciente() {
         throw new Error(await lerMensagemDeErro(resposta));
     }
     const retorno = await resposta.json();
+    if (obterIdLead(leadEmEdicao) !== visitanteId) return;
     definirTexto("financeiroTotalPaciente", formatarMoeda(retorno.total || 0));
     renderizarHistoricoFinanceiro(retorno.lancamentos || []);
 }
