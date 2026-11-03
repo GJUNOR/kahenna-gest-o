@@ -9,7 +9,7 @@
  document.getElementById('closeReminder').addEventListener('click',close);document.getElementById('cancelReminder').addEventListener('click',close);
  dialog.addEventListener('cancel',()=>{sequence++;});date.addEventListener('change',draft);time.addEventListener('change',draft);
  window.abrirLembretePaciente=async lead=>{
-  patient=lead;previousFocus=document.activeElement;const attempt=++sequence;error.hidden=true;form.reset();date.min=parts(new Date()).date;document.getElementById('reminderPatient').textContent=lead.nome||'Paciente';hint.textContent='Buscando o próximo horário…';draft();dialog.showModal();
+  patient=lead;previousFocus=document.activeElement;const attempt=++sequence;error.hidden=true;form.reset();date.min=parts(new Date()).date;document.getElementById('reminderPatient').textContent=lead.nome||'Paciente';hint.textContent='';draft();dialog.showModal();
   try{
    const inicio=new Date(),fim=new Date(inicio.getTime()+366*86400000);
    const query=new URLSearchParams({inicio:inicio.toISOString(),fim:fim.toISOString()});
@@ -18,9 +18,9 @@
    const result=await response.json();if(attempt!==sequence||!dialog.open)return;
    const items=Array.isArray(result)?result:(result.data||[]);
    const next=items.filter(x=>String(x.visitante_id)===String(lead.visitante_id)&&x.status!=='cancelado'&&new Date(x.data_avaliacao)>=inicio).sort((a,b)=>new Date(a.data_avaliacao)-new Date(b.data_avaliacao))[0];
-   if(next){const p=parts(new Date(next.data_avaliacao));date.value=p.date;time.value=p.time;hint.textContent='Data e horário preenchidos com o próximo agendamento.';}else{hint.textContent='Nenhum próximo horário encontrado. Informe a data e o horário antes de enviar o lembrete.';}
+   if(next){const p=parts(new Date(next.data_avaliacao));date.value=p.date;time.value=p.time;hint.textContent='';}else{hint.textContent='';}
    draft();
-  }catch(e){if(attempt===sequence&&dialog.open)hint.textContent='Não foi possível carregar a agenda. Informe a data e o horário manualmente.';}
+  }catch(e){if(attempt===sequence&&dialog.open)hint.textContent='Não foi possível carregar a agenda.';}
  };
  form.addEventListener('submit',event=>{
   event.preventDefault();error.hidden=true;const phone=String(patient?.telefone||'').replace(/\D/g,'');const number=phone.length===10||phone.length===11?'55'+phone:phone;

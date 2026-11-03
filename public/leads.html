@@ -35,7 +35,7 @@
 
 <link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/documentos.css?v=3"><link rel="stylesheet" href="/aniversarios.css?v=1">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
-<link rel="stylesheet" href="/crm-layout.css?v=4"></head>
+<link rel="stylesheet" href="/crm-layout.css?v=4"><link rel="stylesheet" href="/crm-controls.css?v=1"></head>
 
 <body class="crm-page">
 
@@ -173,7 +173,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
 
 
-                <input id="pesquisa" type="search" placeholder="Pesquisar por nome ou telefone..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_pesquisa">
+                <input id="pesquisa" type="search" aria-label="Pesquisar paciente por nome ou telefone" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_pesquisa">
 
             </div>
 
@@ -405,7 +405,7 @@
                         Nome do paciente
                     </label>
 
-                    <input type="text" id="editarNomePaciente" name="atlas_editar_nome" placeholder="Nome do paciente" autocomplete="off" autocapitalize="off" data-form-type="other" data-lpignore="true" autocorrect="off" spellcheck="false" data-1p-ignore="true">
+                    <input type="text" id="editarNomePaciente" name="atlas_editar_nome" autocomplete="off" autocapitalize="off" data-form-type="other" data-lpignore="true" autocorrect="off" spellcheck="false" data-1p-ignore="true">
                 </div>
 
                 <div class="campo-edicao">
@@ -413,7 +413,7 @@
                         Telefone / WhatsApp
                     </label>
 
-                    <input type="text" id="editarTelefonePaciente" name="atlas_editar_telefone" placeholder="(62) 99999-9999" inputmode="tel" autocomplete="off" data-form-type="other" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true">
+                    <input type="text" id="editarTelefonePaciente" name="atlas_editar_telefone" inputmode="tel" autocomplete="off" data-form-type="other" data-lpignore="true" autocorrect="off" autocapitalize="off" spellcheck="false" data-1p-ignore="true">
                 </div>
 
                 <div class="campo-edicao">
@@ -444,7 +444,7 @@
 
                 <div class="financeiro-feedback" id="financeiroFeedback" hidden></div>
 
-                <div class="financeiro-form-grid"><div class="financeiro-form-card"><h3>Registrar atendimento</h3><label>Descrição<input id="financeiroDescricao" maxlength="200" placeholder="Avaliação ou procedimento" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroDescricao"></label><label>Valor recebido (R$)<input id="financeiroValorLivre" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroValorLivre" maxlength="17" aria-label="Valor recebido em reais"></label><label>Pagamento<select id="financeiroPagamentoAvaliacao"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Cartão de débito</option><option value="credito">Cartão de crédito</option></select></label><button type="button" class="btn-financeiro" id="registrarAvaliacao">Registrar pagamento</button></div></div><div class="financeiro-historico">
+                <div class="financeiro-form-grid"><div class="financeiro-form-card"><h3>Registrar atendimento</h3><label>Descrição<input id="financeiroDescricao" maxlength="200" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroDescricao"></label><label>Valor recebido (R$)<input id="financeiroValorLivre" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroValorLivre" maxlength="17" aria-label="Valor recebido em reais"></label><label>Pagamento<select id="financeiroPagamentoAvaliacao"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Cartão de débito</option><option value="credito">Cartão de crédito</option></select></label><button type="button" class="btn-financeiro" id="registrarAvaliacao">Registrar pagamento</button></div></div><div class="financeiro-historico">
                     <h3>Histórico financeiro</h3>
                     <div id="listaFinanceiroPaciente"><p class="financeiro-vazio">Nenhum lançamento registrado.</p></div>
                 </div>
@@ -529,7 +529,7 @@
                     Nome do paciente
                 </label>
 
-                <input type="text" id="novoPacienteNome" placeholder="Digite o nome" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteNome">
+                <input type="text" id="novoPacienteNome" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteNome">
             </div>
 
             <div class="campo-edicao">
@@ -537,7 +537,7 @@
                     Telefone / WhatsApp
                 </label>
 
-                <input type="text" id="novoPacienteTelefone" placeholder="(62) 99999-9999" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteTelefone" inputmode="tel">
+                <input type="text" id="novoPacienteTelefone" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_novoPacienteTelefone" inputmode="tel">
             </div>
 
             <div class="campo-edicao">
@@ -578,6 +578,6 @@
 
 <script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script>
 
-<dialog id="reminderDialog" class="reminder-dialog"><form id="reminderForm" autocomplete="off"><header><div><h2>Lembrete de atendimento</h2></div><button type="button" id="closeReminder" class="reminder-close" aria-label="Fechar lembrete">×</button></header><p id="reminderPatient" class="reminder-patient"></p><p id="reminderHint" role="status"></p><div class="reminder-fields"><label>Data<input id="reminderDate" type="date" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderDate"></label><label>Horário<input id="reminderTime" type="time" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderTime"></label></div><label class="reminder-message-label">Mensagem para revisar<textarea id="reminderMessage" rows="6" maxlength="3000" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderMessage"></textarea></label><p id="reminderError" role="alert" hidden></p><footer><button class="secondary-button" id="cancelReminder" type="button">Voltar</button><button class="primary-button" id="openReminderWhatsapp" type="submit">Abrir no WhatsApp</button></footer></form></dialog><script src="/reminders.js"></script></body>
+<dialog id="reminderDialog" class="reminder-dialog"><form id="reminderForm" autocomplete="off"><header><div><h2>Lembrete de atendimento</h2></div><button type="button" id="closeReminder" class="reminder-close" aria-label="Fechar lembrete">×</button></header><p id="reminderPatient" class="reminder-patient"></p><p id="reminderHint" role="status"></p><div class="reminder-fields"><label>Data<input id="reminderDate" type="date" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderDate"></label><label>Horário<input id="reminderTime" type="time" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderTime"></label></div><label class="reminder-message-label">Mensagem para revisar<textarea id="reminderMessage" rows="6" maxlength="3000" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_reminderMessage"></textarea></label><p id="reminderError" role="alert" hidden></p><footer><button class="secondary-button" id="cancelReminder" type="button">Voltar</button><button class="primary-button" id="openReminderWhatsapp" type="submit">Abrir no WhatsApp</button></footer></form></dialog><script src="/reminders.js?v=2"></script></body>
 
 </html>
