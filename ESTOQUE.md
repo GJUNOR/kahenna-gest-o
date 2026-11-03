@@ -1,10 +1,10 @@
 # Estoque da clínica
 
-A aba Estoque é restrita a administradores ativos. Cadastrar produto não cria saldo: a entrada ocorre em Registrar compra, com quantidade, custo por unidade e data. Registrar uso baixa a quantidade e calcula o custo pelo custo médio móvel. É possível informar uma observação para consumo, perda ou outro motivo. O resumo separa valor atual em estoque, compras do mês escolhido, custo das baixas no mês e produtos para repor.
+A aba Estoque é restrita a administradores ativos. Produto e compra inicial podem ser salvos juntos, ou o cadastro pode começar sem saldo. Registrar uso baixa a quantidade e calcula o custo pelo custo médio móvel. É possível informar uma observação para consumo, perda ou outro motivo. O resumo separa valor atual em estoque, compras do mês escolhido, custo das baixas no mês e produtos para repor.
 
 ## Unidade e custos
 
-Escolher uma unidade de controle por produto (unidade, caixa, frasco, pacote, ml ou g). Quantidades podem ter até três casas decimais, e o custo de compra por unidade, quatro. Não há conversão entre caixa e unidade. Por exemplo, se o produto é controlado em unidades, uma caixa com 100 unidades é uma entrada de 100 unidades, usando o custo de uma unidade. A unidade é fixa após o cadastro para preservar o sentido do histórico.
+Novos produtos usam unidade, ml ou g. Compras aceitam caixas, pacotes e frascos com conteúdo informado, além de litros e quilos quando compatíveis. Quantidades têm até três casas decimais; o total pago fica em centavos e o custo calculado preserva a precisão da divisão. A conversão dos cadastros antigos por embalagem exige confirmação do conteúdo e mantém o histórico original.
 
 Custo médio = valor do saldo / quantidade disponível. Compras acrescentam valor; baixas usam a média corrente. A baixa de todo o saldo retira exatamente o valor restante, sem resíduo de arredondamento. Datas retroativas classificam a movimentação no mês escolhido; o custo médio é calculado na ordem em que os registros são feitos. Compras registradas não equivalem a pagamentos conciliados ou parcelamentos, e esta aba não altera a receita dos atendimentos.
 
@@ -22,4 +22,19 @@ A função de movimentação trava a linha do produto, valida saldo, registra o 
 
 `tests/estoque-db.sql`: teste transacional com ROLLBACK no banco real, no papel service_role. Confere média móvel, custo de consumo, idempotência, bloqueio de saldo negativo, exclusão e restauração com saldo, saldo zerado sem resíduos, proteção de produto arquivado e resumo mensal.
 
-`tests/estoque-preview.cjs`: prévia local com dados exclusivamente fictícios. Não é importada pelo servidor de produção. Os testes de interface com compras, uso e arquivamento devem usar essa prévia para não misturar valores fictícios aos gastos reais.
+`tests/estoque-integrado-preview.cjs`: prévia local com PostgreSQL e dados exclusivamente fictícios. Não é importada pelo servidor de produção. Os testes de interface devem usar essa prévia para não misturar valores fictícios aos gastos reais.
+
+## Compras, embalagens e materiais por atendimento
+
+O cadastro e a compra inicial ficam em um único diálogo e são gravados pela mesma transação (`POST /api/estoque/cadastros`). A compra também pode ser desmarcada para cadastrar sem saldo. O identificador da operação impede duplicação em reenvios.
+
+Informe quantidade comprada, embalagem e conteúdo por embalagem. O valor total da compra calcula o custo por unidade de uso (`un`, `ml` ou `g`); custo manual é opcional. Caixas, pacotes e frascos podem ter qualquer conteúdo informado; litros e quilos convertem em 1.000 ml/g. Lote, validade e fornecedor são opcionais.
+
+Cadastros antigos controlados por embalagem mantêm saldo e valor. Ao editar ou comprar, a conversão para unidade de uso exige informar explicitamente o conteúdo da embalagem no mesmo diálogo. A conversão preserva o valor e as unidades dos movimentos históricos. Confira também o estoque mínimo na nova unidade.
+
+Em **Registrar atendimento**, escolha o paciente e monte sua lista padrão. **Salvar somente a lista** não movimenta estoque. Antes de **Confirmar uso**, ajuste quantidades, acrescente ou retire materiais. A confirmação registra todos os consumos juntos, calcula o custo médio real e opcionalmente atualiza a lista padrão daquele paciente. Falta de saldo, lote vencido ou revisão desatualizada cancela toda a baixa. A lista não representa prescrição clínica.
+
+Lotes válidos saem pela validade mais próxima; saldo anterior tem lote desconhecido e nenhuma validade presumida. O custo usa a média ponderada do produto. Perdas e vencidos podem ser baixados como **Perda ou descarte** em **Usar**. O custo dos materiais não cria cobrança nem altera o financeiro do paciente.
+
+Teste local integrado: `node tests/estoque-integrado-preview.cjs` (porta 3102, banco PostgreSQL temporário via PGlite, somente dados fictícios). Testes: `npm test`. A migração `20261103023124_estoque_compras_lotes_atendimentos.sql` inclui comparação automática dos saldos e do histórico anterior; qualquer diferença aborta a atualização.
+
