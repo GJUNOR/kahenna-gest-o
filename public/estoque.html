@@ -1,5 +1,5 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Estoque | Dra. Kahenna Vieira</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="/sidebar.css"><link rel="stylesheet" href="/mobile.css?v=1"><link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/estoque.css?v=3"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="/sidebar.css"><link rel="stylesheet" href="/mobile.css?v=1"><link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=33"><link rel="stylesheet" href="/estoque.css?v=4"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
 <link rel="stylesheet" href="/crm-layout.css?v=4"><link rel="stylesheet" href="/crm-controls.css?v=2"></head><body class="crm-page"><div class="layout"><aside class="sidebar">
     <div class="sidebar-main">
         <div class="logo">
@@ -65,6 +65,8 @@
 <dialog id="produtoDialog" class="stock-dialog stock-dialog-wide" aria-labelledby="produtoTitulo">
 <header><h2 id="produtoTitulo">Novo produto</h2><button type="button" class="stock-dialog-close" data-fechar aria-label="Fechar cadastro de produto">×</button></header>
 <form id="produtoForm">
+<label id="produtoModeloLabel">Cadastro rápido<select id="produtoModelo"><option value="">Personalizado</option></select></label>
+<div id="produtoExistente" class="stock-existing-product" hidden><strong id="produtoExistenteNome"></strong><button type="button" id="produtoExistenteCompra" class="stock-secondary">Adicionar compra</button></div>
 <label>Nome do produto<input id="produtoNome" maxlength="120" required></label>
 <div class="stock-form-grid"><label>Categoria<input id="produtoCategoria" list="categoriasSugeridas" maxlength="60"></label><label>Unidade de uso<select id="produtoUnidade"><option value="un">Unidade</option><option value="ml">Mililitro (ml)</option><option value="g">Grama (g)</option><option value="caixa" hidden>Caixa</option><option value="pacote" hidden>Pacote</option><option value="frasco" hidden>Frasco</option></select></label></div>
 <label>Estoque mínimo<input id="produtoMinimo" type="number" min="0" max="999999.999" step="0.001" value="0" required></label>
@@ -91,4 +93,4 @@
 <div class="stock-calculation"><span>Custo estimado dos materiais</span><strong id="atendimentoTotal">R$ 0,00</strong></div>
 <p id="atendimentoErro" class="stock-form-error" role="alert" hidden></p><footer><button type="button" class="stock-secondary" id="atendimentoSomenteLista">Salvar somente a lista</button><button type="submit" id="atendimentoConfirmar" class="stock-primary">Confirmar uso</button></footer></form></dialog>
 
-<script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script><script src="/aniversarios.js?v=1"></script><script src="/estoque-compras.js?v=1"></script><script src="/estoque-atendimentos.js?v=1"></script><script src="/estoque.js?v=4"></script></body></html>
+<script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script><script src="/aniversarios.js?v=1"></script><script src="/estoque-compras.js?v=2"></script><script src="/estoque-atendimentos.js?v=1"></script><script src="/estoque.js?v=4"></script></body></html>

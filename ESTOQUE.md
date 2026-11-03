@@ -26,6 +26,8 @@ A função de movimentação trava a linha do produto, valida saldo, registra o 
 
 ## Compras, embalagens e materiais por atendimento
 
+Em Novo produto, **Cadastro rápido** oferece modelos de descartáveis com nome, categoria e embalagem preenchidos. Quantidade, conteúdo, preço, lote e validade não são presumidos. Caso já exista um produto com o mesmo nome, **Adicionar compra** reutiliza o cadastro dentro do mesmo pop-up. Para outros materiais, selecione **Personalizado** e preencha a unidade de uso, lote e validade conforme o produto. Os campos de rastreabilidade não constituem, por si sós, certificação de conformidade jurídica.
+
 O cadastro e a compra inicial ficam em um único diálogo e são gravados pela mesma transação (`POST /api/estoque/cadastros`). A compra também pode ser desmarcada para cadastrar sem saldo. O identificador da operação impede duplicação em reenvios.
 
 Informe quantidade comprada, embalagem e conteúdo por embalagem. O valor total da compra calcula o custo por unidade de uso (`un`, `ml` ou `g`); custo manual é opcional. Caixas, pacotes e frascos podem ter qualquer conteúdo informado; litros e quilos convertem em 1.000 ml/g. Lote, validade e fornecedor são opcionais.

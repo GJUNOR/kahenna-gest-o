@@ -105,6 +105,8 @@
 .stock-actions .stock-small-button.edit:hover{background:#f3eeeb}.stock-actions .stock-small-button.danger:hover{background:#faedef;color:#9a3048}
 @media(max-width:760px){.stock-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 36px 36px;width:100%}.stock-actions .stock-small-button:not(.edit){min-height:36px}.stock-actions .stock-small-button.danger{flex:none}}
 .stock-dialog-wide{width:min(650px,calc(100vw - 28px))}
+.stock-existing-product{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;margin-top:16px;border:1px solid #e5cfd6;border-radius:12px;background:#f7eef1}.stock-existing-product strong{font-size:12px;font-weight:500;color:#75515f;overflow-wrap:anywhere}.stock-existing-product button{flex:0 0 auto}
+@media(max-width:480px){.stock-existing-product{align-items:stretch;flex-direction:column}}
 .stock-dialog fieldset{min-width:0;margin:22px 0 0;padding:6px 18px 20px;border:1px solid #e6d9da;border-radius:14px}
 .stock-dialog legend{padding:0 8px;color:#681c2b;font-size:13px;font-weight:600}
 .stock-dialog label.stock-check{display:flex;align-items:center;gap:10px;line-height:1.5}
