@@ -6,8 +6,8 @@ module.exports=function(db,autorizar=exigirAdministradorApi){const router=expres
  const avancado=require('../services/estoque-avancado').criarServico(db);
  router.post('/saidas',async(req,res)=>res.status(201).json({sucesso:true,movimento:await avancado.usar(req.body||{},req.usuario)}));
  router.post('/cadastros',async(req,res)=>res.status(201).json({sucesso:true,...await avancado.salvar(req.body||{},req.usuario)}));
- router.get('/catalogo',async(req,res)=>res.json(await avancado.catalogo(req.query.busca)));
- router.get('/pacientes',async(req,res)=>res.json(await avancado.pacientes(req.query.busca)));
+ router.get('/catalogo',async(req,res)=>res.json(await avancado.catalogo(req.query.busca,req.query.pagina,req.query.disponiveis==='true')));
+ router.get('/pacientes',async(req,res)=>res.json(await avancado.pacientes(req.query.busca,req.query.pagina)));
  router.get('/pacientes/:id/lista',async(req,res)=>res.json(await avancado.lista(req.params.id)));
  router.put('/pacientes/:id/lista',async(req,res)=>res.json({itens:await avancado.salvarLista(req.params.id,req.body||{},req.usuario)}));
  router.get('/lotes/:id',async(req,res)=>res.json({lotes:await avancado.lotes(req.params.id)}));
