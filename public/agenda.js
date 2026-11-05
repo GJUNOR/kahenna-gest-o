@@ -4,14 +4,14 @@ const HORA_INICIAL = 7;
 const HORA_FINAL = 20;
 const INTERVALO_MINUTOS = 30;
 const turnosClinica = new Map();
-for (const [inicio, fim, novembro, dezembro] of [
-    [8, 12, "06 09 12 18 21 24 27 30", "03 09 12 15 18 21 24 30"],
-    [13, 18, "04 07 10 13 16 19 25 28", "01 04 07 10 16 19 22 25 28 31"],
-    [18, 24, "05 11 14 17 20 23 26", "02 05 08 11 14 17 23 26 29"]
+for (const [periodo, inicio, fim, novembro, dezembro] of [
+    ["Matutino", 8, 12, "06 09 12 18 21 24 27 30", "03 09 12 15 18 21 24 30"],
+    ["Vespertino", 13, 18, "04 07 10 13 16 19 25 28", "01 04 07 10 16 19 22 25 28 31"],
+    ["Noturno", 18, 24, "05 11 14 17 20 23 26", "02 05 08 11 14 17 23 26 29"]
 ]) {
     for (const [mes, datas] of [["11", novembro], ["12", dezembro]]) {
         for (const dia of datas.split(" ")) {
-            turnosClinica.set(`2026-${mes}-${dia}`, { inicio, fim });
+            turnosClinica.set(`2026-${mes}-${dia}`, { periodo, inicio, fim });
         }
     }
 }
@@ -168,8 +168,9 @@ function renderizarCalendario() {
         const turno = turnos[indice];
         if (!turno) return [];
         const item = document.createElement("li");
-        const data = dia.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" });
-        item.textContent = `${data} · ${formatarMinutos(turno.inicio * 60)}–${formatarMinutos((turno.fim % 24) * 60)}`;
+        const diaSemana = dia.toLocaleDateString("pt-BR", { weekday: "long" }).replace(/^./, letra => letra.toUpperCase());
+        const data = dia.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+        item.textContent = `${diaSemana}, ${data} · ${turno.periodo}`;
         return [item];
     }));
     resumo.parentElement.hidden = !resumo.childElementCount;
