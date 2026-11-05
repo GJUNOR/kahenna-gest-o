@@ -3,7 +3,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         const el = id => document.getElementById(id);
         const dialog = el("documentosDialog"), lista = el("documentosLista"), arquivo = el("documentosArquivo");
-        let paciente = null, origemFoco, geracao = 0, ocupado = false, aba = "pendente", docs = [], selecionado = null, blobUrl = null;
+        let aoFechar=null;let paciente = null, origemFoco, geracao = 0, ocupado = false, aba = "pendente", docs = [], selecionado = null, blobUrl = null;
         let pdfTask = null, pdfDocument = null, renderTask = null, pagina = 1, visualizacao = 0;
         const vistas = new Set();
         const mensagem = texto => { el("documentosStatus").textContent = texto; };
@@ -124,13 +124,16 @@
         });
         el("documentosFechar").addEventListener("click", () => { if (!ocupado) dialog.close(); });
         dialog.addEventListener("cancel", e => { if (ocupado) e.preventDefault(); });
-        dialog.addEventListener("close", () => { paciente = null; geracao++; docs = []; lista.replaceChildren(); arquivo.value = ""; limparVisualizacao(); origemFoco?.focus(); });
+        dialog.addEventListener("close", () => { paciente = null; geracao++; docs = []; lista.replaceChildren(); arquivo.value = ""; limparVisualizacao(); origemFoco?.focus();const retorno=aoFechar;aoFechar=null;retorno?.(); });
+        async function abrirDocumentos(id,nome,arquivoId=null,retorno=null,origem=document.activeElement){
+            if(dialog.open)return;origemFoco=origem;aoFechar=retorno;paciente=id;geracao++;const ticket=geracao;aba='pendente';
+            el('documentosPaciente').textContent=nome||'Paciente';arquivo.value='';dialog.showModal();bloquear(true);mensagem('Carregando documentos…');
+            try{await carregar();if(ticket===geracao&&arquivoId){bloquear(false);const doc=docs.find(d=>d.id===arquivoId);if(doc){aba=doc.estado;renderizar();await visualizar(doc);}}}catch(e){mensagem(e.message);}finally{if(ticket===geracao)bloquear(false);}
+        }
+        window.KahennaDocumentos={abrir:abrirDocumentos};
         document.addEventListener("click", async event => {
             const botao = event.target.closest("[data-documentos-paciente]"); if (!botao || dialog.open) return;
-            origemFoco = botao; paciente = botao.dataset.documentosPaciente; geracao++; aba = "pendente";
-            el("documentosPaciente").textContent = botao.dataset.documentosNome || "Paciente";
-            arquivo.value = ""; dialog.showModal(); bloquear(true); mensagem("Carregando documentos…");
-            try { await carregar(); } catch (e) { mensagem(e.message); } finally { bloquear(false); }
+            await abrirDocumentos(botao.dataset.documentosPaciente,botao.dataset.documentosNome,null,null,botao);
         });
         el("documentosForm").addEventListener("submit", async event => {
             event.preventDefault(); if (ocupado || !paciente) return;
