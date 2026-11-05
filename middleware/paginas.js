@@ -27,7 +27,7 @@ function renderizarPagina(html,papel,arquivo){
  const origens=['https://cdnjs.cloudflare.com','https://fonts.googleapis.com','https://fonts.gstatic.com'];
  const conexoes=origens.filter(origem=>!page.includes('href="'+origem+'"'))
   .map(origem=>'<link rel="preconnect" href="'+origem+'"'+(origem.endsWith('gstatic.com')?' crossorigin':'')+'>').join('');
- page=page.replace('<head>','<head>'+conexoes)
+ page=page.replace('<head>','<head><link rel="icon" href="/favicon.ico?v=1" sizes="any">'+conexoes)
   .replace('/font-awesome/6.5.2/css/all.min.css','/font-awesome/6.7.2/css/all.min.css');
  let extra=fichaHTML;
  if(role==='administrador'&&!page.includes('id="documentosDialog"')){extra+=pdfHTML+'<script src="/documentos.js?v=4"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/documentos.css?v=3"></head>');}
