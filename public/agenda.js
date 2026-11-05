@@ -15,8 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await carregarAgenda();
     const parametros = new URLSearchParams(location.search);
     if (parametros.get("novo") === "1") {
-        abrirModal();
-        selecionarPaciente(parametros.get("paciente"));
+        abrirModal(undefined, null, parametros.get("paciente"), parametros.get("retorno") === "1");
     }
 });
 
@@ -199,22 +198,23 @@ function renderizarCalendario() {
 
 function criarCartaoAgendamento(item) {
     const paciente = item.paciente || {};
+    const retorno = String(item.observacao || "").trim().toLowerCase() === "retorno";
     const horario = valorHoraInput(
         new Date(item.data_avaliacao)
     );
-    return `<article class="appointment-card" data-id="${escaparAtributo(item.id)}">
+    return `<article class="appointment-card${retorno ? " appointment-return" : ""}" data-id="${escaparAtributo(item.id)}">
         <div class="crm-agenda-top"><button type="button" class="crm-agenda-patient" data-ver-paciente="${escaparAtributo(item.visitante_id)}" data-ficha-secao="atendimentos">${escaparHTML(paciente.nome || "Paciente")}</button><button type="button" class="crm-agenda-edit" data-agenda-pagamento="${escaparAtributo(item.visitante_id)}" aria-label="Receber pagamento" title="Receber pagamento"><i class="fa-solid fa-credit-card" aria-hidden="true"></i></button><button type="button" class="crm-agenda-edit" aria-label="Editar horário de ${escaparAtributo(paciente.nome||'paciente')}" title="Editar horário"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div>
         <span>${escaparHTML(horario)} · ${escaparHTML(formatarTelefone(paciente.telefone))}</span>
         <small>${escaparHTML(item.observacao || "Avaliação agendada")}</small>
     </article>`;
 }
 
-function abrirModal(data = proximoHorarioDisponivel(), agendamento = null) {
+function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacienteId = null, retorno = false) {
     agendamentoSelecionado = agendamento;
     const pacienteAtual = agendamento
         ? pacientes.find((item) => String(item.visitante_id) === String(agendamento.visitante_id)) || agendamento.paciente
         : null;
-    document.getElementById("tituloModalAgendamento").textContent = agendamento ? "Editar agendamento" : "Novo agendamento";
+    document.getElementById("tituloModalAgendamento").textContent = agendamento ? "Editar agendamento" : retorno ? "Agendar retorno" : "Novo agendamento";
     document.getElementById("pacienteAgendamento").value = agendamento?.visitante_id || "";
     document.getElementById("nomePacienteAgendamento").value = pacienteAtual?.nome || "";
     document.getElementById("nomePacienteAgendamento").readOnly = Boolean(agendamento);
@@ -222,10 +222,23 @@ function abrirModal(data = proximoHorarioDisponivel(), agendamento = null) {
     document.getElementById("dataAgendamento").value = valorDataInput(data);
     document.getElementById("horaAgendamento").value = valorHoraInput(data);
     document.getElementById("observacaoAgendamento").value = agendamento?.observacao || "";
+    const observacao = document.getElementById("observacaoAgendamento");
+    observacao.closest("label").hidden = retorno;
+    document.getElementById("modalAgendamento").classList.toggle("schedule-return", retorno);
+    if (pacienteId) selecionarPaciente(pacienteId);
+    if (retorno) {
+        observacao.value = "Retorno";
+        document.getElementById("dataAgendamento").value = "";
+        document.getElementById("horaAgendamento").value = "";
+    }
     document.getElementById("cancelarAgendamento").hidden = !agendamento;
     document.getElementById("feedbackAgendamento").hidden = true;
     document.getElementById("modalAgendamento").hidden = false;
     document.body.style.overflow = "hidden";
+    if (retorno) {
+        const campo = document.getElementById("pacienteAgendamento").value ? "dataAgendamento" : "nomePacienteAgendamento";
+        document.getElementById(campo).focus();
+    }
 }
 
 function fecharModal() {

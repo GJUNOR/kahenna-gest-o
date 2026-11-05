@@ -81,7 +81,7 @@
   busy=true;const controles=[...$('atendimentoDialog').querySelectorAll('button,input,select')].map(el=>[el,el.disabled]);controles.forEach(([el])=>el.disabled=true);
   try{
    if(soLista){await api('/pacientes/'+$('atendimentoPaciente').value+'/lista',{itens:linhas},'PUT');$('atendimentoDialog').close();$('stockFeedback').textContent='Lista padrão salva. O estoque permanece com o mesmo saldo.';}
-   else{const r=await api('/atendimentos',{id:op,paciente_id:$('atendimentoPaciente').value,descricao:$('atendimentoDescricao').value,ocorrido_em:$('atendimentoData').value,itens:linhas,salvar_padrao:$('atendimentoSalvarPadrao').checked});$('atendimentoDialog').close();$('stockFeedback').textContent='Baixa confirmada. Custo dos materiais: '+money(r.atendimento.custo_total);$('atualizarEstoque').click();}
+   else{const r=await api('/atendimentos',{id:op,paciente_id:$('atendimentoPaciente').value,descricao:$('atendimentoDescricao').value,ocorrido_em:$('atendimentoData').value,itens:linhas,salvar_padrao:$('atendimentoSalvarPadrao').checked});$('atendimentoDialog').close();$('stockFeedback').textContent='Baixa confirmada. Custo dos materiais: '+money(r.atendimento.custo_total);const retorno=document.createElement('a');retorno.textContent='Agendar retorno';retorno.href='/agenda.html?'+new URLSearchParams({novo:'1',paciente:$('atendimentoPaciente').value,retorno:'1'});$('stockFeedback').append(' · ',retorno);$('atualizarEstoque').click();}
    $('stockFeedback').hidden=false;$('stockFeedback').classList.remove('error');document.dispatchEvent(new Event('stock-updated'));
   }catch(e){erro(e);}finally{busy=false;controles.forEach(([el,v])=>el.disabled=v);}
  }
