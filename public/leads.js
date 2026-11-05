@@ -1821,13 +1821,9 @@ function criarLinhaLead(lead) {
         "-"
     );
 
-    const origem = formatarOrigem(
-        obterPrimeiroValor(
-            lead.ultima_utm_source,
-            lead.primeira_utm_source,
-            "Direto"
-        )
-    );
+    const ultimoAtendimento = lead.ultimo_atendimento
+        ? lead.ultimo_atendimento.split("-").reverse().join("/")
+        : "—";
 
     const status = obterStatusLead(lead);
 
@@ -1874,10 +1870,8 @@ function criarLinhaLead(lead) {
             ${escaparHTML(formatarTelefone(telefone))}
         </td>
 
-        <td>
-            <span class="origem-lead">
-                ${escaparHTML(origem)}
-            </span>
+        <td class="coluna-ultimo-atendimento">
+            ${escaparHTML(ultimoAtendimento)}
         </td>
 
 

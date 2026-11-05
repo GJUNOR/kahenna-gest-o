@@ -167,9 +167,16 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
   .crm-patients-page .patients-table :is(th.actions-column, td.coluna-acoes) {
     width: 16% !important;
   }
-  .crm-patients-page .patients-table .paciente-dados strong {
-    white-space: normal;
-    overflow-wrap: break-word;
-    word-break: normal;
+}
+.crm-patients-page .patients-table .paciente-dados {
+  overflow-x: auto;
+}
+.crm-patients-page .patients-table .paciente-dados strong {
+  max-width: none !important;
+  white-space: nowrap !important;
+}
+@media (max-width: 760px) {
+  .crm-patients-page .patients-table td.coluna-ultimo-atendimento:nth-child(3)::before {
+    content: 'Último atendimento · ';
   }
 }

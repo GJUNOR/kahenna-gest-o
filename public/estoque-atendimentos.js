@@ -20,7 +20,7 @@
   $('atendimentoSelecionados').textContent=selecionados.size+' selecionado'+(selecionados.size===1?'':'s');
  }
  function desenhar(){
-  const rows=[...produtos.values()].filter(p=>p.ativo&&Number(p.quantidade)>0||selecionados.has(p.id)).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')||a.id.localeCompare(b.id));
+  const rows=[...produtos.values()].filter(p=>p.ativo&&Number(p.quantidade)>0||selecionados.has(p.id)).sort((a,b)=>(a.prioridade??1)-(b.prioridade??1)||a.nome.localeCompare(b.nome,'pt-BR')||a.id.localeCompare(b.id));
   $('atendimentoItens').innerHTML=rows.length?rows.map(p=>{
    const item=selecionados.get(p.id),ok=valido(p),valor=item?Number(item.quantidade)*Number(p.custo_medio):0;
    return `<div class="stock-pick-row${item?' is-selected':''}"><label class="stock-product-choice"><input type="checkbox" data-selecionar="${esc(p.id)}" ${item?'checked':''} ${!ok&&!item?'disabled':''}><span><strong>${esc(p.nome)}</strong><small>${ok?'Saldo: '+qtd(p.quantidade)+' '+esc(p.unidade):!p.ativo?'Produto excluído':Number(p.quantidade)<=0?'Sem estoque':'Unidade de uso pendente'}</small></span></label><label class="stock-pick-quantity">Quantidade<input type="number" data-quantidade="${esc(p.id)}" aria-label="Quantidade de ${esc(p.nome)} (${esc(p.unidade)})" min="0.001" max="${Math.min(999999.999,Number(p.quantidade)||999999.999)}" step="0.001" ${item&&ok?'required':'disabled'} value="${item?esc(item.quantidade):''}"></label><strong class="stock-pick-cost" data-custo="${esc(p.id)}">${item&&Number.isFinite(valor)?money(valor):'—'}</strong></div>`;
