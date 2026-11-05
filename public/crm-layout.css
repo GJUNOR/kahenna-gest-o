@@ -130,3 +130,22 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
  .crm-page .sidebar .menu a{height:60px!important;min-height:60px!important;padding:5px 2px!important;gap:3px!important}
  .crm-page .sidebar .menu a span{width:100%!important;max-width:none!important;min-height:24px;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;text-align:center!important}
 }
+
+.crm-page .patients-table .grupo-acoes-paciente .crm-ver-mais.crm-patient-history {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.crm-page .patients-table .grupo-acoes-paciente .crm-ver-mais.crm-patient-history:hover {
+  background: #f0dfe5 !important;
+  border-color: #d9b8c3 !important;
+}
+.crm-page .patients-table .grupo-acoes-paciente .crm-patient-history:focus-visible {
+  outline: 2px solid #9b6175;
+  outline-offset: 3px;
+}

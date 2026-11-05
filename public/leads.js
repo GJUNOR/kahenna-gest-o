@@ -1885,7 +1885,12 @@ function criarLinhaLead(lead) {
         ${colunasFinanceiras}
 
         <td class="coluna-acoes">
-            <div class="grupo-acoes-paciente"><button type="button" class="crm-ver-mais" data-ver-paciente="${escaparAtributo(id)}" aria-label="Ver mais sobre ${escaparAtributo(nome)}">Ver mais</button></div>
+            <div class="grupo-acoes-paciente">
+              <button type="button" class="crm-ver-mais crm-patient-history" data-ver-paciente="${escaparAtributo(id)}" aria-label="Histórico de ${escaparAtributo(nome)}">
+                <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                <span>Histórico</span>
+              </button>
+            </div>
         </td>
     `;
 
