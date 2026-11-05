@@ -26,7 +26,15 @@ app.use('/api/financeiro',require('./routes/financeiro'));
 app.use('/api/estoque',require('./routes/estoque')(require('./config/supabase')));
 app.use('/api/equipe',exigirAdministradorApi,require('./routes/equipe'));
 for (const pasta of ['build','standard_fonts','wasm','cmaps']) app.use('/assets/pdfjs/'+pasta,express.static(path.join(__dirname,'node_modules/pdfjs-dist',pasta),{index:false}));
-app.use(express.static(path.join(__dirname,'public'),{index:false}));
+app.use(express.static(path.join(__dirname,'public'),{
+    index:false,
+    setHeaders(res,arquivo){
+        const versao=res.req.query.v;
+        if (/\.(?:css|js)$/i.test(arquivo) && typeof versao==='string' && /^\d+$/.test(versao)) {
+            res.setHeader('Cache-Control','private, max-age=3600');
+        }
+    }
+}));
 app.use((req,res)=>res.status(404).json({sucesso:false,mensagem:'Página não encontrada.'}));
 app.use((err,req,res,next)=>{console.error('Falha na plataforma:',err.message);res.status(err.statusCode||500).json({sucesso:false,mensagem:process.env.NODE_ENV==='production'?'Não foi possível concluir. Tente novamente.':err.message});});
 if(require.main===module)app.listen(process.env.PORT||3000,'0.0.0.0',()=>console.log('Kahenna Gestão: servidor iniciado.'));
