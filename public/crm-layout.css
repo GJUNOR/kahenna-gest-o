@@ -149,7 +149,7 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
   outline: 2px solid #9b6175;
   outline-offset: 3px;
 }
-.crm-page .patients-table .grupo-acoes-paciente .crm-patient-history > span {
+.crm-page .patients-table .grupo-acoes-paciente .crm-ver-mais.crm-patient-history > span {
   display: inline !important;
 }
 
