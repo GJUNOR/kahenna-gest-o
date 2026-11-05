@@ -46,15 +46,13 @@ async function criarVisitante(req, res) {
             data: visitante
         });
     } catch (erro) {
-        console.error(
-            "Erro criando visitante:",
-            erro
-        );
+        if ((erro.statusCode || 500) >= 500) console.error("Falha ao cadastrar paciente.");
 
         return res.status(
             erro.statusCode || 500
         ).json({
             sucesso: false,
+            ...(erro.codigo==='POSSIVEL_DUPLICADO'?{codigo:erro.codigo,duplicados:erro.duplicados,total:erro.total,confirmacao:erro.confirmacao}:{}),
             mensagem:
                 (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                 "Erro ao cadastrar paciente."
@@ -83,15 +81,13 @@ async function atualizarVisitante(req, res) {
             data: visitante
         });
     } catch (erro) {
-        console.error(
-            "Erro atualizando visitante:",
-            erro
-        );
+        if ((erro.statusCode || 500) >= 500) console.error("Falha ao atualizar paciente.");
 
         return res.status(
             erro.statusCode || 500
         ).json({
             sucesso: false,
+            ...(erro.codigo==='POSSIVEL_DUPLICADO'?{codigo:erro.codigo,duplicados:erro.duplicados,total:erro.total,confirmacao:erro.confirmacao}:{}),
             mensagem:
                 (erro.statusCode && erro.statusCode < 500 ? erro.message : "Não foi possível concluir a operação.") ||
                 "Erro ao atualizar paciente."
