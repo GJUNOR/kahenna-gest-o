@@ -135,11 +135,11 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 36px;
-  border-radius: 999px;
-  font-weight: 600;
-  white-space: nowrap;
+  flex-direction: row !important;
+  gap: 8px !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
 }
 .crm-page .patients-table .grupo-acoes-paciente .crm-ver-mais.crm-patient-history:hover {
   background: #f0dfe5 !important;
