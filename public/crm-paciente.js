@@ -133,6 +133,11 @@
     html,body { background:transparent !important; overflow:hidden !important; }
     body { visibility:hidden; }
     #${alvo},#${alvo} * { visibility:visible; }
+    #${alvo}::backdrop { background:transparent !important; backdrop-filter:none !important; }
+    #${alvo}:is(.schedule-modal,.modal-edicao-overlay) {
+     background:transparent !important;
+     backdrop-filter:none !important;
+    }
    `;
    doc.head.append(css);
    const acompanhar=()=>{
