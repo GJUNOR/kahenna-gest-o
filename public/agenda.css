@@ -10,3 +10,13 @@
 .crm-page .schedule-modal.schedule-return label[hidden] {
   display: none !important;
 }
+
+.crm-page .turnos-clinica { margin: 0 0 16px; color: #681c2b; }
+.crm-page .turnos-clinica h2 { margin: 0 0 6px; font-size: .9rem; }
+.crm-page .turnos-clinica ul { display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
+.crm-page .turnos-clinica li { padding:4px 9px; border-radius:7px; background:#eee0e3; font-size:.78rem; }
+.crm-page .week-calendar .calendar-slot.horario-de-clinica {
+  background: #eee0e3 !important;
+  box-shadow: inset 2px 0 #9b5261;
+}
+.crm-page .week-calendar .calendar-slot.horario-de-clinica:hover { background:#e6cfd5 !important; }

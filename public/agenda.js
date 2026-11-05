@@ -3,6 +3,18 @@
 const HORA_INICIAL = 7;
 const HORA_FINAL = 20;
 const INTERVALO_MINUTOS = 30;
+const turnosClinica = new Map();
+for (const [inicio, fim, novembro, dezembro] of [
+    [8, 12, "06 09 12 18 21 24 27 30", "03 09 12 15 18 21 24 30"],
+    [13, 18, "04 07 10 13 16 19 25 28", "01 04 07 10 16 19 22 25 28 31"],
+    [18, 24, "05 11 14 17 20 23 26", "02 05 08 11 14 17 23 26 29"]
+]) {
+    for (const [mes, datas] of [["11", novembro], ["12", dezembro]]) {
+        for (const dia of datas.split(" ")) {
+            turnosClinica.set(`2026-${mes}-${dia}`, { inicio, fim });
+        }
+    }
+}
 
 let inicioSemana = obterInicioSemana(new Date());
 let agendamentos = [];
@@ -150,18 +162,33 @@ function renderizarCalendario() {
     });
     const hoje = chaveData(new Date());
 
+    const turnos = dias.map(dia => turnosClinica.get(chaveData(dia)));
+    const resumo = document.getElementById("turnosClinica");
+    resumo.replaceChildren(...dias.flatMap((dia, indice) => {
+        const turno = turnos[indice];
+        if (!turno) return [];
+        const item = document.createElement("li");
+        const data = dia.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" });
+        item.textContent = `${data} · ${formatarMinutos(turno.inicio * 60)}–${formatarMinutos((turno.fim % 24) * 60)}`;
+        return [item];
+    }));
+    resumo.parentElement.hidden = !resumo.childElementCount;
+    const temHorarioNoturno = agendamentos.some(item => new Date(item.data_avaliacao).getHours() >= HORA_FINAL);
+    const fimGrade = temHorarioNoturno ? 24 : Math.max(HORA_FINAL, ...turnos.map(turno => turno?.fim || 0));
     document.getElementById("tituloPeriodo").textContent = formatarPeriodo(dias[0], dias[6]);
     calendario.innerHTML = '<div class="calendar-corner"></div>' + dias.map((dia) => `
         <div class="day-header ${chaveData(dia) === hoje ? "today" : ""}">
             <span>${formatarDiaSemana(dia)}</span><strong>${dia.getDate()}</strong>
         </div>`).join("");
 
-    for (let minutos = HORA_INICIAL * 60; minutos < HORA_FINAL * 60; minutos += INTERVALO_MINUTOS) {
+    for (let minutos = HORA_INICIAL * 60; minutos < fimGrade * 60; minutos += INTERVALO_MINUTOS) {
         const hora = formatarMinutos(minutos);
         calendario.insertAdjacentHTML("beforeend", `<div class="time-label">${hora}</div>`);
 
-        dias.forEach((dia) => {
+        dias.forEach((dia, indice) => {
             const dataHora = combinarDataHora(dia, minutos);
+            const turno = turnos[indice];
+            const naClinica = turno && minutos >= turno.inicio * 60 && minutos < turno.fim * 60;
             const itens = agendamentos.filter((item) => {
                 const data = new Date(item.data_avaliacao);
                 const minutosAgendamento =
@@ -174,7 +201,7 @@ function renderizarCalendario() {
             });
             const cartoes = itens.map(criarCartaoAgendamento).join("");
             calendario.insertAdjacentHTML("beforeend", `
-                <div class="calendar-slot ${dataHora < new Date() ? "past" : ""}" data-data-hora="${dataHora.toISOString()}">
+                <div class="calendar-slot ${dataHora < new Date() ? "past" : ""}${naClinica ? " horario-de-clinica" : ""}" data-data-hora="${dataHora.toISOString()}"${naClinica ? ' title="Horário de atendimento da Kahenna"' : ""}>
                     ${cartoes}
                 </div>`);
         });
