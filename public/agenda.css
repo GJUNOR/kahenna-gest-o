@@ -18,9 +18,9 @@
   display:grid;
   gap:3px;
   padding:10px 13px;
-  border:1px solid #e9dce0;
+  border:1px solid #e4cfd5;
   border-radius:10px;
-  background:#fdfafa;
+  background:#eee0e3;
 }
 .crm-page .turnos-clinica li strong { font-size:.83rem; font-weight:600; }
 .crm-page .turnos-clinica li span { color:#75525c; font-size:.77rem; }
