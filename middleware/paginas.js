@@ -40,9 +40,30 @@ const paginasPorPapel=new Map(PAGINAS.map(arquivo=>{
   secretaria:renderizarPagina(html,'secretaria',arquivo)
  }];
 }));
+function montarEstrutura(html,papel,arquivo){
+ const cabecalho=paginasPorPapel.get('dashboard.html')[papel].match(/<head>[\s\S]*?<\/head>/)[0];
+ const titulo=html.match(/<title>[\s\S]*?<\/title>/)[0];
+ const menu=html.match(/<aside class="sidebar">[\s\S]*?<\/aside>/)[0];
+ return `<!doctype html><html lang="pt-BR">${cabecalho.replace(/<title>[\s\S]*?<\/title>/,titulo).replace('</head>',`
+ <style>
+ .crm-painel { position:fixed; inset:0 0 0 var(--atlas-sidebar-width); width:calc(100% - var(--atlas-sidebar-width)); height:100%; border:0; }
+ @media(max-width:760px){.crm-painel{inset:0 0 auto;width:100%;height:calc(100% - 72px - env(safe-area-inset-bottom));}}
+ </style></head>`)}
+ <body class="crm-page" data-crm-role="${papel}" data-crm-secao="${arquivo}">${menu}
+ <iframe class="crm-painel" id="crmPainel" title="Seção do CRM"></iframe>
+ <script src="/auth-ui.js"></script><script src="/crm-navegacao.js?v=1"></script>
+ </body></html>`;
+}
+const estiloPainel=`<style>
+ body.crm-page { --atlas-sidebar-width:0px; padding-bottom:0!important; }
+ body.crm-page .sidebar { display:none!important; }
+ </style>`;
 async function enviarPagina(req,res,arquivo){
  if(!PAGINAS.includes(arquivo))throw new Error('Página não permitida.');
  const papel=obterPapel(req.usuario)==='administrador'?'administrador':'secretaria';
- res.set('Cache-Control','no-store');return res.type('html').send(paginasPorPapel.get(arquivo)[papel]);
+ const html=paginasPorPapel.get(arquivo)[papel];
+ const interno=req.get('sec-fetch-dest')==='iframe'||req.query.painel==='1';
+ res.set('Cache-Control','no-store');
+ return res.type('html').send(interno?html.replace('</head>',estiloPainel+'</head>'):montarEstrutura(html,papel,arquivo));
 }
 module.exports={enviarPagina,renderizarPagina,PAGINAS};
