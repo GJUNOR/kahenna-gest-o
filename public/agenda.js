@@ -170,7 +170,11 @@ function renderizarCalendario() {
         const item = document.createElement("li");
         const diaSemana = dia.toLocaleDateString("pt-BR", { weekday: "long" }).replace(/^./, letra => letra.toUpperCase());
         const data = dia.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
-        item.textContent = `${diaSemana}, ${data} · ${turno.periodo}`;
+        const diaLabel = document.createElement("strong");
+        diaLabel.textContent = diaSemana;
+        const periodoLabel = document.createElement("span");
+        periodoLabel.textContent = `${data} · ${turno.periodo}`;
+        item.append(diaLabel, periodoLabel);
         return [item];
     }));
     resumo.parentElement.hidden = !resumo.childElementCount;

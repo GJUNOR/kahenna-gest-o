@@ -12,9 +12,18 @@
 }
 
 .crm-page .turnos-clinica { margin: 0 0 16px; color: #681c2b; }
-.crm-page .turnos-clinica h2 { margin: 0 0 6px; font-size: .9rem; }
-.crm-page .turnos-clinica ul { display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
-.crm-page .turnos-clinica li { padding:4px 9px; border-radius:7px; background:#eee0e3; font-size:.78rem; }
+.crm-page .turnos-clinica h2 { margin: 0 0 10px; font-size: .9rem; }
+.crm-page .turnos-clinica ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,135px),1fr)); gap:10px; margin:0; padding:0; list-style:none; }
+.crm-page .turnos-clinica li {
+  display:grid;
+  gap:3px;
+  padding:10px 13px;
+  border:1px solid #e9dce0;
+  border-radius:10px;
+  background:#fdfafa;
+}
+.crm-page .turnos-clinica li strong { font-size:.83rem; font-weight:600; }
+.crm-page .turnos-clinica li span { color:#75525c; font-size:.77rem; }
 .crm-page .week-calendar .calendar-slot.horario-de-clinica {
   background: #eee0e3 !important;
   box-shadow: inset 2px 0 #9b5261;
