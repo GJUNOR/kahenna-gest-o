@@ -50,7 +50,28 @@ async function listarVisitantes() {
         throw error;
     }
 
-    return Array.isArray(data) ? data : [];
+    const visitantes = Array.isArray(data) ? data : [];
+    if (!visitantes.length) return visitantes;
+
+    const datas = new Map();
+    const tamanhoPagina = 250;
+    for (let inicio = 0; ; inicio += tamanhoPagina) {
+        const { data: atendimentos, error: erroAtendimentos } = await supabase
+            .from("estoque_atendimentos")
+            .select("paciente_id,ocorrido_em")
+            .order("ocorrido_em", { ascending: false })
+            .order("id")
+            .range(inicio, inicio + tamanhoPagina - 1);
+        if (erroAtendimentos) throw erroAtendimentos;
+        for (const { paciente_id, ocorrido_em } of atendimentos) {
+            if (!datas.has(paciente_id)) datas.set(paciente_id, ocorrido_em);
+        }
+        if (atendimentos.length < tamanhoPagina) break;
+    }
+    return visitantes.map(paciente => ({
+        ...paciente,
+        ultimo_atendimento: datas.get(paciente.visitante_id) ?? null
+    }));
 }
 
 // ======================================================

@@ -1,5 +1,6 @@
 'use strict';
 const {createHash}=require('node:crypto');
+const { ordenarMateriais } = require('./estoque');
 const obterPapel=u=>String(u?.app_metadata?.papel||'').trim().toLowerCase();
 const usuarioEstaAtivo=u=>u?.app_metadata?.ativo===true&&['administrador','secretaria'].includes(obterPapel(u));
 const falha=(statusCode,message)=>Object.assign(new Error(message),{statusCode});
@@ -43,7 +44,7 @@ function criarServico(db){
   if(!conferir(await t('visitantes','visitante_id').eq('visitante_id',p).maybeSingle()))throw falha(404,'Paciente não encontrado.');
   if(s==='atendimentos'){consulta=t('agendamentos','id,data_avaliacao,status,observacao,confirmado_em,lembrete_enviado_em',opt).eq('visitante_id',p).order('data_avaliacao',{ascending:false});projetar=({id,data_avaliacao,status,observacao,confirmado_em,lembrete_enviado_em})=>({id,data_avaliacao,status,observacao,confirmado_em,lembrete_enviado_em});}
   if(s==='financeiro'){consulta=t('lancamentos_financeiros','id,tipo,descricao,valor,forma_pagamento,parcelas,criado_em',opt).eq('visitante_id',p).order('criado_em',{ascending:false});projetar=({id,tipo,descricao,valor,forma_pagamento,parcelas,criado_em})=>({id,tipo,descricao,valor,forma_pagamento,parcelas,criado_em});}
-  if(s==='materiais'){consulta=t('estoque_atendimentos','id,descricao,ocorrido_em,custo_total,itens:estoque_movimentos(quantidade,unidade_registro,valor_total,produto:estoque_produtos(nome))',opt).eq('paciente_id',p).order('ocorrido_em',{ascending:false}).order('criado_em',{ascending:false});projetar=({id,descricao,ocorrido_em,custo_total,itens})=>({id,descricao,ocorrido_em,custo_total,itens:(itens||[]).map(m=>({nome:m.produto?.nome||'Produto',quantidade:m.quantidade,unidade:m.unidade_registro,valor:m.valor_total}))});}
+  if(s==='materiais'){consulta=t('estoque_atendimentos','id,descricao,ocorrido_em,custo_total,itens:estoque_movimentos(quantidade,unidade_registro,valor_total,produto:estoque_produtos(nome,categoria))',opt).eq('paciente_id',p).order('ocorrido_em',{ascending:false}).order('criado_em',{ascending:false});projetar=({id,descricao,ocorrido_em,custo_total,itens})=>({id,descricao,ocorrido_em,custo_total,itens:(itens||[]).sort((a,b)=>ordenarMateriais(a.produto,b.produto)).map(m=>({nome:m.produto?.nome||'Produto',quantidade:m.quantidade,unidade:m.unidade_registro,valor:m.valor_total}))});}
   if(s==='documentos'){consulta=t('documentos_pacientes','id,nome_original,tamanho_bytes,sha256,criado_em,arquivo:documentos_arquivos(finalizado_em)',opt).eq('paciente_id',p).order('criado_em',{ascending:false});projetar=({id,nome_original,tamanho_bytes,sha256,criado_em,arquivo})=>({id,nome_original,tamanho_bytes,sha256,criado_em,finalizado_em:arquivo?.finalizado_em||null,estado:arquivo?'arquivado':'pendente'});}
   const r=await consulta.order('id',{ascending:false}).range(inicio,inicio+19);const itens=(conferir(r)||[]).map(projetar);if(s==='documentos')await auditar(p,u);return {itens,total:r.count||0,pagina:n};
  },

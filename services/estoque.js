@@ -19,4 +19,16 @@ function criarServico(db){return {
  async definirAtivo(produtoId,ativo){id(produtoId);const {data,error}=await db.from('estoque_produtos').update({ativo}).eq('id',produtoId).select('*').maybeSingle();conferir(error);if(!data)throw falha(404,"Produto não encontrado.");return data;},
  async movimentar(d,u){const args=movimento(d,u);const {data,error}=await db.rpc('kahenna_movimentar_estoque',args);conferir(error);return data;}
 };}
-module.exports={criarServico,produto,movimento,periodo,decimal};
+function prioridadeMaterial(produto) {
+    const categoria = (produto?.categoria || "").normalize("NFD").replace(/\p{M}/gu, "").trim().toLowerCase();
+    if (categoria.includes("descart")) return 2;
+    if (categoria === "produtos" || categoria.includes("estetic")) return 0;
+    return 1;
+}
+
+function ordenarMateriais(a, b) {
+    return prioridadeMaterial(a) - prioridadeMaterial(b)
+        || (a?.nome || "").localeCompare(b?.nome || "", "pt-BR");
+}
+
+module.exports={criarServico,produto,movimento,periodo,decimal,prioridadeMaterial,ordenarMateriais};
