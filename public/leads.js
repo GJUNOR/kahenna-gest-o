@@ -1570,6 +1570,7 @@ function configurarModalEdicao() {
     obterElemento("financeiroPagamentoPacote")?.addEventListener("change", atualizarOpcoesPacote);
     obterElemento("financeiroPacote")?.addEventListener("change", atualizarOpcoesPacote);
     obterElemento("financeiroParcelas")?.addEventListener("change", atualizarValorPacote);
+    obterElemento("financeiroPagamentoAvaliacao")?.addEventListener("change", atualizarParcelasAtendimento);
     obterElemento("registrarAvaliacao")?.addEventListener("click", registrarAvaliacaoFinanceira);
     obterElemento("registrarPacote")?.addEventListener("click", registrarPacoteFinanceiro);
     atualizarOpcoesPacote();
@@ -1601,6 +1602,16 @@ const TABELA_PACOTES = {
     10: { vista: 2500, parcelado: 3000, max: 10 },
     20: { vista: 4500, parcelado: 5000, max: 10 }
 };
+
+function atualizarParcelasAtendimento() {
+    const grupo = obterElemento("grupoParcelasAtendimento");
+    const select = obterElemento("financeiroParcelasAtendimento");
+    if (!grupo || !select) return;
+    const credito = obterValorElemento("financeiroPagamentoAvaliacao") === "credito";
+    grupo.hidden = !credito;
+    select.disabled = !credito;
+    if (!credito) select.value = "1";
+}
 
 function atualizarOpcoesPacote() {
     const forma = obterValorElemento("financeiroPagamentoPacote");
@@ -1688,13 +1699,14 @@ async function enviarLancamentoFinanceiro(dados, botao) {
 
 async function registrarAvaliacaoFinanceira() {
     const botao = obterElemento("registrarAvaliacao");
+    const forma = obterValorElemento("financeiroPagamentoAvaliacao");
     try {
         await enviarLancamentoFinanceiro({
             tipo: "atendimento",
             descricao: obterValorElemento("financeiroDescricao"),
             valor: lerValorMonetario(obterValorElemento("financeiroValorLivre")),
-            forma_pagamento: obterValorElemento("financeiroPagamentoAvaliacao"),
-            parcelas: 1,
+            forma_pagamento: forma,
+            parcelas: forma === "credito" ? Number(obterValorElemento("financeiroParcelasAtendimento") || 1) : 1,
             observacao: null
         }, botao);
     } catch (erro) { mostrarFeedbackFinanceiro(erro.message || "Não foi possível registrar a avaliação.", "erro"); }

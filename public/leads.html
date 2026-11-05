@@ -363,7 +363,7 @@
 <!-- BIBLIOTECAS E JAVASCRIPT -->
 <!-- ========================================== -->
 
-<script src="/aniversarios.js?v=1"></script><script src="/leads.js?v=15"></script>
+<script src="/aniversarios.js?v=1"></script><script src="/leads.js?v=16"></script>
 <dialog id="documentosDialog" class="documentos-dialog" aria-labelledby="documentosTitulo">
 <header><h2 id="documentosTitulo">Documentos do paciente</h2><button type="button" id="documentosFechar" aria-label="Fechar documentos"><span aria-hidden="true">×</span></button></header>
 <p id="documentosPaciente"></p>
@@ -444,7 +444,7 @@
 
                 <div class="financeiro-feedback" id="financeiroFeedback" hidden></div>
 
-                <div class="financeiro-form-grid"><div class="financeiro-form-card"><h3>Registrar atendimento</h3><label>Descrição<input id="financeiroDescricao" maxlength="200" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroDescricao"></label><label>Valor recebido (R$)<input id="financeiroValorLivre" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroValorLivre" maxlength="17" aria-label="Valor recebido em reais"></label><label>Pagamento<select id="financeiroPagamentoAvaliacao"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Cartão de débito</option><option value="credito">Cartão de crédito</option></select></label><button type="button" class="btn-financeiro" id="registrarAvaliacao">Registrar pagamento</button></div></div><div class="financeiro-historico">
+                <div class="financeiro-form-grid"><div class="financeiro-form-card"><h3>Registrar atendimento</h3><label>Descrição<input id="financeiroDescricao" maxlength="200" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroDescricao"></label><label>Valor recebido (R$)<input id="financeiroValorLivre" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_financeiroValorLivre" maxlength="17" aria-label="Valor recebido em reais"></label><label>Pagamento<select id="financeiroPagamentoAvaliacao"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Cartão de débito</option><option value="credito">Cartão de crédito</option></select></label><label id="grupoParcelasAtendimento" hidden>Parcelas<select id="financeiroParcelasAtendimento" disabled><option value="1">1x</option><option value="2">2x</option><option value="3">3x</option><option value="4">4x</option><option value="5">5x</option><option value="6">6x</option><option value="7">7x</option><option value="8">8x</option><option value="9">9x</option><option value="10">10x</option><option value="11">11x</option><option value="12">12x</option></select></label><button type="button" class="btn-financeiro" id="registrarAvaliacao">Registrar pagamento</button></div></div><div class="financeiro-historico">
                     <h3>Histórico financeiro</h3>
                     <div id="listaFinanceiroPaciente"><p class="financeiro-vazio">Nenhum lançamento registrado.</p></div>
                 </div>

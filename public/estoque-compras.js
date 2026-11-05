@@ -9,10 +9,18 @@ window.StockCompras=(()=>{
  function ajustar(){const compra=$('produtoComCompra').checked,conversao=$('converterSaldo').checked;
   $('produtoCompra').hidden=!compra;$('produtoCompra').disabled=!compra;$('camposConversao').hidden=!conversao;$('conversaoResumo').hidden=!conversao;$('conversaoConteudo').disabled=!conversao;$('conversaoUnidade').disabled=!conversao;
   $('conversaoConteudo').required=conversao;for(const id of ['compraQuantidade','compraData'])$(id).required=compra;
-  const u=unidade(),pacote=$('compraEmbalagem').value,emb=['caixa','pacote','frasco'].includes(pacote);
+  const u=unidade();
+  const passo=u==='un'?1:0.001;
+  for(const id of ['compraQuantidade','compraConteudo','conversaoConteudo']){
+   $(id).step=passo;
+   $(id).min=passo;
+  }
+  $('produtoMinimo').step=passo;
   for(const op of $('compraEmbalagem').options)op.disabled=!['caixa','pacote','frasco',u,...(u==='ml'?['l']:u==='g'?['kg']:[])].includes(op.value);
   if($('compraEmbalagem').selectedOptions[0]?.disabled)$('compraEmbalagem').value=u;
+  const emb=['caixa','pacote','frasco'].includes($('compraEmbalagem').value);
   $('compraConteudoLabel').hidden=!emb;$('compraConteudo').required=compra&&emb;
+  $('compraConteudo').disabled=!emb;
   $('compraConteudoLabel').firstChild.textContent=(u==='un'?'Unidades':u==='ml'?'Mililitros':'Gramas')+' por embalagem';
   const fator=emb?Number($('compraConteudo').value):['l','kg'].includes($('compraEmbalagem').value)?1000:1,quantidade=Number($('compraQuantidade').value)*fator,total=$('compraValor').value!==''?Number($('compraValor').value):$('compraCusto').value!==''?Math.round(quantidade*Number($('compraCusto').value)*100)/100:null;
   $('compraUnidades').textContent=quantidade>0?q(quantidade)+' '+u:'—';$('compraCustoCalculado').textContent=quantidade>0&&total!==null?money(total/quantidade,8)+' / '+u:'—';$('compraTotal').textContent=total!==null?money(total):'—';
