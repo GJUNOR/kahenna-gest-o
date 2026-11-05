@@ -105,13 +105,15 @@
   const janela=$('crmJanelaAcao'),quadro=$('crmAcaoQuadro'),estado=$('crmAcaoEstado');
   if(janela.open)return;
   const foco=document.activeElement;
-  let observador,timer,abriu=false;
+  let observador,observadorTamanho,timer,abriu=false;
   estado.hidden=false;
   estado.querySelector('p').textContent='Carregando…';
   quadro.hidden=true;
+  quadro.style.clipPath='';
   janela.addEventListener('close',()=>{
    clearTimeout(timer);
    observador?.disconnect();
+   observadorTamanho?.disconnect();
    quadro.onload=null;
    quadro.src='about:blank';
    janela.oncancel=null;
@@ -148,6 +150,15 @@
     clearTimeout(timer);
     quadro.hidden=false;
     estado.hidden=true;
+    const cartao=modal.querySelector('.schedule-modal-card, .modal-edicao')||modal;
+    const recortar=()=>{
+     const {top,right,bottom,left}=cartao.getBoundingClientRect();
+     quadro.style.clipPath=`inset(${Math.max(0,top)}px ${Math.max(0,quadro.clientWidth-right)}px ${Math.max(0,quadro.clientHeight-bottom)}px ${Math.max(0,left)}px round 18px)`;
+    };
+    recortar();
+    observadorTamanho=new ResizeObserver(recortar);
+    observadorTamanho.observe(cartao);
+    observadorTamanho.observe(quadro);
     const primeiro=modal.querySelector('input:not([type=hidden]):not([disabled]), button:not([disabled]), select:not([disabled])');
     primeiro?.focus({preventScroll:true});
    };
