@@ -3,6 +3,7 @@
 const supabase = require("../config/supabase");
 const { randomUUID } = require("crypto");
 const { normalizarNascimento } = require("../public/aniversarios");
+const cadastroSeguro = require('./paciente-unificado').criarServico(supabase);
 
 const ORIGENS_MANUAIS = new Set([
     "indicacao",
@@ -217,6 +218,9 @@ async function atualizarVisitante(
         throw erro;
     }
 
+    if (dadosPermitidos.nome !== undefined || dadosPermitidos.telefone !== undefined) {
+        await cadastroSeguro.verificarCadastro({...dadosPermitidos,confirmacao_duplicado:dadosRecebidos.confirmacao_duplicado},visitanteId);
+    }
     const { data, error } = await supabase
         .from("visitantes")
         .update(dadosPermitidos)
@@ -291,6 +295,7 @@ async function criarVisitante(
     const agora =
         new Date().toISOString();
 
+    await cadastroSeguro.verificarCadastro(dadosRecebidos);
     const novoVisitante = {
         visitante_id: randomUUID(),
         nome,

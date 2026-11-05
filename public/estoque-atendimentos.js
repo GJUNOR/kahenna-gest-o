@@ -38,7 +38,8 @@
    page++;
   }while(true);
  }
- async function abrir(){
+ async function abrir(pacienteId=null){
+  if(typeof pacienteId!=='string')pacienteId=null;
   foco=document.activeElement;op=crypto.randomUUID();const ticket=++sessao;++listaTicket;
   busy=false;carregando=true;carregandoLista=false;erroLista=false;pacienteAnterior='';produtos.clear();disponiveis.clear();selecionados.clear();
   $('atendimentoForm').reset();$('atendimentoOpcoesLista').open=false;$('atendimentoErro').hidden=true;
@@ -50,7 +51,7 @@
    const [ps,stock]=await Promise.all([todasPaginas('/pacientes','pacientes',ticket),todasPaginas('/catalogo?disponiveis=true','produtos',ticket)]);
    if(ticket!==sessao)return;
    $('atendimentoPaciente').innerHTML='<option value="">'+(ps.length?'Selecione':'Nenhum paciente cadastrado')+'</option>'+ps.map(p=>`<option value="${esc(p.visitante_id)}">${esc(p.nome)}</option>`).join('');
-   for(const p of stock)disponiveis.set(p.id,{...p,ativo:true});produtos=new Map(disponiveis);desenhar();
+   for(const p of stock)disponiveis.set(p.id,{...p,ativo:true});produtos=new Map(disponiveis);desenhar();if(pacienteId&&ps.some(p=>p.visitante_id===pacienteId)){$('atendimentoPaciente').value=pacienteId;await lista();}
   }catch(e){if(ticket===sessao){erro(e);$('atendimentoItens').innerHTML='<p class="stock-selection-empty">Não foi possível carregar os produtos</p>';}}
   finally{if(ticket===sessao){carregando=false;$('atendimentoPaciente').disabled=false;$('atendimentoItens').setAttribute('aria-busy','false');}}
  }
@@ -86,6 +87,8 @@
  }
  async function relatorio(){const ticket=++reportTicket;try{const r=await api('/atendimentos?'+new URLSearchParams({mes:$('mesEstoque').value,pagina}));if(ticket!==reportTicket)return;$('listaAtendimentos').innerHTML=r.atendimentos.length?r.atendimentos.map(a=>`<details class="stock-attendance"><summary><span><strong>${esc(a.paciente?.nome||'Paciente')}</strong><small>${esc(String(a.ocorrido_em).slice(0,10).split('-').reverse().join('/'))} · ${esc(a.descricao)}</small></span><strong>${money(a.custo_total)}</strong></summary><div>${a.itens.map(i=>`<div class="stock-attendance-item"><span>${esc(i.produto?.nome)} · ${qtd(i.quantidade)} ${esc(i.unidade_registro)} × ${money(i.custo_unitario,8)}</span><strong>${money(i.valor_total)}</strong></div>`).join('')}</div></details>`).join(''):'<div class="stock-empty"><strong>Nenhum atendimento registrado</strong></div>';$('paginarAtendimentos').hidden=r.total<=15;$('atendimentosAnterior').disabled=pagina===0;$('atendimentosProximo').disabled=(pagina+1)*15>=r.total;$('paginaAtendimentos').textContent='Página '+(pagina+1);}catch(e){if(ticket===reportTicket)$('listaAtendimentos').textContent=e.message;}}
  document.addEventListener('DOMContentLoaded',()=>{
+  window.KahennaAtendimento={abrir:id=>abrir(id)};
+  const parametros=new URLSearchParams(location.search);if(parametros.get('novo_atendimento')==='1')queueMicrotask(()=>abrir(parametros.get('paciente')));
   $('novoAtendimento').addEventListener('click',abrir);$('atendimentoPaciente').addEventListener('change',lista);
   $('atendimentoDialog').addEventListener('cancel',e=>{if(busy)e.preventDefault();});
   $('atendimentoDialog').addEventListener('close',()=>{++sessao;++listaTicket;foco?.focus();});

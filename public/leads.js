@@ -299,6 +299,7 @@ function abrirModalNovoPaciente() {
         return;
     }
 
+    window.CrmPaciente?.limparAviso("modalNovoPacienteOverlay");
     campoNome.value = "";
     campoTelefone.value = "";
     campoOrigem.value = "";
@@ -400,25 +401,16 @@ async function cadastrarNovoPaciente() {
     );
 
     try {
-        const resposta = await fetch(
-            API_LEADS,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json"
-                },
-                body: JSON.stringify({
+        const resposta = await window.CrmPaciente.enviarCadastro(API_LEADS, {
                     nome,
                     telefone,
                     status: "novo",
                     data_nascimento: obterValorElemento("novoPacienteNascimento"),
                     origem
-                })
-            }
-        );
+                }, 'POST', 'modalNovoPacienteOverlay', 'salvarNovoPaciente');
 
         if (!resposta.ok) {
+            if (resposta.crmAvisoExibido) return;
             const mensagem =
                 await lerMensagemDeErro(resposta);
 
@@ -1381,7 +1373,7 @@ async function salvarEdicaoRapida() {
         true
     );
 
-    fecharModalEdicao();
+
 
     try {
         const dadosPaciente = {
@@ -1394,22 +1386,10 @@ async function salvarEdicaoRapida() {
             dadosPaciente.origem = origem;
         }
 
-        const resposta = await fetch(
-            `${API_LEADS}/${encodeURIComponent(id)}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type":
-                        "application/json",
-                    Accept: "application/json"
-                },
-                body: JSON.stringify(
-                    dadosPaciente
-                )
-            }
-        );
+        const resposta = await window.CrmPaciente.enviarCadastro(`${API_LEADS}/${encodeURIComponent(id)}`, dadosPaciente, 'PUT', 'modalEdicaoOverlay', 'salvarStatusFinanceiro');
 
         if (!resposta.ok) {
+            if (resposta.crmAvisoExibido) return;
             const mensagem =
                 await lerMensagemDeErro(resposta);
 
@@ -1455,6 +1435,7 @@ async function salvarEdicaoRapida() {
             atualizarAvaliacoesHoje()
         ]);
 
+        fecharModalEdicao();
         mostrarMensagem(
             "Paciente atualizado com sucesso.",
             "sucesso"
@@ -1480,6 +1461,7 @@ async function salvarEdicaoRapida() {
 
 function abrirModalIdentificacao(lead) {
     if (!lead) return;
+    window.CrmPaciente?.limparAviso("modalIdentificacaoOverlay");
     leadIdentificacaoEmEdicao = lead;
     definirValor("editarNomeIdentificacao", obterPrimeiroValor(lead.nome, ""));
     definirValor("editarTelefoneIdentificacao", obterPrimeiroValor(lead.telefone, ""));
@@ -1514,12 +1496,9 @@ async function salvarIdentificacaoPaciente() {
     const botao = obterElemento("salvarIdentificacaoPaciente");
     definirBotaoCarregando(botao, true);
     try {
-        const resposta = await fetch(`${API_LEADS}/${encodeURIComponent(id)}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ nome, telefone, data_nascimento: obterValorElemento("editarNascimentoIdentificacao") })
-        });
+        const resposta = await window.CrmPaciente.enviarCadastro(`${API_LEADS}/${encodeURIComponent(id)}`, { nome, telefone, data_nascimento: obterValorElemento("editarNascimentoIdentificacao") }, 'PUT', 'modalIdentificacaoOverlay', 'salvarIdentificacaoPaciente');
         if (!resposta.ok) {
+            if (resposta.crmAvisoExibido) return;
             throw new Error(await lerMensagemDeErro(resposta) || "Não foi possível editar o paciente.");
         }
 
@@ -1881,15 +1860,6 @@ function criarLinhaLead(lead) {
             <div class="paciente-avatar" aria-hidden="true">
                 <i class="fa-solid fa-user"></i>
             </div>
-            <button
-                type="button"
-                class="btn-editar-identificacao"
-                data-id="${escaparAtributo(id)}"
-                aria-label="Editar cadastro"
-                title="Editar cadastro"
-            >
-                <i class="fa-solid fa-pen"></i>
-            </button>
         </div>
 
         <div class="paciente-dados">
@@ -1915,35 +1885,11 @@ function criarLinhaLead(lead) {
         ${colunasFinanceiras}
 
         <td class="coluna-acoes">
-            <div class="grupo-acoes-paciente"><button type="button" class="btn-documentos-paciente" data-documentos-paciente="${escaparAtributo(id)}" data-documentos-nome="${escaparAtributo(nome)}" aria-label="Documentos do paciente">PDFs</button><button type="button" class="btn-reminder-paciente" aria-label="Preparar lembrete"><span class="reminder-action-icon"><i class="fa-regular fa-bell" aria-hidden="true"></i></span><span>Lembrete</span></button>
-
-                <button
-                    type="button"
-                    class="btn-whatsapp-paciente"
-                    data-id="${escaparAtributo(id)}"
-                    aria-label="Atender pelo WhatsApp"
-                    title="Atender pelo WhatsApp"
-                >
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <span>WhatsApp</span>
-                </button>
-
-                <button
-                    type="button"
-                    class="btn-editar-paciente"
-                    data-id="${escaparAtributo(id)}"
-                    aria-label="Abrir financeiro"
-                    title="Abrir financeiro"
-                >
-                    <i class="fa-solid fa-coins"></i>
-                    <span>Financeiro</span>
-                </button>
-
-            </div>
+            <div class="grupo-acoes-paciente"><button type="button" class="crm-ver-mais" data-ver-paciente="${escaparAtributo(id)}" aria-label="Ver mais sobre ${escaparAtributo(nome)}">Ver mais</button></div>
         </td>
     `;
 
-    tr.querySelector('.btn-reminder-paciente').addEventListener('click', evento => {
+    tr.querySelector('.btn-reminder-paciente')?.addEventListener('click', evento => {
         evento.stopPropagation(); window.abrirLembretePaciente(lead);
     });
     const botaoVisualizar =
@@ -3523,3 +3469,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById(id)?.setAttribute("max", hoje);
     }
 });
+
+window.KahennaPacientes={
+ financeiro:p=>abrirModalEdicao(todosOsLeads.find(l=>String(obterIdLead(l))===String(p.visitante_id))||p),
+ editar:p=>abrirModalIdentificacao(todosOsLeads.find(l=>String(obterIdLead(l))===String(p.visitante_id))||p)
+};

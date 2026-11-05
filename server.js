@@ -17,6 +17,7 @@ app.get('/estoque.html',exigirAdministradorPagina,(req,res)=>enviarPagina(req,re
 app.get('/configuracoes.html',exigirAdministradorPagina,(req,res)=>enviarPagina(req,res,'configuracoes.html'));
 app.get(['/dashboard.html','/agenda.html','/leads.html'],exigirAutenticacaoPagina,(req,res)=>enviarPagina(req,res,req.path.slice(1).toLowerCase()));
 app.use('/api',exigirAutenticacaoApi);
+app.use('/api/clinica',require('./routes/paciente-unificado')(require('./config/supabase')));
 app.use('/api/pacientes',require('./routes/documentos')(require('./config/supabase')));
 app.use('/',require('./routes/leads'));
 app.use('/',require('./routes/agendamentos'));

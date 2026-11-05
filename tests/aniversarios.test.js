@@ -25,11 +25,11 @@ test('WhatsApp prepara mensagem codificada e recusa telefone inválido',()=>{
 });
 test('serviço salva/remove nascimento e omissão preserva data existente',async()=>{
  const config=require.resolve('../config/supabase');let last;
- const client={from(){return {insert(record){last=record;return this;},update(record){last=record;return this;},eq(){return this;},select(){return this;},async single(){return {data:last};},async maybeSingle(){return {data:last};}};}};
+ const client={from(){return {insert(record){last=record;return this;},update(record){last=record;return this;},eq(){return this;},select(){return this;},order(){return this;},async range(){return {data:[]};},async single(){return {data:last};},async maybeSingle(){return {data:last};}};}};
  require.cache[config]={id:config,filename:config,loaded:true,exports:client};
  const svc=require('../services/visitantes');
  await svc.criarVisitante({nome:'Ficticio',telefone:'00000000000',data_nascimento:'2000-10-26'});assert.equal(last.data_nascimento,'2000-10-26');
  await svc.atualizarVisitante('teste',{data_nascimento:''});assert.equal(last.data_nascimento,null);
- await svc.atualizarVisitante('teste',{nome:'Novo nome'});assert.equal(Object.hasOwn(last,'data_nascimento'),false);
+ await svc.atualizarVisitante('11111111-1111-4111-8111-111111111111',{nome:'Novo nome'});assert.equal(Object.hasOwn(last,'data_nascimento'),false);
  await assert.rejects(svc.atualizarVisitante('teste',{data_nascimento:'2001-02-29'}),{statusCode:400});
 });
