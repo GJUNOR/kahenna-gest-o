@@ -1834,7 +1834,7 @@ function criarLinhaLead(lead) {
     );
 
     const ultimoAtendimento = lead.ultimo_atendimento
-        ? lead.ultimo_atendimento.split("-").reverse().join("/")
+        ? String(lead.ultimo_atendimento).slice(0, 10).split("-").reverse().join("/")
         : "—";
 
     const status = obterStatusLead(lead);

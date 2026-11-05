@@ -35,3 +35,25 @@
   color: #681c2b;
 }
 .crm-page .sidebar-main .crm-global-search:hover { background: #f0e1e6; }
+
+.crm-page .sidebar-main .menu a[data-navegando] {
+  background: #f3e5e8;
+  color: #681c2b;
+}
+
+@media (max-width: 760px) {
+  .crm-page .sidebar-main:has(.crm-global-search) {
+    display: flex !important;
+    align-items: center;
+  }
+  .crm-page .sidebar-main .crm-global-search {
+    flex: 0 0 36px;
+    width: 36px;
+    min-height: 40px;
+    justify-content: center;
+    margin: 0 4px 0 0;
+    padding: 0;
+  }
+  .crm-page .sidebar-main .crm-global-search span { display: none; }
+  .crm-page .sidebar-main .menu { flex: 1; min-width: 0; }
+}

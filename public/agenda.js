@@ -8,6 +8,7 @@ let inicioSemana = obterInicioSemana(new Date());
 let agendamentos = [];
 let pacientes = [];
 let agendamentoSelecionado = null;
+let consultaSemana = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
     configurarEventos();
@@ -111,6 +112,7 @@ function ocultarSugestoesPacientes() {
 }
 
 async function carregarAgenda() {
+    const consulta = ++consultaSemana;
     const botao = document.getElementById("atualizarAgenda");
     botao.disabled = true;
     const fimSemana = new Date(inicioSemana);
@@ -124,16 +126,18 @@ async function carregarAgenda() {
         const resposta = await fetch(`/api/agendamentos?${parametros}&t=${Date.now()}`, { cache: "no-store" });
         if (!resposta.ok) throw new Error(await lerErro(resposta));
         const retorno = await resposta.json();
+        if (consulta !== consultaSemana) return;
         agendamentos = retorno.data || [];
         renderizarCalendario();
         document.getElementById("resumoAgenda").textContent = `${agendamentos.length} ${agendamentos.length === 1 ? "agendamento" : "agendamentos"}`;
         ocultarMensagem();
     } catch (erro) {
+        if (consulta !== consultaSemana) return;
         agendamentos = [];
         renderizarCalendario();
         mostrarMensagem(`Não foi possível carregar a agenda: ${erro.message}`);
     } finally {
-        botao.disabled = false;
+        if (consulta === consultaSemana) botao.disabled = false;
     }
 }
 

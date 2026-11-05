@@ -191,6 +191,14 @@
  document.addEventListener('DOMContentLoaded',()=>{
   const button=document.createElement('button');button.type='button';button.className='crm-global-search';button.setAttribute('aria-label','Busca geral');button.title='Busca geral';button.innerHTML='<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Buscar</span>';document.querySelector('.sidebar-main .menu')?.before(button);button.addEventListener('click',abrirBusca);
   $('crmAcaoVoltar').addEventListener('click',()=>$('crmJanelaAcao').close());
+  const menu=document.querySelector('.sidebar-main .menu');
+  menu?.addEventListener('click',event=>{
+   const link=event.target.closest('a[href]');
+   if(!link||link.getAttribute('aria-current')==='page'||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey||event.defaultPrevented)return;
+   menu.querySelector('[data-navegando]')?.removeAttribute('data-navegando');
+   link.setAttribute('data-navegando','');
+  });
+  window.addEventListener('pageshow',()=>menu?.querySelector('[data-navegando]')?.removeAttribute('data-navegando'));
   for(const dialog of [$('crmFicha'),$('crmBusca')])dialog.querySelector('[data-crm-fechar]').addEventListener('click',()=>dialog.close());
   $('crmFicha').addEventListener('close',()=>{++fichaTicket;ficha=null;secCache.clear();fichaFoco?.focus();});$('crmBusca').addEventListener('close',()=>{clearTimeout(buscaTimer);++buscaTicket;buscaOcupada=false;buscaFoco?.focus();});
   $('crmFichaSecoes').querySelectorAll('details').forEach(det=>det.addEventListener('toggle',()=>{if(!det.open||!ficha)return;for(const outro of $('crmFichaSecoes').querySelectorAll('details'))if(outro!==det)outro.open=false;const s=det.dataset.crmSecao;if(!secCache.has(s))carregarSecao(s);}));
