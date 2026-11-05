@@ -149,3 +149,27 @@ html body.crm-page .sidebar .menu a[data-admin-only][hidden]{display:none!import
   outline: 2px solid #9b6175;
   outline-offset: 3px;
 }
+.crm-page .patients-table .grupo-acoes-paciente .crm-patient-history > span {
+  display: inline !important;
+}
+
+@media (min-width: 761px) {
+  .crm-patients-page .patients-table :is(th, td):nth-child(1) {
+    width: 48% !important;
+  }
+  .crm-patients-page .patients-table :is(th, td):nth-child(2) {
+    width: 20% !important;
+    white-space: nowrap !important;
+  }
+  .crm-patients-page .patients-table :is(th, td):nth-child(3) {
+    width: 16% !important;
+  }
+  .crm-patients-page .patients-table :is(th.actions-column, td.coluna-acoes) {
+    width: 16% !important;
+  }
+  .crm-patients-page .patients-table .paciente-dados strong {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+}
