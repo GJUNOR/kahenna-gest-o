@@ -11,8 +11,7 @@ let agendamentoSelecionado = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
     configurarEventos();
-    await carregarPacientes();
-    await carregarAgenda();
+    await Promise.all([carregarPacientes(), carregarAgenda()]);
     const parametros = new URLSearchParams(location.search);
     if (parametros.get("novo") === "1") {
         abrirModal(undefined, null, parametros.get("paciente"), parametros.get("retorno") === "1");

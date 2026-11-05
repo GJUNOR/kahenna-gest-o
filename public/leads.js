@@ -29,9 +29,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     configurarEventos();
 
-    await carregarMovimentacoesFinanceirasHoje();
-
+    const financeiroHoje = carregarMovimentacoesFinanceirasHoje();
     await carregarLeads();
+    await financeiroHoje;
 
     iniciarAtualizacaoAutomatica();
 
