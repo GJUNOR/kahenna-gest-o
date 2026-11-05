@@ -13,7 +13,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     configurarEventos();
     await carregarPacientes();
     await carregarAgenda();
-    if (new URLSearchParams(location.search).get("novo") === "1") abrirModal();
+    const parametros = new URLSearchParams(location.search);
+    if (parametros.get("novo") === "1") {
+        abrirModal();
+        selecionarPaciente(parametros.get("paciente"));
+    }
 });
 
 function configurarEventos() {

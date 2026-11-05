@@ -55,6 +55,7 @@
   if(!ficha)return;const p=perfilLead(),id=p.visitante_id;
   if(tipo==='documentos')return abrirPDF();
   $('crmFicha').close();
+  if(tipo==='agendar'){location.href='/agenda.html?'+new URLSearchParams({novo:'1',paciente:id});return;}
   if(tipo==='materiais'){if(window.KahennaAtendimento)window.KahennaAtendimento.abrir(id);else location.href='/estoque.html?'+new URLSearchParams({paciente:id,novo_atendimento:'1'});return;}
   if(location.pathname==='/leads.html'){
    if(tipo==='financeiro')return window.KahennaPacientes?.financeiro(p);
