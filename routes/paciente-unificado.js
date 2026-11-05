@@ -1,0 +1,10 @@
+'use strict';
+const express=require('express'),{criarServico,permissao}=require('../services/paciente-unificado');
+module.exports=function(db){const router=express.Router(),s=criarServico(db);
+ router.use((req,res,next)=>{try{permissao(req.usuario);next();}catch(e){next(e);}});
+ router.post('/busca',async(req,res)=>res.json(await s.buscar(req.body?.q,req.body?.pagina,req.usuario)));
+ router.post('/duplicados',async(req,res)=>res.json(await s.duplicados(req.body||{})));
+ router.get('/pacientes/:id',async(req,res)=>res.json(await s.resumo(req.params.id,req.usuario)));
+ router.get('/pacientes/:id/:secao',async(req,res)=>res.json(await s.secao(req.params.id,req.params.secao,req.query.pagina,req.usuario)));
+ router.use((e,req,res,next)=>res.status(e.statusCode||500).json({mensagem:(e.statusCode||500)>=500?'Não foi possível consultar os registros. Tente novamente.':e.message}));return router;
+};
