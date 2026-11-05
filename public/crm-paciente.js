@@ -48,22 +48,109 @@
   if(!ficha)return;const ticket=fichaTicket,seq=(secTickets.get(s)||0)+1;secTickets.set(s,seq);const el=$('crmFichaSecoes').querySelector(`[data-crm-lista="${s}"]`);el.innerHTML='<p class="crm-empty">Carregando…</p>';
   try{const d=await json(urlFicha(ficha.paciente.id)+'/'+s+'?pagina='+page);if(ticket!==fichaTicket||seq!==secTickets.get(s))return;secCache.set(s,d);renderSecao(s,d);}catch(e){if(ticket===fichaTicket&&seq===secTickets.get(s)){el.innerHTML=`<p class="crm-error">${esc(e.message)}</p><button type="button" class="crm-button" data-crm-page="${s}" data-pagina="${page}">Tentar novamente</button>`;}}
  }
- function abrirPDF(arquivoId=null){
-  if(!ficha?.permissoes.documentos||!window.KahennaDocumentos)return;const {id,nome}=ficha.paciente;$('crmFicha').close();window.KahennaDocumentos.abrir(id,nome,arquivoId,()=>abrir(id,'documentos'));
+ async function atualizarFicha(id){
+  const ticket=fichaTicket;
+  try{
+   const dados=await json(urlFicha(id));
+   if(ticket!==fichaTicket||!$('crmFicha').open)return;
+   ficha=dados;
+   $('crmFichaNome').textContent=dados.paciente.nome;
+   $('crmFichaContato').textContent=[foneBonito(dados.paciente.telefone),statusPaciente(dados.paciente.status)].filter(Boolean).join(' · ');
+   const link=whatsapp(dados.paciente.telefone);
+   $('crmFichaWhatsapp').hidden=!link;
+   if(link)$('crmFichaWhatsapp').href=link;else $('crmFichaWhatsapp').removeAttribute('href');
+   $('crmFichaProximo').textContent=dados.proximo?data(dados.proximo.data):'Sem agendamento';
+   $('crmFichaRecebido').textContent=money(dados.recebido);
+   for(const el of $('crmFichaSecoes').querySelectorAll('[data-crm-contagem]'))el.textContent=dados.contagens[el.dataset.crmContagem]??'';
+   const secao=$('crmFichaSecoes').querySelector('details[open]')?.dataset.crmSecao;
+   const pagina=secCache.get(secao)?.pagina??0;
+   secCache.clear();
+   if(secao){
+    const dadosSecao=await json(urlFicha(id)+'/'+secao+'?pagina='+pagina);
+    if(ticket!==fichaTicket||!$('crmFicha').open)return;
+    secCache.set(secao,dadosSecao);
+    renderSecao(secao,dadosSecao);
+   }
+  }catch{/* A ficha permanece disponível se a atualização falhar. */}
  }
- function acao(tipo){
-  if(!ficha)return;const p=perfilLead(),id=p.visitante_id;
-  if(tipo==='documentos')return abrirPDF();
-  $('crmFicha').close();
-  if(tipo==='agendar'){location.href='/agenda.html?'+new URLSearchParams({novo:'1',paciente:id});return;}
-  if(tipo==='retorno'){location.href='/agenda.html?'+new URLSearchParams({novo:'1',paciente:id,retorno:'1'});return;}
-  if(tipo==='materiais'){if(window.KahennaAtendimento)window.KahennaAtendimento.abrir(id);else location.href='/estoque.html?'+new URLSearchParams({paciente:id,novo_atendimento:'1'});return;}
+ function abrirPDF(arquivoId=null){
+  if(!ficha?.permissoes.documentos||!window.KahennaDocumentos)return;
+  const {id,nome}=ficha.paciente;
+  window.KahennaDocumentos.abrir(id,nome,arquivoId,()=>atualizarFicha(id));
+ }
+ function abrirAcaoLocal(tipo,p){
   if(location.pathname==='/leads.html'){
    if(tipo==='financeiro')return window.KahennaPacientes?.financeiro(p);
    if(tipo==='editar')return window.KahennaPacientes?.editar(p);
    if(tipo==='lembrete')return window.abrirLembretePaciente?.(p);
   }
-  location.href='/leads.html?'+new URLSearchParams({paciente:id,acao:tipo});
+ }
+ function acao(tipo){
+  if(!ficha)return;
+  const id=ficha.paciente.id;
+  if(tipo==='documentos')return abrirPDF();
+  const destinos={
+   agendar:['agenda.html','modalAgendamento',{novo:'1'}],
+   retorno:['agenda.html','modalAgendamento',{novo:'1',retorno:'1'}],
+   materiais:['estoque.html','atendimentoDialog',{novo_atendimento:'1'}],
+   financeiro:['leads.html','modalEdicaoOverlay',{acao:'financeiro'}],
+   editar:['leads.html','modalIdentificacaoOverlay',{acao:'editar'}],
+   lembrete:['leads.html','reminderDialog',{acao:'lembrete'}]
+  };
+  if(!Object.hasOwn(destinos,tipo))return;
+  const [pagina,alvo,parametros]=destinos[tipo];
+  abrirJanelaAcao('/'+pagina+'?'+new URLSearchParams({paciente:id,...parametros}),alvo,id,tipo);
+ }
+ function abrirJanelaAcao(url,alvo,id,tipo){
+  const janela=$('crmJanelaAcao'),quadro=$('crmAcaoQuadro'),estado=$('crmAcaoEstado');
+  if(janela.open)return;
+  const foco=document.activeElement;
+  let observador,timer,abriu=false;
+  estado.hidden=false;
+  estado.querySelector('p').textContent='Carregando…';
+  quadro.hidden=true;
+  janela.addEventListener('close',()=>{
+   clearTimeout(timer);
+   observador?.disconnect();
+   quadro.onload=null;
+   quadro.src='about:blank';
+   janela.oncancel=null;
+   foco?.focus({preventScroll:true});
+   if(!abriu)return;
+   atualizarFicha(id);
+   if(tipo==='agendar'||tipo==='retorno')$('atualizarAgenda')?.click();
+   if(tipo==='materiais')$('atualizarEstoque')?.click();
+   if(tipo==='editar'||tipo==='financeiro')$('btnAtualizar')?.click();
+  },{once:true});
+  janela.oncancel=e=>{if(abriu)e.preventDefault();};
+  janela.showModal();
+  timer=setTimeout(()=>{estado.querySelector('p').textContent='Não foi possível abrir esta ação. Feche e tente novamente.';},15000);
+  quadro.onload=()=>{
+   const doc=quadro.contentDocument,modal=doc?.getElementById(alvo);
+   if(!modal)return;
+   const css=doc.createElement('style');
+   css.textContent=`
+    html,body { background:transparent !important; overflow:hidden !important; }
+    body { visibility:hidden; }
+    #${alvo},#${alvo} * { visibility:visible; }
+   `;
+   doc.head.append(css);
+   const acompanhar=()=>{
+    const aberto=modal.tagName==='DIALOG'?modal.open:alvo==='modalAgendamento'?!modal.hidden:modal.classList.contains('open');
+    if(!aberto){if(abriu)janela.close();return;}
+    if(abriu)return;
+    abriu=true;
+    clearTimeout(timer);
+    quadro.hidden=false;
+    estado.hidden=true;
+    const primeiro=modal.querySelector('input:not([type=hidden]):not([disabled]), button:not([disabled]), select:not([disabled])');
+    primeiro?.focus({preventScroll:true});
+   };
+   observador=new MutationObserver(acompanhar);
+   observador.observe(modal,{attributes:true,attributeFilter:['class','hidden','open']});
+   acompanhar();
+  };
+  quadro.src=url;
  }
  function renderBusca(){
   $('crmBuscaResultados').innerHTML=Object.entries(rotulos).map(([tipo,nome])=>{
@@ -102,7 +189,8 @@
  }
  window.CrmPaciente={abrir,abrirBusca,enviarCadastro,limparAviso};
  document.addEventListener('DOMContentLoaded',()=>{
-  const button=document.createElement('button');button.type='button';button.className='crm-global-search';button.setAttribute('aria-label','Busca geral');button.title='Busca geral';button.innerHTML='<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Buscar</span>';(document.querySelector('.sidebar-main')||document.body).append(button);button.addEventListener('click',abrirBusca);
+  const button=document.createElement('button');button.type='button';button.className='crm-global-search';button.setAttribute('aria-label','Busca geral');button.title='Busca geral';button.innerHTML='<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Buscar</span>';document.querySelector('.sidebar-main .menu')?.before(button);button.addEventListener('click',abrirBusca);
+  $('crmAcaoVoltar').addEventListener('click',()=>$('crmJanelaAcao').close());
   for(const dialog of [$('crmFicha'),$('crmBusca')])dialog.querySelector('[data-crm-fechar]').addEventListener('click',()=>dialog.close());
   $('crmFicha').addEventListener('close',()=>{++fichaTicket;ficha=null;secCache.clear();fichaFoco?.focus();});$('crmBusca').addEventListener('close',()=>{clearTimeout(buscaTimer);++buscaTicket;buscaOcupada=false;buscaFoco?.focus();});
   $('crmFichaSecoes').querySelectorAll('details').forEach(det=>det.addEventListener('toggle',()=>{if(!det.open||!ficha)return;for(const outro of $('crmFichaSecoes').querySelectorAll('details'))if(outro!==det)outro.open=false;const s=det.dataset.crmSecao;if(!secCache.has(s))carregarSecao(s);}));
@@ -113,6 +201,6 @@
   $('crmBuscaResultados').addEventListener('click',e=>{const b=e.target.closest('[data-crm-destino]');if(!b)return;if(b.dataset.crmDestino==='estoque'){location.href='/estoque.html?'+new URLSearchParams({buscar:b.dataset.crmId});return;}const {crmId,crmSecaoDestino,crmArquivo}=b.dataset;$('crmBusca').close();abrir(crmId,crmSecaoDestino).then(()=>{if(crmArquivo&&ficha?.paciente.id===crmId)abrirPDF(crmArquivo);});});
   for(const context of ['modalNovoPacienteOverlay','modalIdentificacaoOverlay','modalEdicaoOverlay'])$(context)?.addEventListener('input',()=>limparAviso(context));
   const params=new URLSearchParams(location.search),p=params.get('paciente'),acaoInicial=params.get('acao');
-  if(location.pathname==='/leads.html'&&p){abrir(p).then(()=>{if(ficha&&['financeiro','editar','lembrete'].includes(acaoInicial))acao(acaoInicial);});}
+  if(location.pathname==='/leads.html'&&p){abrir(p).then(()=>{if(ficha&&['financeiro','editar','lembrete'].includes(acaoInicial)){const paciente=perfilLead();$('crmFicha').close();abrirAcaoLocal(acaoInicial,paciente);}});}
  });
 })();
