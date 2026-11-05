@@ -12,7 +12,7 @@ function renderizarPagina(html,papel,arquivo){
  let page=html.replace(/<body([^>]*)>/i,(_,attrs)=>`<body${attrs.replace(/\sdata-crm-role="[^"]*"/g,'')} data-crm-role="${role}">`).replace(/<nav\s+class="menu"[^>]*>[\s\S]*?<\/nav>/i,`<nav class="menu" aria-label="Navegação principal">${menu}</nav>`);
  let extra=fichaHTML;
  if(role==='administrador'&&!page.includes('id="documentosDialog"')){extra+=pdfHTML+'<script src="/documentos.js?v=4"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/documentos.css?v=3"></head>');}
- return page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=1"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=1"></script></body>');
+ return page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=2"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=1"></script></body>');
 }
 async function enviarPagina(req,res,arquivo){
  if(!PAGINAS.includes(arquivo))throw new Error('Página não permitida.');
