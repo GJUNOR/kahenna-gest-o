@@ -4,6 +4,8 @@ const {obterPapel}=require('./auth');
 const fsSync=require('node:fs');
 const fichaHTML=fsSync.readFileSync(path.join(__dirname,'../public/crm-paciente.html'),'utf8');
 const pdfHTML=fsSync.readFileSync(path.join(__dirname,'../public/documentos-dialog.html'),'utf8');
+const agendaHTML=fsSync.readFileSync(path.join(__dirname,'../public/agenda.html'),'utf8');
+const agendaFormulario=agendaHTML.slice(agendaHTML.indexOf('<div class="schedule-modal"'),agendaHTML.indexOf('<script src="/auth-ui.js"'));
 const PAGINAS=['dashboard.html','leads.html','agenda.html','estoque.html','configuracoes.html'];
 const MENU=[['dashboard.html','Visão Geral','fa-chart-column',false],['leads.html','Pacientes','fa-user-group',false],['agenda.html','Agenda','fa-calendar-days',false],['estoque.html','Estoque','fa-boxes-stacked',true],['configuracoes.html','Equipe','fa-users-gear',true]];
 function prepararCampos(html){
@@ -30,8 +32,12 @@ function renderizarPagina(html,papel,arquivo){
  page=page.replace('<head>','<head><link rel="icon" href="/favicon.ico?v=1" sizes="any">'+conexoes)
   .replace('/font-awesome/6.5.2/css/all.min.css','/font-awesome/6.7.2/css/all.min.css');
  let extra=fichaHTML;
+ if(arquivo==='dashboard.html'){
+  page=page.replace('<link rel="stylesheet" href="/kahenna-theme.css', '<link rel="stylesheet" href="/agenda-form.css?v=1"><link rel="stylesheet" href="/kahenna-theme.css');
+  extra+=agendaFormulario+'<script src="/agenda.js?v=12"></script>';
+ }
  if(role==='administrador'&&!page.includes('id="documentosDialog"')){extra+=pdfHTML+'<script src="/documentos.js?v=4"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/documentos.css?v=3"></head>');}
- return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=5"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=8"></script></body>'));
+ return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=5"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=9"></script></body>'));
 }
 const paginasPorPapel=new Map(PAGINAS.map(arquivo=>{
  const html=fsSync.readFileSync(path.join(__dirname,'../public',arquivo),'utf8');

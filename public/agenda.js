@@ -23,6 +23,18 @@ let agendamentoSelecionado = null;
 let consultaSemana = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    configurarFormulario();
+    const atalho = document.querySelector("[data-crm-agendar]");
+    if (atalho) {
+        atalho.addEventListener("click", async (evento) => {
+            if (evento.defaultPrevented || evento.button !== 0 || evento.ctrlKey || evento.metaKey || evento.altKey || evento.shiftKey) return;
+            evento.preventDefault();
+            abrirModal();
+            await carregarPacientes();
+            if (!document.getElementById("modalAgendamento").hidden && document.getElementById("nomePacienteAgendamento").value) pesquisarPaciente();
+        });
+        return;
+    }
     configurarEventos();
     await Promise.all([carregarPacientes(), carregarAgenda()]);
     const parametros = new URLSearchParams(location.search);
@@ -46,6 +58,9 @@ function configurarEventos() {
     });
     document.getElementById("atualizarAgenda").addEventListener("click", carregarAgenda);
     document.getElementById("novoAgendamento").addEventListener("click", () => abrirModal());
+}
+
+function configurarFormulario() {
     document.getElementById("fecharModalAgendamento").addEventListener("click", fecharModal);
     document.getElementById("fecharSemSalvar").addEventListener("click", fecharModal);
     document.getElementById("formAgendamento").addEventListener("submit", salvarAgendamento);
@@ -69,7 +84,9 @@ async function carregarPacientes() {
         pacientes = Array.isArray(retorno) ? retorno : retorno.data || [];
         pacientes.sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR"));
     } catch (erro) {
-        mostrarMensagem(`Não foi possível carregar os pacientes: ${erro.message}`);
+        const mensagem = `Não foi possível carregar os pacientes: ${erro.message}`;
+        if (document.getElementById("mensagemAgenda")) mostrarMensagem(mensagem);
+        else mostrarFeedback(mensagem);
     }
 }
 
@@ -309,8 +326,12 @@ async function salvarAgendamento(evento) {
         });
         if (!resposta.ok) throw new Error(await lerErro(resposta));
         fecharModal();
-        inicioSemana = obterInicioSemana(dataAvaliacao);
-        await carregarAgenda();
+        if (document.getElementById("calendarioSemanal")) {
+            inicioSemana = obterInicioSemana(dataAvaliacao);
+            await carregarAgenda();
+        } else {
+            document.getElementById("btnAtualizar")?.click();
+        }
     } catch (erro) {
         mostrarFeedback(erro.message || "Não foi possível salvar o horário.");
     } finally {
