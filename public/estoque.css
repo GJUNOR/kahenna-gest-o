@@ -124,3 +124,58 @@
 .stock-attendance{border-top:1px solid #eee4e1;padding:18px 24px}.stock-attendance summary{display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;font-size:14px}.stock-attendance summary>strong{white-space:nowrap;color:#681c2b}.stock-attendance small{display:block;font-size:12px;color:#847176;margin-top:5px}.stock-attendance-item{display:flex;justify-content:space-between;gap:18px;padding:13px 0;font-size:12px;border-top:1px solid #eee4e1}.stock-attendance>div{margin-top:16px}
 @media(max-width:760px){.stock-header-actions{justify-content:center;width:100%}.stock-header-actions button{flex:1}.stock-dialog fieldset{padding:4px 12px 16px}.stock-dialog-wide footer{flex-wrap:wrap}.stock-dialog-wide footer button{white-space:normal!important}.stock-attendance{padding:18px}.stock-attendance-item{flex-wrap:wrap}}
 @media(max-width:480px){.stock-dialog-wide .stock-form-grid{grid-template-columns:minmax(0,1fr);gap:0}.stock-purchase-summary{grid-template-columns:1fr}.stock-material-picker{flex-wrap:wrap}.stock-material-picker label,.stock-material-picker button{flex-basis:100%}.stock-header-actions button{flex-basis:100%}}
+
+.stock-content .stock-history > summary {
+  padding: 13px 18px;
+  color: #681c2b;
+  font-weight: 600;
+  cursor: pointer;
+}
+.stock-content .stock-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.stock-content .stock-metrics article {
+  min-height: 0;
+  padding: 14px 10px;
+}
+.stock-content .stock-minimum {
+  display: block;
+  margin-top: 3px;
+  color: #75515f;
+  font-size: 11px;
+}
+.stock-content .stock-movement {
+  padding: 10px 18px;
+}
+.stock-content .stock-table :is(th, td) {
+  padding-block: 8px;
+}
+@media (max-width: 1050px) {
+  .stock-content .stock-table tr {
+    gap: 5px 12px;
+    padding: 10px 12px;
+    margin: 0 12px 8px;
+  }
+  .stock-content .stock-table td:first-child {
+    grid-column: auto;
+    padding-bottom: 0;
+  }
+  .stock-content .stock-table td:nth-child(2) {
+    text-align: right;
+  }
+  .stock-content .stock-table td:nth-child(3) {
+    grid-column: 1 / -1;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+  .stock-content .stock-table td:nth-child(3)::before {
+    content: 'Custo médio / unidade: ';
+    display: inline;
+  }
+  .stock-content .stock-table td:last-child {
+    padding-top: 3px;
+  }
+  .stock-content .stock-table td {
+    padding-block: 0;
+  }
+}

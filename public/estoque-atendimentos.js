@@ -5,7 +5,7 @@
  const money=(v,n=2)=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:n});
  const qtd=v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:3});
  let produtos=new Map(),disponiveis=new Map(),selecionados=new Map(),busy=false,carregando=false,carregandoLista=false,erroLista=false;
- let op,pagina=0,sessao=0,listaTicket=0,reportTicket=0,foco,pacienteAnterior='';
+ let op,sessao=0,listaTicket=0,foco,pacienteAnterior='';
  async function api(url,body,method='POST'){
   const r=await fetch('/api/estoque'+url,{cache:'no-store',method:body?method:'GET',headers:{Accept:'application/json',...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
   if(r.status===401){location.replace('/login.html');throw Error('Sua sessão expirou.');}
@@ -85,7 +85,6 @@
    $('stockFeedback').hidden=false;$('stockFeedback').classList.remove('error');document.dispatchEvent(new Event('stock-updated'));
   }catch(e){erro(e);}finally{busy=false;controles.forEach(([el,v])=>el.disabled=v);}
  }
- async function relatorio(){const ticket=++reportTicket;try{const r=await api('/atendimentos?'+new URLSearchParams({mes:$('mesEstoque').value,pagina}));if(ticket!==reportTicket)return;$('listaAtendimentos').innerHTML=r.atendimentos.length?r.atendimentos.map(a=>`<details class="stock-attendance"><summary><span><strong>${esc(a.paciente?.nome||'Paciente')}</strong><small>${esc(String(a.ocorrido_em).slice(0,10).split('-').reverse().join('/'))} · ${esc(a.descricao)}</small></span><strong>${money(a.custo_total)}</strong></summary><div>${a.itens.map(i=>`<div class="stock-attendance-item"><span>${esc(i.produto?.nome)} · ${qtd(i.quantidade)} ${esc(i.unidade_registro)} × ${money(i.custo_unitario,8)}</span><strong>${money(i.valor_total)}</strong></div>`).join('')}</div></details>`).join(''):'<div class="stock-empty"><strong>Nenhum atendimento registrado</strong></div>';$('paginarAtendimentos').hidden=r.total<=15;$('atendimentosAnterior').disabled=pagina===0;$('atendimentosProximo').disabled=(pagina+1)*15>=r.total;$('paginaAtendimentos').textContent='Página '+(pagina+1);}catch(e){if(ticket===reportTicket)$('listaAtendimentos').textContent=e.message;}}
  document.addEventListener('DOMContentLoaded',()=>{
   window.KahennaAtendimento={abrir:id=>abrir(id)};
   const parametros=new URLSearchParams(location.search);if(parametros.get('novo_atendimento')==='1')queueMicrotask(()=>abrir(parametros.get('paciente')));
@@ -102,6 +101,5 @@
   });
   $('atendimentoItens').addEventListener('input',e=>{const id=e.target.dataset.quantidade;if(!id||!selecionados.has(id))return;selecionados.get(id).quantidade=e.target.value;const q=Number(e.target.value);e.target.closest('.stock-pick-row').querySelector('[data-custo]').textContent=q>0?money(q*Number(produtos.get(id)?.custo_medio||0)):'—';total();});
   $('atendimentoForm').addEventListener('submit',e=>{e.preventDefault();salvar(false);});$('atendimentoSomenteLista').addEventListener('click',()=>salvar(true));
-  document.addEventListener('stock-updated',()=>{pagina=0;relatorio();});$('mesEstoque').addEventListener('change',()=>{pagina=0;relatorio();});$('atualizarEstoque').addEventListener('click',relatorio);$('atendimentosAnterior').addEventListener('click',()=>{pagina=Math.max(0,pagina-1);relatorio();});$('atendimentosProximo').addEventListener('click',()=>{pagina++;relatorio();});queueMicrotask(relatorio);
  });
 })();
