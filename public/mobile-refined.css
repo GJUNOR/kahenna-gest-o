@@ -118,3 +118,38 @@
  .painel-financeiro .financeiro-form-card{padding:18px 14px!important}.painel-financeiro #registrarAvaliacao{width:100%;margin-top:24px!important;min-height:48px!important}.financeiro-resumo{border-radius:14px!important}
  button:focus-visible,a:focus-visible{outline:2px solid #9e6479!important;outline-offset:3px}
 }
+
+.crm-page .sidebar-equipe {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  color: #75515f;
+  font-size: 13px;
+  text-decoration: none;
+}
+.crm-page .sidebar-equipe:is(:hover, .active) {
+  background: #f3e5e8;
+  color: #681c2b;
+}
+@media (max-width: 760px) {
+  .crm-page .sidebar .sidebar-bottom:has(.sidebar-equipe:not([hidden])) {
+    display: flex;
+    align-items: center;
+    flex-basis: 88px !important;
+    width: 88px !important;
+  }
+  .crm-page .sidebar-equipe {
+    flex: 0 0 44px;
+    flex-direction: column;
+    gap: 3px;
+    margin: 0;
+    font-size: 10px;
+  }
+  .crm-page .sidebar-equipe i {
+    font-size: 16px;
+  }
+}

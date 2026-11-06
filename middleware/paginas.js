@@ -24,9 +24,15 @@ function prepararCampos(html){
 }
 function renderizarPagina(html,papel,arquivo){
  const role=papel==='administrador'?'administrador':'secretaria';
- const menu=MENU.map(([pagina,label,icone,admin])=>`<a href="/${pagina}"${pagina===arquivo?' class="active" aria-current="page"':''}${admin?' data-admin-only'+(role==='administrador'?'':' hidden'):''}><i class="fa-solid ${icone}" aria-hidden="true"></i><span>${label}</span></a>`).join('\n');
- let page=html.replace(/<body([^>]*)>/i,(_,attrs)=>`<body${attrs.replace(/\sdata-crm-role="[^"]*"/g,'')} data-crm-role="${role}">`).replace(/<nav\s+class="menu"[^>]*>[\s\S]*?<\/nav>/i,`<nav class="menu" aria-label="Navegação principal">${menu}</nav>`);
+ const linkMenu=([pagina,label,icone,admin],classe='')=>{
+  const ativo=pagina===arquivo;
+  const classes=[classe,ativo?'active':''].filter(Boolean).join(' ');
+  return `<a href="/${pagina}"${classes?' class="'+classes+'"':''}${ativo?' aria-current="page"':''}${admin?' data-admin-only'+(role==='administrador'?'':' hidden'):''}><i class="fa-solid ${icone}" aria-hidden="true"></i><span>${label}</span></a>`;
+ };
+ const menu=MENU.slice(0,-1).map(item=>linkMenu(item)).join('\n');
+ let page=html.replace('/mobile-refined.css?v=35','/mobile-refined.css?v=36').replace(/<body([^>]*)>/i,(_,attrs)=>`<body${attrs.replace(/\sdata-crm-role="[^"]*"/g,'')} data-crm-role="${role}">`).replace(/<nav\s+class="menu"[^>]*>[\s\S]*?<\/nav>/i,`<nav class="menu" aria-label="Navegação principal">${menu}</nav>`);
  const origens=['https://cdnjs.cloudflare.com','https://fonts.googleapis.com','https://fonts.gstatic.com'];
+ page=page.replace('<div class="sidebar-bottom">','<div class="sidebar-bottom">'+linkMenu(MENU.at(-1),'sidebar-equipe'));
  const conexoes=origens.filter(origem=>!page.includes('href="'+origem+'"'))
   .map(origem=>'<link rel="preconnect" href="'+origem+'"'+(origem.endsWith('gstatic.com')?' crossorigin':'')+'>').join('');
  page=page.replace('<head>','<head><link rel="icon" href="/favicon.ico?v=1" sizes="any">'+conexoes)
@@ -57,7 +63,7 @@ function montarEstrutura(html,papel,arquivo){
  </style></head>`)}
  <body class="crm-page" data-crm-role="${papel}" data-crm-secao="${arquivo}">${menu}
  <iframe class="crm-painel" id="crmPainel" title="Seção do CRM"></iframe>
- <script src="/auth-ui.js"></script><script src="/crm-navegacao.js?v=1"></script>
+ <script src="/auth-ui.js"></script><script src="/crm-navegacao.js?v=2"></script>
  </body></html>`;
 }
 const estiloPainel=`<style>

@@ -3,11 +3,12 @@ process.env.KAHENNA_SUPABASE_URL='https://example.supabase.co';process.env.KAHEN
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {renderizarPagina,PAGINAS}=require('../middleware/paginas');
 const ler=nome=>fs.readFileSync(path.join(__dirname,'../public',nome),'utf8');
-test('menu canônico mostra cinco abas ao administrador desde o HTML inicial em qualquer página',()=>{
+test('menu canônico mostra quatro abas e Equipe no rodapé para o administrador',()=>{
  for(const pagina of PAGINAS){const html=renderizarPagina(ler(pagina),'administrador',pagina);const nav=html.match(/<nav class="menu"[^>]*>([\s\S]*?)<\/nav>/)[1];
- assert.equal((nav.match(/<a /g)||[]).length,5,pagina);assert.equal((nav.match(/aria-current="page"/g)||[]).length,1,pagina);
+ assert.equal((nav.match(/<a /g)||[]).length,4,pagina);assert.equal((nav.match(/aria-current="page"/g)||[]).length,pagina==="configuracoes.html"?0:1,pagina);
  assert.match(html,/<body[^>]*data-crm-role="administrador"/);for(const link of nav.match(/<a[^>]+>/g))assert.doesNotMatch(link,/\shidden(?=[\s>])/);
- assert.match(nav,new RegExp('href="/'+pagina.replace('.','\\.')+'" class="active" aria-current="page"'));
+ assert.match(html,/<div class="sidebar-bottom"><a href="\/configuracoes\.html" class="sidebar-equipe/);
+ if(pagina!=='configuracoes.html')assert.match(nav,new RegExp('href="/'+pagina.replace('.','\\.')+'" class="active" aria-current="page"'));
  }
 });
 test('o menu mantém abas administrativas ocultas para secretária e não altera outros estados hidden',()=>{

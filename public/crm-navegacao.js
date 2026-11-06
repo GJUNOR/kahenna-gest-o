@@ -2,7 +2,7 @@
 
 const painel = document.getElementById('crmPainel');
 const menu = document.querySelector('.sidebar .menu');
-const links = [...menu.querySelectorAll('a[href]')];
+const links = [...document.querySelectorAll('.sidebar .menu a[href], .sidebar-equipe[href]')];
 const secoes = new Set(links.map(link => new URL(link.href).pathname));
 
 function urlSecao(url) {
@@ -36,7 +36,7 @@ function navegar(evento) {
     abrirSecao(destino);
 }
 
-menu.addEventListener('click', navegar);
+menu.closest('.sidebar').addEventListener('click', navegar);
 window.addEventListener('popstate', () => {
     const destino = urlSecao(location.href);
     if (destino) abrirSecao(destino, false);
