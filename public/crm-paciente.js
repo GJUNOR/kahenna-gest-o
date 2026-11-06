@@ -119,7 +119,8 @@
    janela.oncancel=null;
    foco?.focus({preventScroll:true});
    if(!abriu)return;
-   atualizarFicha(id);
+   if(id)atualizarFicha(id);
+   else if(tipo==='agendar')$('btnAtualizar')?.click();
    if(tipo==='agendar'||tipo==='retorno')$('atualizarAgenda')?.click();
    if(tipo==='materiais')$('atualizarEstoque')?.click();
    if(tipo==='editar'||tipo==='financeiro')$('btnAtualizar')?.click();
@@ -207,6 +208,11 @@
  document.addEventListener('DOMContentLoaded',()=>{
   const button=document.createElement('button');button.type='button';button.className='crm-global-search';button.setAttribute('aria-label','Busca geral');button.title='Busca geral';button.innerHTML='<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Buscar</span>';document.querySelector('.sidebar-main .menu')?.before(button);button.addEventListener('click',abrirBusca);
   $('crmAcaoVoltar').addEventListener('click',()=>$('crmJanelaAcao').close());
+  document.querySelector('[data-crm-agendar]')?.addEventListener('click',event=>{
+   if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
+   event.preventDefault();
+   abrirJanelaAcao(event.currentTarget.href,'modalAgendamento',null,'agendar');
+  });
   const menu=document.querySelector('.sidebar-main .menu');
   menu?.addEventListener('click',event=>{
    const link=event.target.closest('a[href]');
