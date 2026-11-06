@@ -25,6 +25,78 @@
  body:has(.login-page){padding-bottom:0}
 }
 
+@media (max-width: 760px) {
+  .crm-page .sidebar-main .crm-global-search {
+    flex: 0 0 44px;
+    width: 44px;
+    min-height: 44px;
+    margin-right: 0;
+  }
+
+  .crm-page .sidebar .sidebar-bottom {
+    flex-basis: 44px !important;
+    width: 44px !important;
+    margin-left: 0 !important;
+  }
+
+  .crm-page .sidebar .sidebar-logout {
+    width: 44px !important;
+  }
+
+  .crm-page.crm-patients-page .patients-table .grupo-acoes-paciente .crm-patient-history {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 44px !important;
+  }
+
+  .crm-page .calendar-scroll {
+    overscroll-behavior-y: auto;
+  }
+
+  .crm-page .stock-actions .stock-small-button {
+    min-height: 44px !important;
+  }
+
+  .crm-page .stock-actions :is(.edit, .danger) {
+    width: 44px;
+  }
+
+  .crm-page .stock-content .stock-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 44px 44px;
+  }
+
+  .crm-page :is(.crm-profile-dialog, .crm-search-dialog, .stock-dialog, .documentos-dialog) {
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+
+  .crm-page dialog.reminder-dialog {
+    width: calc(100% - 24px) !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .crm-page .sidebar {
+    padding-inline: 5px !important;
+  }
+
+  .crm-page .sidebar .menu {
+    gap: 0 !important;
+  }
+
+  .crm-page .stock-content .stock-table tr {
+    margin-inline: 10px;
+    padding: 14px;
+  }
+
+  .crm-page .stock-content .stock-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .crm-page .routine-agenda-actions > a {
+    flex: 1 1 100%;
+  }
+}
+
 @media(max-width:760px){.sidebar{flex-direction:row!important}.sidebar-main{height:54px!important;min-height:54px!important;overflow:visible!important}.sidebar-bottom{align-self:center!important}.sidebar .menu{height:54px!important}}
 
 @media(max-width:760px){.patients-table tbody tr,.patients-table tbody td{height:auto!important;min-height:0!important;max-height:none!important}.patients-table tbody tr{padding:16px!important}.patients-table td:first-child{padding-bottom:12px!important}.patients-table td.coluna-acoes{height:auto!important}.table-card{overflow:visible!important}}
