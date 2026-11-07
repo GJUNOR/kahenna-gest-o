@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/sidebar.css">
     <link rel="stylesheet" href="/agenda.css?v=10">
     <link rel="stylesheet" href="/mobile.css?v=1">
-    <link rel="stylesheet" href="/agenda-form.css?v=2">
+    <link rel="stylesheet" href="/agenda-form.css?v=3">
 <link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=35"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
 <link rel="stylesheet" href="/crm-layout.css?v=4"><link rel="stylesheet" href="/crm-controls.css?v=2"></head>
 <body class="crm-page">
@@ -96,6 +96,7 @@
 </label>
                 <label>Horário<select id="horaAgendamento" required aria-label="Horário"><option value=""></option><option value="00:00">00:00</option><option value="01:00">01:00</option><option value="02:00">02:00</option><option value="03:00">03:00</option><option value="04:00">04:00</option><option value="05:00">05:00</option><option value="06:00">06:00</option><option value="07:00">07:00</option><option value="08:00">08:00</option><option value="09:00">09:00</option><option value="10:00">10:00</option><option value="11:00">11:00</option><option value="12:00">12:00</option><option value="13:00">13:00</option><option value="14:00">14:00</option><option value="15:00">15:00</option><option value="16:00">16:00</option><option value="17:00">17:00</option><option value="18:00">18:00</option><option value="19:00">19:00</option><option value="20:00">20:00</option><option value="21:00">21:00</option><option value="22:00">22:00</option><option value="23:00">23:00</option></select></label>
             </div>
+            <p id="turnoRetornoAgendamento" class="schedule-shift-note" role="status" hidden></p>
             <label>Observação<textarea id="observacaoAgendamento" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" name="kahenna_observacaoAgendamento"></textarea></label>
             <div class="modal-feedback" id="feedbackAgendamento" hidden></div>
             <footer>
@@ -109,6 +110,6 @@
 </div>
 
 <script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script>
-<script src="/agenda.js?v=17"></script>
+<script src="/agenda.js?v=18"></script>
 </body>
 </html>

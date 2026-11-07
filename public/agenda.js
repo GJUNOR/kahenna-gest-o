@@ -70,10 +70,12 @@ function configurarFormulario() {
         calendario.value = iso;
         const valida = iso && calendario.value === iso && valorDataInput(new Date(iso + "T12:00:00")) === iso;
         dataTexto.setCustomValidity(valida ? "" : "Informe uma data válida no formato dd/mm/aaaa.");
+        mostrarTurnoRetorno(valida ? calendario.value : "");
     });
     calendario.addEventListener("change", () => {
         dataTexto.value = calendario.value ? calendario.value.split("-").reverse().join("/") : "";
         dataTexto.setCustomValidity("");
+        mostrarTurnoRetorno(calendario.value);
     });
     document.getElementById("abrirCalendarioAgendamento").addEventListener("click", () => {
         if (calendario.showPicker) calendario.showPicker();
@@ -303,6 +305,7 @@ function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacie
     const dataTexto = document.getElementById("dataAgendamentoTexto");
     dataTexto.value = document.getElementById("dataAgendamento").value.split("-").reverse().join("/");
     dataTexto.setCustomValidity("");
+    mostrarTurnoRetorno(document.getElementById("dataAgendamento").value);
     document.getElementById("cancelarAgendamento").hidden = !agendamento;
     document.getElementById("feedbackAgendamento").hidden = true;
     document.getElementById("modalAgendamento").hidden = false;
@@ -317,6 +320,17 @@ function fecharModal() {
     document.getElementById("modalAgendamento").hidden = true;
     document.body.style.overflow = "";
     agendamentoSelecionado = null;
+}
+
+function mostrarTurnoRetorno(data) {
+    const aviso = document.getElementById("turnoRetornoAgendamento");
+    const retorno = document.getElementById("modalAgendamento").classList.contains("schedule-return");
+    aviso.hidden = !retorno || !data;
+    if (aviso.hidden) return;
+    const turno = turnosClinica.get(data);
+    aviso.textContent = turno
+        ? `${turno.periodo} · ${formatarMinutos(turno.inicio * 60)} às ${formatarMinutos((turno.fim % 24) * 60)}`
+        : "Sem período de atendimento cadastrado para esta data.";
 }
 
 async function salvarAgendamento(evento) {

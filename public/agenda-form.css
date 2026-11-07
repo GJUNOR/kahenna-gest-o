@@ -37,3 +37,17 @@
   opacity: 0;
   pointer-events: none;
 }
+.schedule-modal .schedule-shift-note {
+  margin: -6px 0 0;
+  padding: 10px 13px;
+  border: 1px solid #e3cfd5;
+  border-left: 3px solid #a46b7a;
+  border-radius: 10px;
+  background: #f8f0f2;
+  color: #754553;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.schedule-modal .schedule-shift-note[hidden] {
+  display: none;
+}
