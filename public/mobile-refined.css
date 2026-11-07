@@ -274,17 +274,23 @@
 }
 /* Warm navigation surface separates the fixed menu from the workspace. */
 html body.crm-page .sidebar {
-  background: #eee5e1 !important;
-  border-color: #dececc !important;
+  background: #d9c5c2 !important;
+  border-color: #c5aaa9 !important;
 }
 html body.crm-page .sidebar .connection-status,
 html body.crm-page .sidebar .sidebar-logout {
-  background: #e7dcd7 !important;
-  border-color: #d9c6c5 !important;
+  background: #cebab6 !important;
+  border-color: #bfa29f !important;
 }
 html body.crm-page .sidebar .menu a.active,
 html body.crm-page .sidebar .sidebar-equipe.active {
   background: #e4cfd6 !important;
   border-color: #d3b3bf !important;
   color: #681c2b !important;
+}
+
+html body.crm-page .sidebar .menu a,
+html body.crm-page .sidebar .sidebar-equipe,
+html body.crm-page .sidebar .sidebar-logout {
+  color: #62454e !important;
 }
