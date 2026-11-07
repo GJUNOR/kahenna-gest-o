@@ -198,9 +198,10 @@ function renderizarCalendario() {
     const temHorarioNoturno = agendamentos.some(item => new Date(item.data_avaliacao).getHours() >= HORA_FINAL);
     const fimGrade = temHorarioNoturno ? 24 : Math.max(HORA_FINAL, ...turnos.map(turno => turno?.fim || 0));
     document.getElementById("tituloPeriodo").textContent = formatarPeriodo(dias[0], dias[6]);
-    calendario.innerHTML = '<div class="calendar-corner"></div>' + dias.map((dia) => `
+    calendario.innerHTML = '<div class="calendar-corner"></div>' + dias.map((dia, indice) => `
         <div class="day-header ${chaveData(dia) === hoje ? "today" : ""}">
             <span>${formatarDiaSemana(dia)}</span><strong>${dia.getDate()}</strong>
+            ${turnos[indice] ? `<small class="clinic-hours">${formatarMinutos(turnos[indice].inicio * 60)}–${formatarMinutos(turnos[indice].fim * 60)}</small>` : ""}
         </div>`).join("");
 
     for (let minutos = HORA_INICIAL * 60; minutos < fimGrade * 60; minutos += INTERVALO_MINUTOS) {

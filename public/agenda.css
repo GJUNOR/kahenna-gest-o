@@ -25,7 +25,18 @@
 .crm-page .turnos-clinica li strong { font-size:.83rem; font-weight:600; }
 .crm-page .turnos-clinica li span { color:#75525c; font-size:.77rem; }
 .crm-page .week-calendar .calendar-slot.horario-de-clinica {
-  background: #eee0e3 !important;
-  box-shadow: inset 2px 0 #9b5261;
+  background: rgba(104, 28, 43, .035) !important;
+  box-shadow: inset 3px 0 #b48690;
+  border-bottom-color: rgba(104, 28, 43, .07);
 }
-.crm-page .week-calendar .calendar-slot.horario-de-clinica:hover { background:#e6cfd5 !important; }
+.crm-page .week-calendar .calendar-slot.horario-de-clinica:hover {
+  background: rgba(104, 28, 43, .08) !important;
+}
+.crm-page .day-header .clinic-hours {
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.3;
+  color: #8b5b66;
+  font-weight: 500;
+  text-transform: none;
+}
