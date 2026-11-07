@@ -55,6 +55,27 @@ async function listarVisitantes() {
 
     const datas = new Map();
     const tamanhoPagina = 250;
+    const dataBrasil = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Sao_Paulo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    });
+    for (let inicio = 0; ; inicio += tamanhoPagina) {
+        const { data: atendimentos, error: erroAtendimentos } = await supabase
+            .from("agendamentos")
+            .select("visitante_id,atendido_em")
+            .not("atendido_em", "is", null)
+            .neq("status", "cancelado")
+            .order("atendido_em", { ascending: false })
+            .order("id")
+            .range(inicio, inicio + tamanhoPagina - 1);
+        if (erroAtendimentos) throw erroAtendimentos;
+        for (const { visitante_id, atendido_em } of atendimentos) {
+            if (!datas.has(visitante_id)) datas.set(visitante_id, dataBrasil.format(new Date(atendido_em)));
+        }
+        if (atendimentos.length < tamanhoPagina) break;
+    }
     for (let inicio = 0; ; inicio += tamanhoPagina) {
         const { data: atendimentos, error: erroAtendimentos } = await supabase
             .from("estoque_atendimentos")
@@ -64,7 +85,7 @@ async function listarVisitantes() {
             .range(inicio, inicio + tamanhoPagina - 1);
         if (erroAtendimentos) throw erroAtendimentos;
         for (const { paciente_id, ocorrido_em } of atendimentos) {
-            if (!datas.has(paciente_id)) datas.set(paciente_id, ocorrido_em);
+            if (!datas.has(paciente_id) || ocorrido_em > datas.get(paciente_id)) datas.set(paciente_id, ocorrido_em);
         }
         if (atendimentos.length < tamanhoPagina) break;
     }
