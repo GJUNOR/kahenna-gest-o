@@ -256,9 +256,19 @@
 /* Empty half-hour rows stay compact; appointment content determines occupied row height. */
 .crm-page .week-calendar .calendar-slot,
 .crm-page .week-calendar .time-label {
-  min-height: 28px !important;
+  min-height: 40px !important;
 }
 .crm-page .week-calendar .time-label {
-  padding-top: 5px;
+  padding-top: 10px;
   line-height: 18px;
+}
+
+.crm-page .week-calendar .calendar-slot {
+  border-bottom-color: #eee5e2;
+}
+.crm-page .week-calendar .time-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #846f77;
+  border-bottom-color: #eee5e2;
 }

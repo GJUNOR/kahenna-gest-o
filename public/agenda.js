@@ -198,20 +198,18 @@ function renderizarCalendario() {
     const temHorarioNoturno = agendamentos.some(item => new Date(item.data_avaliacao).getHours() >= HORA_FINAL);
     const fimGrade = temHorarioNoturno ? 24 : Math.max(HORA_FINAL, ...turnos.map(turno => turno?.fim || 0));
     document.getElementById("tituloPeriodo").textContent = formatarPeriodo(dias[0], dias[6]);
-    calendario.innerHTML = '<div class="calendar-corner"></div>' + dias.map((dia, indice) => `
+    calendario.innerHTML = '<div class="calendar-corner"></div>' + dias.map((dia) => `
         <div class="day-header ${chaveData(dia) === hoje ? "today" : ""}">
             <span>${formatarDiaSemana(dia)}</span><strong>${dia.getDate()}</strong>
-            ${turnos[indice] ? `<small class="clinic-hours">${formatarMinutos(turnos[indice].inicio * 60)}–${formatarMinutos(turnos[indice].fim * 60)}</small>` : ""}
         </div>`).join("");
 
     for (let minutos = HORA_INICIAL * 60; minutos < fimGrade * 60; minutos += INTERVALO_MINUTOS) {
         const hora = formatarMinutos(minutos);
         calendario.insertAdjacentHTML("beforeend", `<div class="time-label">${hora}</div>`);
 
-        dias.forEach((dia, indice) => {
+        dias.forEach((dia) => {
             const dataHora = combinarDataHora(dia, minutos);
-            const turno = turnos[indice];
-            const naClinica = turno && minutos >= turno.inicio * 60 && minutos < turno.fim * 60;
+
             const itens = agendamentos.filter((item) => {
                 const data = new Date(item.data_avaliacao);
                 const minutosAgendamento =
@@ -224,7 +222,7 @@ function renderizarCalendario() {
             });
             const cartoes = itens.map(criarCartaoAgendamento).join("");
             calendario.insertAdjacentHTML("beforeend", `
-                <div class="calendar-slot ${dataHora < new Date() ? "past" : ""}${naClinica ? " horario-de-clinica" : ""}" data-data-hora="${dataHora.toISOString()}"${naClinica ? ' title="Horário de atendimento da Kahenna"' : ""}>
+                <div class="calendar-slot ${dataHora < new Date() ? "past" : ""}" data-data-hora="${dataHora.toISOString()}">
                     ${cartoes}
                 </div>`);
         });
