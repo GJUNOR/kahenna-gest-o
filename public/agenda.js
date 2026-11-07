@@ -328,14 +328,19 @@ function fecharModal() {
 function mostrarTurnoRetorno(data) {
     const aviso = document.getElementById("turnoRetornoAgendamento");
     aviso.hidden = false;
+    aviso.classList.remove("has-shift");
     if (!data) {
         aviso.textContent = "Escolha a data para consultar o horário da Kahenna.";
         return;
     }
     const turno = turnosClinica.get(data);
-    aviso.textContent = turno
-        ? `Kahenna · ${turno.periodo} · ${formatarMinutos(turno.inicio * 60)} às ${formatarMinutos((turno.fim % 24) * 60)}`
-        : "Sem período de atendimento cadastrado para esta data.";
+    if (!turno) {
+        aviso.textContent = "Sem período de atendimento cadastrado para esta data.";
+        return;
+    }
+    const icone = turno.periodo === "Noturno" ? "fa-moon" : turno.periodo === "Matutino" ? "fa-cloud-sun" : "fa-sun";
+    aviso.classList.add("has-shift");
+    aviso.innerHTML = `<span class="schedule-shift-icon" aria-hidden="true"><i class="fa-solid ${icone}"></i></span><span class="schedule-shift-description"><span class="schedule-shift-label">Kahenna na clínica</span><strong>${turno.periodo}</strong></span><span class="schedule-shift-hours"><span>${formatarMinutos(turno.inicio * 60)}</span><span class="schedule-shift-separator" aria-label="até">—</span><span>${formatarMinutos((turno.fim % 24) * 60)}</span></span>`;
 }
 
 async function salvarAgendamento(evento) {

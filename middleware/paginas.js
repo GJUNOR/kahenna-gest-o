@@ -39,8 +39,8 @@ function renderizarPagina(html,papel,arquivo){
   .replace('/font-awesome/6.5.2/css/all.min.css','/font-awesome/6.7.2/css/all.min.css');
  let extra=fichaHTML;
  if(arquivo==='dashboard.html'){
-  page=page.replace('<link rel="stylesheet" href="/kahenna-theme.css', '<link rel="stylesheet" href="/agenda-form.css?v=3"><link rel="stylesheet" href="/kahenna-theme.css');
-  extra+=agendaFormulario+'<script src="/agenda.js?v=19"></script>';
+  page=page.replace('<link rel="stylesheet" href="/kahenna-theme.css', '<link rel="stylesheet" href="/agenda-form.css?v=4"><link rel="stylesheet" href="/kahenna-theme.css');
+  extra+=agendaFormulario+'<script src="/agenda.js?v=20"></script>';
  }
  if(role==='administrador'&&!page.includes('id="documentosDialog"')){extra+=pdfHTML+'<script src="/documentos.js?v=4"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/documentos.css?v=3"></head>');}
  return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=5"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=9"></script></body>'));

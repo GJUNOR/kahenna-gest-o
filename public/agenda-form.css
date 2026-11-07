@@ -39,14 +39,40 @@
 }
 .schedule-modal .schedule-shift-note {
   margin: -6px 0 0;
-  padding: 10px 13px;
-  border: 1px solid #e3cfd5;
-  border-left: 3px solid #a46b7a;
-  border-radius: 10px;
-  background: #f8f0f2;
+  padding: 14px 16px;
+  border: 1px solid #e4d5d8;
+  border-radius: 14px;
+  background: #f8f4f1;
   color: #754553;
   font-size: 12px;
   line-height: 1.5;
+}
+.schedule-modal .schedule-shift-note.has-shift {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(110deg, #f3e7ea, #faf7f3);
+  box-shadow: 0 3px 12px rgba(104, 28, 43, .035);
+}
+.schedule-shift-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  height: 36px;
+  border: 1px solid #e6cfd6;
+  border-radius: 50%;
+  background: #fffaf7;
+  color: #8c5364;
+  font-size: 15px;
+}
+.schedule-shift-description { display: grid; gap: 3px; min-width: 0; }
+.schedule-shift-label { font-size: 10px; line-height: 1.5; color: #997d85; }
+.schedule-shift-description strong { font-size: 14px; line-height: 1.4; font-weight: 500; color: #681c2b; }
+.schedule-shift-hours { display: flex; align-items: center; gap: 7px; margin-left: auto; white-space: nowrap; font-size: 14px; color: #75515f; font-variant-numeric: tabular-nums; }
+.schedule-shift-separator { color: #b59aa3; font-size: 12px; }
+@media (max-width: 380px) {
+  .schedule-modal .schedule-shift-note.has-shift { flex-wrap: wrap; padding: 12px; gap: 8px 10px; }
+  .schedule-shift-hours { flex-basis: 100%; margin-left: 46px; }
 }
 .schedule-modal .schedule-shift-note[hidden] {
   display: none;
