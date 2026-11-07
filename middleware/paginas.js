@@ -30,7 +30,7 @@ function renderizarPagina(html,papel,arquivo){
   return `<a href="/${pagina}"${classes?' class="'+classes+'"':''}${ativo?' aria-current="page"':''}${admin?' data-admin-only'+(role==='administrador'?'':' hidden'):''}><i class="fa-solid ${icone}" aria-hidden="true"></i><span>${label}</span></a>`;
  };
  const menu=MENU.slice(0,-1).map(item=>linkMenu(item)).join('\n');
- let page=html.replace('/crm-controls.css?v=2','/crm-controls.css?v=3').replace('/mobile-refined.css?v=35','/mobile-refined.css?v=42').replace(/<body([^>]*)>/i,(_,attrs)=>`<body${attrs.replace(/\sdata-crm-role="[^"]*"/g,'')} data-crm-role="${role}">`).replace(/<nav\s+class="menu"[^>]*>[\s\S]*?<\/nav>/i,`<nav class="menu" aria-label="Navegação principal">${menu}</nav>`);
+ let page=html.replace('/crm-controls.css?v=2','/crm-controls.css?v=3').replace('/mobile-refined.css?v=35','/mobile-refined.css?v=43').replace(/<body([^>]*)>/i,(_,attrs)=>`<body${attrs.replace(/\sdata-crm-role="[^"]*"/g,'')} data-crm-role="${role}">`).replace(/<nav\s+class="menu"[^>]*>[\s\S]*?<\/nav>/i,`<nav class="menu" aria-label="Navegação principal">${menu}</nav>`);
  const origens=['https://cdnjs.cloudflare.com','https://fonts.googleapis.com','https://fonts.gstatic.com'];
  page=page.replace('<div class="sidebar-bottom">','<div class="sidebar-bottom">'+linkMenu(MENU.at(-1),'sidebar-equipe'));
  const conexoes=origens.filter(origem=>!page.includes('href="'+origem+'"'))
