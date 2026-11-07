@@ -2799,3 +2799,64 @@ footer.mt-3 {
   font-size: 12px;
   cursor: pointer;
 }
+
+#agendaResumo {
+  gap: 0;
+}
+#agendaResumo .summary-appointment {
+  gap: 14px;
+  padding: 13px 4px;
+}
+#agendaResumo .summary-appointment time {
+  flex: 0 0 48px;
+  min-width: 48px;
+  padding-top: 1px;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #80545f;
+}
+#agendaResumo .summary-appointment > div > strong {
+  font-size: 14px !important;
+  line-height: 22px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0;
+  color: #59444c;
+}
+#agendaResumo .today-confirmation {
+  margin-top: 3px !important;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 11px;
+  line-height: 17px;
+  color: #927e85;
+}
+#agendaResumo .is-attended .today-confirmation {
+  color: #52704f;
+}
+#agendaResumo .summary-appointment.is-attended {
+  padding-inline: 10px;
+}
+#agendaResumo .attendance-toggle {
+  flex-basis: 36px;
+  width: 36px;
+  min-height: 36px;
+  font-size: 12px;
+}
+#agendaResumo .today-return {
+  margin-top: 4px;
+  font-size: 11px;
+}
+@media (max-width: 760px) {
+  #agendaResumo .summary-appointment {
+    gap: 10px;
+  }
+  #agendaResumo .attendance-toggle {
+    flex-basis: 44px;
+    width: 44px;
+    min-height: 44px;
+  }
+}
