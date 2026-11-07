@@ -2873,3 +2873,34 @@ footer.mt-3 {
 }
 #agendaResumo .today-return:hover { color: #45623e; text-decoration: underline; }
 #agendaResumo .today-return-saved { display: block; margin-top: 5px; color: #6d805f; font-size: 11px; }
+#agendaResumo .summary-appointment > .today-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+}
+#agendaResumo .today-actions .today-return {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  margin: 0;
+  padding: 5px 10px;
+  border: 1px solid #c9d7c3;
+  border-radius: 18px;
+  background: #f8fbf6;
+  text-decoration: none;
+}
+#agendaResumo .today-actions .attendance-toggle { margin: 0; }
+@media (max-width: 760px) {
+  #agendaResumo .today-actions .today-return {
+    width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 14px;
+  }
+  #agendaResumo .today-actions .today-return span { display: none; }
+}
