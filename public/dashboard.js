@@ -1,6 +1,47 @@
 'use strict';
 const escapar=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dados=(r)=>Array.isArray(r)?r:(r.data||r.dados||[]);
+let modoLista='semana',mesLista='',semanaDados=[],pacientesLista=[],inicioSemanaLista,listaConsulta=0;
+async function carregarListaPeriodo(){
+ const ticket=++listaConsulta;
+ const mensal=modoLista==='mes';
+ const lista=document.getElementById('agendaSemana');
+ const erro=document.getElementById('erroSemana');
+ document.getElementById('verPacientesSemana').setAttribute('aria-pressed',String(!mensal));
+ document.getElementById('verPacientesMes').setAttribute('aria-pressed',String(mensal));
+ document.getElementById('navegacaoMesPacientes').hidden=!mensal;
+ document.getElementById('tituloListaPacientes').textContent=mensal?'Pacientes do mês':'Pacientes desta semana';
+ if(!inicioSemanaLista||!mesLista)return;
+ lista.setAttribute('aria-busy','true');
+ erro.hidden=true;
+ try{
+  let itens=semanaDados,inicio=inicioSemanaLista,totalDias=7;
+  if(mensal){
+   const [ano,mes]=mesLista.split('-').map(Number);
+   inicio=new Date(`${mesLista}-01T00:00:00-03:00`);
+   totalDias=new Date(Date.UTC(ano,mes,0)).getUTCDate();
+   const fim=new Date(inicio.getTime()+totalDias*86400000);
+   document.getElementById('mesPacientesTitulo').textContent=inicio.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',month:'long',year:'numeric'});
+   lista.innerHTML='<p class="empty-state">Carregando pacientes…</p>';
+   itens=dados(await ler('/api/agendamentos?'+new URLSearchParams({inicio:inicio.toISOString(),fim:fim.toISOString()}))).filter(item=>item.status!=='cancelado');
+  }
+  if(ticket!==listaConsulta)return;
+  const dias=Array.from({length:totalDias},(_,i)=>new Date(inicio.getTime()+i*86400000));
+  lista.innerHTML=dias.map(data=>{
+   const fim=new Date(data.getTime()+86400000);
+   const pacientes=itens.filter(item=>new Date(item.data_avaliacao)>=data&&new Date(item.data_avaliacao)<fim);
+   if(mensal&&!pacientes.length)return '';
+   const rotulo=data.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',weekday:'long',day:'2-digit',month:'2-digit'});
+   return `<section class="week-patients-day"><h3>${escapar(rotulo)}</h3>${pacientes.length?`<ul>${pacientes.map(item=>`<li><button type="button" class="patient-period-name" data-ver-paciente="${escapar(item.visitante_id)}">${escapar(item.paciente?.nome||pacientesLista.find(p=>p.visitante_id===item.visitante_id)?.nome||'Paciente')}</button></li>`).join('')}</ul>`:'<p>Sem pacientes</p>'}</section>`;
+  }).join('')||'<p class="empty-state">Nenhum paciente agendado neste mês.</p>';
+  document.getElementById('semanaContagem').textContent=itens.length+' agendamento'+(itens.length===1?'':'s');
+ }catch(e){
+  if(ticket!==listaConsulta)return;
+  erro.textContent=e.message;erro.hidden=false;
+  lista.innerHTML='<p class="empty-state">Não foi possível carregar os pacientes.</p>';
+  document.getElementById('semanaContagem').textContent='';
+ }finally{if(ticket===listaConsulta)lista.removeAttribute('aria-busy');}
+}
 async function ler(url){const r=await fetch(url,{cache:'no-store'});if(r.status===401){location.replace('/login.html');throw new Error('Entre novamente.')}if(!r.ok)throw new Error('Não foi possível carregar os dados.');return r.json();}
 async function carregarReceitaRotina(){
  const hoje=document.getElementById('receitaHoje'),mes=document.getElementById('receitaMes');
@@ -28,17 +69,27 @@ async function resumo(){carregarReceitaRotina();const btn=document.getElementByI
    <button type="button" class="attendance-toggle" data-attended="${escapar(item.id)}" data-paciente="${escapar(item.visitante_id)}" aria-pressed="${Boolean(item.atendido_em)}" aria-label="${item.atendido_em?'Desmarcar atendimento':'Marcar como atendido'}" title="${item.atendido_em?'Desmarcar atendimento':'Marcar como atendido'}"><i class="fa-solid fa-check" aria-hidden="true"></i></button>
   </div></div>`;
  document.getElementById('agendaResumo').innerHTML=today.length?today.map(render).join(''):'<p class="empty-state">Nenhum horário agendado para hoje.</p>';
- const weekItems=bs.filter(item=>item.status!=='cancelado');
- const days=Array.from({length:7},(_,i)=>new Date(weekStart.getTime()+i*86400000));
- document.getElementById('agendaSemana').innerHTML=days.map(date=>{
-  const next=new Date(date.getTime()+86400000);
-  const items=weekItems.filter(item=>new Date(item.data_avaliacao)>=date&&new Date(item.data_avaliacao)<next);
-  const label=date.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',weekday:'long',day:'2-digit',month:'2-digit'});
-  return `<section class="week-patients-day"><h3>${escapar(label)}</h3>${items.length?`<ul>${items.map(item=>`<li>${escapar(item.paciente?.nome||ps.find(p=>p.visitante_id===item.visitante_id)?.nome||'Paciente')}</li>`).join('')}</ul>`:'<p>Sem pacientes</p>'}</section>`;
- }).join('');
- document.getElementById('semanaContagem').textContent=weekItems.length+' agendamento'+(weekItems.length===1?'':'s');
+ semanaDados=bs.filter(item=>item.status!=='cancelado');
+ inicioSemanaLista=weekStart;
+ pacientesLista=ps;
+ if(!mesLista)mesLista=part('year')+'-'+part('month');
+ await carregarListaPeriodo();
 }catch(e){error.textContent=e.message;error.hidden=false;document.getElementById('agendaResumo').innerHTML=document.getElementById('agendaSemana').innerHTML='<p class="empty-state">Os dados não foram carregados.</p>';}finally{btn.disabled=false;}}
-document.addEventListener('DOMContentLoaded',()=>{document.getElementById('btnAtualizar').addEventListener('click',resumo);resumo();});
+document.addEventListener('DOMContentLoaded',()=>{
+ document.getElementById('btnAtualizar').addEventListener('click',resumo);
+ for(const modo of ['Semana','Mes'])document.getElementById('verPacientes'+modo).addEventListener('click',()=>{
+  modoLista=modo==='Semana'?'semana':'mes';
+  carregarListaPeriodo();
+ });
+ for(const [id,delta] of [['mesPacientesAnterior',-1],['mesPacientesProximo',1]])document.getElementById(id).addEventListener('click',()=>{
+  if(!mesLista)return;
+  const [ano,mes]=mesLista.split('-').map(Number);
+  const data=new Date(Date.UTC(ano,mes-1+delta,1));
+  mesLista=data.toISOString().slice(0,7);
+  carregarListaPeriodo();
+ });
+ resumo();
+});
 
 document.addEventListener('DOMContentLoaded',()=>{
  document.getElementById('agendaResumo').addEventListener('click',async event=>{
