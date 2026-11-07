@@ -252,3 +252,13 @@
     line-height: 1.4;
   }
 }
+
+/* Empty half-hour rows stay compact; appointment content determines occupied row height. */
+.crm-page .week-calendar .calendar-slot,
+.crm-page .week-calendar .time-label {
+  min-height: 28px !important;
+}
+.crm-page .week-calendar .time-label {
+  padding-top: 5px;
+  line-height: 18px;
+}
