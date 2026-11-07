@@ -2,7 +2,7 @@
 
 const HORA_INICIAL = 7;
 const HORA_FINAL = 20;
-const INTERVALO_MINUTOS = 30;
+const INTERVALO_MINUTOS = 60;
 const turnosClinica = new Map();
 for (const [periodo, inicio, fim, novembro, dezembro] of [
     ["Matutino", 8, 12, "06 09 12 18 21 24 27 30", "03 09 12 15 18 21 24 30"],
