@@ -2894,7 +2894,45 @@ footer.mt-3 {
   text-decoration: none;
 }
 #agendaResumo .today-actions .attendance-toggle { margin: 0; }
+.crm-page .business-cards {
+  gap: 14px !important;
+  margin-bottom: 22px !important;
+}
+.crm-page .business-cards > .routine-card {
+  height: auto !important;
+  min-height: 106px !important;
+  padding: 16px 20px !important;
+  gap: 8px !important;
+}
+.crm-page .business-cards > .routine-card:first-child {
+  min-height: 106px !important;
+}
+.crm-page .business-cards .routine-card > strong {
+  margin: 0 !important;
+  font-family: Inter, 'Segoe UI', sans-serif !important;
+  font-size: 27px !important;
+  line-height: 1.25 !important;
+  font-weight: 500 !important;
+  letter-spacing: -.5px !important;
+  font-variant-numeric: tabular-nums;
+}
+.crm-page .business-cards .routine-card h3 {
+  margin: 0 !important;
+  font-size: 10px !important;
+  line-height: 1.5 !important;
+}
 @media (max-width: 760px) {
+  .crm-page .business-cards > .routine-card {
+    min-height: 94px !important;
+    padding: 13px 12px !important;
+    gap: 6px !important;
+  }
+  .crm-page .business-cards > .routine-card:first-child {
+    min-height: 80px !important;
+  }
+  .crm-page .business-cards .routine-card > strong {
+    font-size: clamp(20px, 5.2vw, 25px) !important;
+  }
   #agendaResumo .today-actions .today-return {
     width: 44px;
     min-height: 44px;
