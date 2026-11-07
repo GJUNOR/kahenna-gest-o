@@ -24,3 +24,12 @@
 }
 .crm-page .turnos-clinica li strong { font-size:.83rem; font-weight:600; }
 .crm-page .turnos-clinica li span { color:#75525c; font-size:.77rem; }
+
+/* The page owns vertical scrolling; the calendar only scrolls sideways when needed. */
+.crm-page .calendar-scroll {
+  max-height: none !important;
+  height: auto !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior: auto !important;
+}
