@@ -2755,3 +2755,33 @@ footer.mt-3 {
         height: 230px;
     }
 }
+
+.summary-appointment.is-attended {
+  background: #f0f5ef;
+  border-radius: 12px;
+  padding-inline: 12px;
+}
+.attendance-toggle {
+  flex: 0 0 40px;
+  width: 40px;
+  min-height: 40px;
+  margin-left: auto;
+  border: 1px solid #ded4d6;
+  border-radius: 50%;
+  background: transparent;
+  color: #927e85;
+  cursor: pointer;
+}
+.attendance-toggle[aria-pressed=true] {
+  color: #52704f;
+  background: #e3eddf;
+  border-color: #b6cbb1;
+}
+.summary-appointment > div { min-width: 0; }
+.summary-appointment .today-confirmation { display: block; }
+#agendaSemana { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,150px),1fr)); gap: 14px; }
+.week-patients-day { min-width: 0; padding: 14px; border: 1px solid #e9dfe0; border-radius: 12px; background: #faf7f5; }
+.week-patients-day h3 { margin: 0 0 10px; font-size: 12px; color: #681c2b; text-transform: capitalize; }
+.week-patients-day ul { list-style: none; margin: 0; padding: 0; }
+.week-patients-day li { padding: 7px 0; font-size: 13px; overflow-wrap: anywhere; }
+.week-patients-day p { margin: 0; font-size: 12px; color: #927e85; }

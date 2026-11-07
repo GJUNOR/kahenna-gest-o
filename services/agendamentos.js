@@ -133,6 +133,7 @@ async function criarOuAtualizarAgendamento({
     if (existente && new Date(existente.data_avaliacao).getTime() !== dataConvertida.getTime()) {
         dados.lembrete_enviado_em = null;
         dados.confirmado_em = null;
+        dados.atendido_em = null;
     }
     if (existente) {
         const { data, error } =
@@ -320,7 +321,7 @@ async function atualizarAcompanhamento(id, body) {
     const itemId=Number(id);
     if(!Number.isSafeInteger(itemId)||itemId<=0)throw falha('Agendamento inválido.');
     const values={};
-    for(const [input,column] of [['lembrete_enviado','lembrete_enviado_em'],['paciente_confirmado','confirmado_em']]){
+    for(const [input,column] of [['lembrete_enviado','lembrete_enviado_em'],['paciente_confirmado','confirmado_em'],['atendido','atendido_em']]){
         if(Object.prototype.hasOwnProperty.call(body,input)){
             if(typeof body[input]!=='boolean')throw falha('Marcação inválida.');
             values[column]=body[input]?new Date().toISOString():null;

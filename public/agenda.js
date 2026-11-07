@@ -253,10 +253,10 @@ function criarCartaoAgendamento(item) {
     const horario = valorHoraInput(
         new Date(item.data_avaliacao)
     );
-    return `<article class="appointment-card${retorno ? " appointment-return" : ""}" data-id="${escaparAtributo(item.id)}">
+    return `<article class="appointment-card${retorno ? " appointment-return" : ""}${item.atendido_em ? " appointment-attended" : ""}" data-id="${escaparAtributo(item.id)}">
         <div class="crm-agenda-top"><button type="button" class="crm-agenda-patient" data-ver-paciente="${escaparAtributo(item.visitante_id)}" data-ficha-secao="atendimentos">${escaparHTML(paciente.nome || "Paciente")}</button><button type="button" class="crm-agenda-edit" data-agenda-pagamento="${escaparAtributo(item.visitante_id)}" aria-label="Receber pagamento" title="Receber pagamento"><i class="fa-solid fa-credit-card" aria-hidden="true"></i></button><button type="button" class="crm-agenda-edit" aria-label="Editar horário de ${escaparAtributo(paciente.nome||'paciente')}" title="Editar horário"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div>
         <span>${escaparHTML(horario)} · ${escaparHTML(formatarTelefone(paciente.telefone))}</span>
-        <small>${escaparHTML(item.observacao || "Avaliação agendada")}</small>
+        <small>${item.atendido_em ? "✓ Atendido" : escaparHTML(item.observacao || "Avaliação agendada")}</small>
     </article>`;
 }
 

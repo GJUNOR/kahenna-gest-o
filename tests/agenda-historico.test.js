@@ -7,3 +7,15 @@ test('agenda: nova visita insere registro; reagendamento exige ID e paciente cor
  db.from=table=>{let mode='select';const filters={};const b={select(){return b;},eq(k,v){filters[k]=v;return b;},neq(){return b;},limit(){return b;},update(){mode='update';return b;},insert(){inserts++;return b;},async maybeSingle(){return {data:filters.status==='agendado'?null:historico};},async single(){if(mode==='update')updates++;return {data:{id:10}};},then(resolve,reject){return Promise.resolve({data:[]}).then(resolve,reject);}};return b;};
  try{await service.criarOuAtualizarAgendamento({visitanteId:'paciente',dataAvaliacao:'2030-01-01T12:00:00Z'});assert.equal(inserts,1);assert.equal(updates,0);assert.equal(historico.status,'realizado');await assert.rejects(service.criarOuAtualizarAgendamento({visitanteId:'paciente',dataAvaliacao:'2030-01-01T12:00:00Z',agendamentoId:4}),{statusCode:409});assert.equal(updates,0);}finally{db.from=original;}
 });
+
+test('agenda: marcação de atendido é reversível e recusa valores inválidos',async()=>{
+ const original=db.from;let patch;
+ db.from=()=>{const b={update(value){patch=value;return b;},eq(){return b;},neq(){return b;},select(){return b;},async maybeSingle(){return {data:{id:1,...patch}};}};return b;};
+ try{
+  const marcado=await service.atualizarAcompanhamento('1',{atendido:true});
+  assert.ok(Number.isFinite(Date.parse(marcado.atendido_em)));
+  const desmarcado=await service.atualizarAcompanhamento('1',{atendido:false});
+  assert.equal(desmarcado.atendido_em,null);
+  await assert.rejects(service.atualizarAcompanhamento('1',{atendido:'sim'}),{statusCode:400});
+ }finally{db.from=original;}
+});

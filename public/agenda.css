@@ -33,3 +33,13 @@
   overflow-y: hidden !important;
   overscroll-behavior: auto !important;
 }
+
+.crm-page .appointment-card.appointment-attended {
+  background: #edf4e9 !important;
+  border-color: #c4d5bd !important;
+  border-left-color: #77966c !important;
+  color: #45623e !important;
+}
+.crm-page .appointment-card.appointment-attended :is(button,span,small) {
+  color: #45623e !important;
+}
