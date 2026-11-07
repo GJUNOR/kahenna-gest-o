@@ -20,7 +20,7 @@ async function resumo(){carregarReceitaRotina();const btn=document.getElementByI
  if(bookings.status==='rejected')throw bookings.reason;const bs=dados(bookings.value);
  const today=bs.filter(x=>new Date(x.data_avaliacao)>=day&&new Date(x.data_avaliacao)<new Date(day.getTime()+86400000)&&x.status!=='cancelado');
  document.getElementById('agendamentosHoje').textContent=today.length;
- const render=(item)=>`<div class="summary-appointment${item.atendido_em?' is-attended':''}"><time>${escapar(new Date(item.data_avaliacao).toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'}))}</time><div><strong>${escapar(item.paciente?.nome||ps.find(p=>p.visitante_id===item.visitante_id)?.nome||'Paciente')}</strong><span class="today-confirmation">${item.atendido_em?'Atendido':item.confirmado_em?'Paciente confirmado':'Aguardando confirmação'}</span>${item.atendido_em?`<button type="button" class="today-return" data-retorno="${escapar(item.visitante_id)}">Agendar retorno</button>`:""}</div><button type="button" class="attendance-toggle" data-attended="${escapar(item.id)}" data-paciente="${escapar(item.visitante_id)}" aria-pressed="${Boolean(item.atendido_em)}" aria-label="${item.atendido_em?'Desmarcar atendimento':'Marcar como atendido'}" title="${item.atendido_em?'Desmarcar atendimento':'Marcar como atendido'}"><i class="fa-solid fa-check" aria-hidden="true"></i></button></div>`;
+ const render=(item)=>`<div class="summary-appointment${item.atendido_em?' is-attended':''}"><time>${escapar(new Date(item.data_avaliacao).toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'}))}</time><div><strong>${escapar(item.paciente?.nome||ps.find(p=>p.visitante_id===item.visitante_id)?.nome||'Paciente')}</strong><span class="today-confirmation">${item.atendido_em?'Atendido':item.confirmado_em?'Paciente confirmado':'Aguardando confirmação'}</span>${item.atendido_em?(item.retorno_agendado_id?`<small class="today-return-saved">Retorno agendado</small>`:`<button type="button" class="today-return" data-retorno="${escapar(item.visitante_id)}" data-origem="${escapar(item.id)}"><i class="fa-solid fa-calendar-plus" aria-hidden="true"></i><span>Retorno</span></button>`):""}</div><button type="button" class="attendance-toggle" data-attended="${escapar(item.id)}" data-paciente="${escapar(item.visitante_id)}" aria-pressed="${Boolean(item.atendido_em)}" aria-label="${item.atendido_em?'Desmarcar atendimento':'Marcar como atendido'}" title="${item.atendido_em?'Desmarcar atendimento':'Marcar como atendido'}"><i class="fa-solid fa-check" aria-hidden="true"></i></button></div>`;
  document.getElementById('agendaResumo').innerHTML=today.length?today.map(render).join(''):'<p class="empty-state">Nenhum horário agendado para hoje.</p>';
  const weekItems=bs.filter(item=>item.status!=='cancelado');
  const days=Array.from({length:7},(_,i)=>new Date(weekStart.getTime()+i*86400000));
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(retorno){
    if(retorno.disabled)return;
    retorno.disabled=true;
-   try{await carregarPacientes();abrirModal(undefined,null,retorno.dataset.retorno,true);}
+   try{await carregarPacientes();abrirModal(undefined,null,retorno.dataset.retorno,true,retorno.dataset.origem);}
    finally{retorno.disabled=false;}
    return;
   }

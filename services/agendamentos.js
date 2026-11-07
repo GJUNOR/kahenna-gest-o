@@ -47,7 +47,8 @@ async function criarOuAtualizarAgendamento({
     visitanteId,
     dataAvaliacao,
     observacao,
-    agendamentoId
+    agendamentoId,
+    retornoDe
 }) {
     if (!visitanteId) {
         const erro = new Error(
@@ -133,6 +134,14 @@ async function criarOuAtualizarAgendamento({
         observacao:
             observacao || null
     };
+
+    if (retornoDe !== undefined && retornoDe !== null) {
+        if (!Number.isSafeInteger(Number(retornoDe)) || Number(retornoDe) < 1) throw Object.assign(new Error("Atendimento de origem inválido."), { statusCode: 400 });
+        const { data: origem, error: erroOrigem } = await supabase.from("agendamentos").select("id,visitante_id,data_avaliacao,atendido_em,status").eq("id", Number(retornoDe)).eq("visitante_id", visitanteId).maybeSingle();
+        if (erroOrigem) throw erroOrigem;
+        if (!origem?.atendido_em || origem.status === "cancelado" || new Date(origem.data_avaliacao) >= dataConvertida) throw Object.assign(new Error("Escolha uma data de retorno após o atendimento concluído."), { statusCode: 400 });
+        dados.retorno_de = origem.id;
+    }
 
     if (existente && new Date(existente.data_avaliacao).getTime() !== dataConvertida.getTime()) {
         dados.lembrete_enviado_em = null;
@@ -256,6 +265,12 @@ async function listarAgendamentosDoPeriodo(
     if (error) throw error;
 
     const agendamentos = Array.isArray(data) ? data : [];
+    const retornosPorOrigem = new Map();
+    if (agendamentos.length) {
+        const { data: retornos, error: erroRetornos } = await supabase.from("agendamentos").select("id,retorno_de").in("retorno_de", agendamentos.map(item => item.id)).neq("status", "cancelado");
+        if (erroRetornos) throw erroRetornos;
+        for (const retorno of retornos || []) retornosPorOrigem.set(String(retorno.retorno_de), retorno.id);
+    }
     const visitanteIds = [
         ...new Set(
             agendamentos
@@ -285,6 +300,7 @@ async function listarAgendamentosDoPeriodo(
 
     return agendamentos.map((agendamento) => ({
         ...agendamento,
+        retorno_agendado_id: retornosPorOrigem.get(String(agendamento.id)) || null,
         paciente:
             pacientesPorId.get(
                 String(agendamento.visitante_id)

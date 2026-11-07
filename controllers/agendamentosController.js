@@ -15,7 +15,8 @@ async function criarAgendamento(req, res) {
                         req.body.data_avaliacao,
                     observacao:
                         req.body.observacao,
-                    agendamentoId: req.body.agendamento_id
+                    agendamentoId: req.body.agendamento_id,
+                    retornoDe: req.body.retorno_de
                 });
 
         return res.status(200).json({

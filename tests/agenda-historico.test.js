@@ -19,3 +19,14 @@ test('agenda: marcação de atendido é reversível e recusa valores inválidos'
   await assert.rejects(service.atualizarAcompanhamento('1',{atendido:'sim'}),{statusCode:400});
  }finally{db.from=original;}
 });
+
+test('agenda: retorno fica vinculado somente ao atendimento correto e posterior',async()=>{
+ const original=db.from;let inserted;
+ db.from=table=>{const filters={};let mode='select';const b={select(){return b;},eq(k,v){filters[k]=v;return b;},neq(){return b;},limit(){return b;},insert(value){mode='insert';inserted=value;return b;},update(){return b;},async maybeSingle(){return {data:filters.id===1&&filters.visitante_id==='paciente'?{id:1,visitante_id:'paciente',status:'agendado',atendido_em:'2030-01-01T14:00:00Z',data_avaliacao:'2030-01-01T12:00:00Z'}:null};},async single(){return {data:{id:2,...inserted}};},then(resolve,reject){return Promise.resolve({data:[]}).then(resolve,reject);}};return b;};
+ try{
+  const r=await service.criarOuAtualizarAgendamento({visitanteId:'paciente',dataAvaliacao:'2030-01-02T12:00:00Z',retornoDe:1});
+  assert.equal(r.retorno_de,1);
+  await assert.rejects(service.criarOuAtualizarAgendamento({visitanteId:'outro',dataAvaliacao:'2030-01-02T12:00:00Z',retornoDe:1}),{statusCode:400});
+  await assert.rejects(service.criarOuAtualizarAgendamento({visitanteId:'paciente',dataAvaliacao:'2029-01-01T12:00:00Z',retornoDe:1}),{statusCode:400});
+ }finally{db.from=original;}
+});

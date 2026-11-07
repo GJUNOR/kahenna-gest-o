@@ -2860,3 +2860,16 @@ footer.mt-3 {
     min-height: 44px;
   }
 }
+
+#agendaResumo .today-return {
+  gap: 5px;
+  min-height: 30px;
+  padding: 3px 0;
+  border: 0;
+  border-radius: 0;
+  color: #6d805f;
+  font-size: 11px;
+  font-weight: 500;
+}
+#agendaResumo .today-return:hover { color: #45623e; text-decoration: underline; }
+#agendaResumo .today-return-saved { display: block; margin-top: 5px; color: #6d805f; font-size: 11px; }

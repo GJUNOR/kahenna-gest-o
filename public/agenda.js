@@ -20,6 +20,7 @@ let inicioSemana = obterInicioSemana(new Date());
 let agendamentos = [];
 let pacientes = [];
 let agendamentoSelecionado = null;
+let atendimentoOrigem = null;
 let consultaSemana = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -280,8 +281,9 @@ function criarCartaoAgendamento(item) {
     </article>`;
 }
 
-function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacienteId = null, retorno = false) {
+function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacienteId = null, retorno = false, retornoDe = null) {
     agendamentoSelecionado = agendamento;
+    atendimentoOrigem = retorno ? retornoDe : null;
     const pacienteAtual = agendamento
         ? pacientes.find((item) => String(item.visitante_id) === String(agendamento.visitante_id)) || agendamento.paciente
         : null;
@@ -320,16 +322,19 @@ function fecharModal() {
     document.getElementById("modalAgendamento").hidden = true;
     document.body.style.overflow = "";
     agendamentoSelecionado = null;
+    atendimentoOrigem = null;
 }
 
 function mostrarTurnoRetorno(data) {
     const aviso = document.getElementById("turnoRetornoAgendamento");
-    const retorno = document.getElementById("modalAgendamento").classList.contains("schedule-return");
-    aviso.hidden = !retorno || !data;
-    if (aviso.hidden) return;
+    aviso.hidden = false;
+    if (!data) {
+        aviso.textContent = "Escolha a data para consultar o horário da Kahenna.";
+        return;
+    }
     const turno = turnosClinica.get(data);
     aviso.textContent = turno
-        ? `${turno.periodo} · ${formatarMinutos(turno.inicio * 60)} às ${formatarMinutos((turno.fim % 24) * 60)}`
+        ? `Kahenna · ${turno.periodo} · ${formatarMinutos(turno.inicio * 60)} às ${formatarMinutos((turno.fim % 24) * 60)}`
         : "Sem período de atendimento cadastrado para esta data.";
 }
 
@@ -354,6 +359,7 @@ async function salvarAgendamento(evento) {
             body: JSON.stringify({
                 visitante_id: visitanteId,
                 agendamento_id: agendamentoSelecionado?.id,
+                ...(atendimentoOrigem ? { retorno_de: atendimentoOrigem } : {}),
                 data_avaliacao: dataAvaliacao.toISOString(),
                 observacao: observacao || null
             })
