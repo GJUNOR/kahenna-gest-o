@@ -53,3 +53,15 @@ html body.crm-page .stock-period label{grid-column:2}
 html body.crm-page .stock-period>button{grid-column:3}
 @media(max-width:1150px){html body.crm-page .content>.stock-header{grid-template-columns:minmax(0,1fr)!important}html body.crm-page .content>.stock-header>div:first-child{grid-column:1!important}html body.crm-page .content>.stock-header>.stock-header-actions{grid-column:1!important;grid-row:2!important;justify-self:center!important;justify-content:center}}
 @media(max-width:760px){html body.crm-page .stock-period{grid-template-columns:minmax(0,1fr) 46px}html body.crm-page .stock-period label{grid-column:1}html body.crm-page .stock-period>button{grid-column:2}}
+
+html body.crm-page textarea[data-autosize] {
+  box-sizing: border-box;
+  width: 100%;
+  height: 48px;
+  min-height: 48px !important;
+  max-height: none !important;
+  padding: 12px 13px;
+  line-height: 1.5;
+  resize: none;
+  overflow-y: hidden;
+}
