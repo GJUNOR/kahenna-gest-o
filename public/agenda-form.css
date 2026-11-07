@@ -11,3 +11,29 @@
         .patient-suggestion span { color: #93c5fd; font-size: .76rem; }
         .patient-empty { padding: 15px; color: var(--muted); font-weight: 500; }
 @media(max-width:580px){.schedule-modal .form-row{grid-template-columns:1fr}.schedule-modal footer{align-items:stretch;flex-direction:column}.schedule-modal .footer-spacer{display:none}.schedule-modal footer button{width:100%}}
+.schedule-modal .schedule-date-field {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
+  min-width: 0;
+}
+.schedule-modal .schedule-date-field button {
+  min-width: 44px;
+  border: 1px solid #ddced2;
+  border-radius: 10px;
+  background: #faf7f5;
+  color: #681c2b;
+  cursor: pointer;
+}
+.schedule-modal .schedule-date-field .schedule-date-picker {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px !important;
+  height: 1px !important;
+  min-height: 0 !important;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}

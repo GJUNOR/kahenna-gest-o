@@ -61,6 +61,24 @@ function configurarEventos() {
 }
 
 function configurarFormulario() {
+    const dataTexto = document.getElementById("dataAgendamentoTexto");
+    const calendario = document.getElementById("dataAgendamento");
+    dataTexto.addEventListener("input", () => {
+        dataTexto.value = dataTexto.value.replace(/\D/g, "").slice(0, 8).replace(/^(\d{2})(\d)/, "$1/$2").replace(/^(\d{2}\/\d{2})(\d)/, "$1/$2");
+        const partes = dataTexto.value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        const iso = partes ? `${partes[3]}-${partes[2]}-${partes[1]}` : "";
+        calendario.value = iso;
+        const valida = iso && calendario.value === iso && valorDataInput(new Date(iso + "T12:00:00")) === iso;
+        dataTexto.setCustomValidity(valida ? "" : "Informe uma data válida no formato dd/mm/aaaa.");
+    });
+    calendario.addEventListener("change", () => {
+        dataTexto.value = calendario.value ? calendario.value.split("-").reverse().join("/") : "";
+        dataTexto.setCustomValidity("");
+    });
+    document.getElementById("abrirCalendarioAgendamento").addEventListener("click", () => {
+        if (calendario.showPicker) calendario.showPicker();
+        else { calendario.focus(); calendario.click(); }
+    });
     document.getElementById("fecharModalAgendamento").addEventListener("click", fecharModal);
     document.getElementById("fecharSemSalvar").addEventListener("click", fecharModal);
     document.getElementById("formAgendamento").addEventListener("submit", salvarAgendamento);
@@ -282,12 +300,15 @@ function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacie
         document.getElementById("dataAgendamento").value = "";
         document.getElementById("horaAgendamento").value = "";
     }
+    const dataTexto = document.getElementById("dataAgendamentoTexto");
+    dataTexto.value = document.getElementById("dataAgendamento").value.split("-").reverse().join("/");
+    dataTexto.setCustomValidity("");
     document.getElementById("cancelarAgendamento").hidden = !agendamento;
     document.getElementById("feedbackAgendamento").hidden = true;
     document.getElementById("modalAgendamento").hidden = false;
     document.body.style.overflow = "hidden";
     if (retorno) {
-        const campo = document.getElementById("pacienteAgendamento").value ? "dataAgendamento" : "nomePacienteAgendamento";
+        const campo = document.getElementById("pacienteAgendamento").value ? "dataAgendamentoTexto" : "nomePacienteAgendamento";
         document.getElementById(campo).focus();
     }
 }

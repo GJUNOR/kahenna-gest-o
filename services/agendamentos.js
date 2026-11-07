@@ -83,6 +83,10 @@ async function criarOuAtualizarAgendamento({
         throw erro;
     }
 
+    if (dataConvertida.getUTCMinutes() !== 0 || dataConvertida.getUTCSeconds() !== 0 || dataConvertida.getUTCMilliseconds() !== 0) {
+        throw Object.assign(new Error("Escolha um horário de hora em hora, como 14:00."), { statusCode: 400 });
+    }
+
     let existente = null;
     if (agendamentoId !== undefined && agendamentoId !== null) {
         if (!Number.isSafeInteger(Number(agendamentoId)) || Number(agendamentoId) < 1) throw Object.assign(new Error("Agendamento inválido."), { statusCode: 400 });
