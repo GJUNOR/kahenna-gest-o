@@ -153,3 +153,102 @@
     font-size: 16px;
   }
 }
+
+/* Keep navigation controls inside the visible viewport, including mobile browser chrome. */
+.crm-page .sidebar {
+  height: 100dvh;
+  min-height: 0 !important;
+}
+@media (min-width: 761px) {
+  .crm-page .sidebar-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .crm-page .sidebar-bottom {
+    flex: 0 0 auto;
+  }
+}
+@media (max-width: 760px) {
+  .crm-page .sidebar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 0 !important;
+    height: calc(72px + env(safe-area-inset-bottom)) !important;
+    overflow: visible;
+  }
+  .crm-page .sidebar-main {
+    min-width: 0;
+    width: 100% !important;
+  }
+  .crm-page .sidebar .sidebar-bottom {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: 88px !important;
+    min-width: 88px;
+    height: 60px;
+    margin: 0 !important;
+    gap: 0;
+  }
+  .crm-page .sidebar .sidebar-logout {
+    flex: 0 0 44px;
+    width: 44px !important;
+    height: 60px !important;
+    flex-direction: column;
+    gap: 3px;
+    margin: 0 !important;
+    padding: 5px 0 !important;
+  }
+  .crm-page .sidebar .sidebar-logout span {
+    display: block !important;
+    font-size: 10px !important;
+    line-height: 12px;
+  }
+  .crm-page .sidebar .sidebar-logout i {
+    font-size: 16px;
+  }
+}
+
+.crm-page .sidebar,
+.crm-page .sidebar-main,
+.crm-page .sidebar-bottom {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media (max-width: 1050px), (max-height: 500px) and (pointer: coarse) {
+  body.crm-page .week-calendar {
+    grid-template-columns: 54px repeat(7, minmax(158px, 1fr));
+    min-width: 1160px;
+  }
+  .crm-page .appointment-card .crm-agenda-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+  .crm-page .week-calendar .appointment-card .crm-agenda-patient {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+    min-height: 32px;
+    padding: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    text-align: left;
+    line-height: 1.45;
+    font-size: 13px;
+  }
+  .crm-page .week-calendar .appointment-card .crm-agenda-edit {
+    width: 100%;
+    height: 32px;
+  }
+  .crm-page .appointment-card > span,
+  .crm-page .appointment-card > small {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+}
