@@ -22,6 +22,7 @@ let pacientes = [];
 let agendamentoSelecionado = null;
 let atendimentoOrigem = null;
 let consultaSemana = 0;
+let focoAntesAgenda=null;
 
 document.addEventListener("DOMContentLoaded", async () => {
     configurarFormulario();
@@ -62,6 +63,8 @@ function configurarEventos() {
 }
 
 function configurarFormulario() {
+    document.addEventListener('keydown',e=>{const modal=document.getElementById('modalAgendamento');if(modal.hidden)return;if(e.key==='Escape'){e.preventDefault();fecharModal();return;}if(e.key==='Tab'){const campos=Array.from(modal.querySelectorAll('button,input,select,textarea,a[href]')).filter(el=>!el.disabled&&el.getClientRects().length);const first=campos[0],last=campos.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}});
+
     const dataTexto = document.getElementById("dataAgendamentoTexto");
     const calendario = document.getElementById("dataAgendamento");
     dataTexto.addEventListener("input", () => {
@@ -251,7 +254,7 @@ function renderizarCalendario() {
 
     calendario.querySelectorAll(".calendar-slot").forEach((slot) => slot.addEventListener("click", (evento) => {
         if (evento.target.closest(".appointment-card")) return;
-        abrirModal(new Date(slot.dataset.dataHora));
+        abrirModal(new Date(slot.dataset.dataHora),null,null,false,null,slot);
     }));
     calendario.querySelectorAll(".appointment-card").forEach((cartao) => cartao.addEventListener("click", (evento) => {
         if(!evento.target.closest(".crm-agenda-edit"))return;
@@ -281,7 +284,9 @@ function criarCartaoAgendamento(item) {
     </article>`;
 }
 
-function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacienteId = null, retorno = false, retornoDe = null) {
+function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacienteId = null, retorno = false, retornoDe = null, origem = null) {
+    focoAntesAgenda=document.activeElement;
+    prepararPopupAgenda(origem);
     agendamentoSelecionado = agendamento;
     atendimentoOrigem = retorno ? retornoDe : null;
     const pacienteAtual = agendamento
@@ -311,6 +316,7 @@ function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacie
     document.getElementById("cancelarAgendamento").hidden = !agendamento;
     document.getElementById("feedbackAgendamento").hidden = true;
     document.getElementById("modalAgendamento").hidden = false;
+    if(origem)requestAnimationFrame(posicionarPopupAgenda);
     document.body.style.overflow = "hidden";
     if (retorno) {
         const campo = document.getElementById("pacienteAgendamento").value ? "dataAgendamentoTexto" : "nomePacienteAgendamento";
@@ -319,6 +325,7 @@ function abrirModal(data = proximoHorarioDisponivel(), agendamento = null, pacie
 }
 
 function fecharModal() {
+    prepararPopupAgenda(null);
     document.getElementById("modalAgendamento").hidden = true;
     document.body.style.overflow = "";
     agendamentoSelecionado = null;
@@ -418,3 +425,8 @@ function mostrarFeedback(texto) { const el = document.getElementById("feedbackAg
 async function lerErro(resposta) { try { const dados = await resposta.json(); return dados.mensagem || dados.erro || `Erro HTTP ${resposta.status}`; } catch { return `Erro HTTP ${resposta.status}`; } }
 function escaparHTML(valor) { const el = document.createElement("div"); el.textContent = String(valor ?? ""); return el.innerHTML; }
 function escaparAtributo(valor) { return escaparHTML(valor).replace(/"/g, "&quot;"); }
+
+let ancoraAgenda=null;
+function prepararPopupAgenda(origem){ancoraAgenda=origem;const overlay=document.getElementById('modalAgendamento'),card=overlay.querySelector('.schedule-modal-card');overlay.classList.toggle('schedule-anchored',!!origem);if(!origem){card.style.removeProperty('left');card.style.removeProperty('top');card.style.removeProperty('width');}}
+function posicionarPopupAgenda(){if(!ancoraAgenda)return;const overlay=document.getElementById('modalAgendamento');if(overlay.hidden)return;const card=overlay.querySelector('.schedule-modal-card'),anchor=ancoraAgenda.getBoundingClientRect(),w=Math.min(450,innerWidth-24),vv=window.visualViewport,h=vv?vv.height:innerHeight,offset=vv?vv.offsetTop:0;card.style.width=w+'px';const rect=card.getBoundingClientRect();let x=anchor.right+12;if(x+w>innerWidth-12)x=anchor.left-w-12;x=Math.max(12,Math.min(x,innerWidth-w-12));const y=Math.max(offset+12,Math.min(anchor.top-25,offset+h-rect.height-12));card.style.left=x+'px';card.style.top=y+'px';}
+window.addEventListener('resize',posicionarPopupAgenda);window.visualViewport?.addEventListener('resize',posicionarPopupAgenda);

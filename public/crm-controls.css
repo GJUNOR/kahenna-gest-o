@@ -65,3 +65,27 @@ html body.crm-page textarea[data-autosize] {
   resize: none;
   overflow-y: hidden;
 }
+@media(max-width:760px){
+ html body.crm-page{padding-bottom:calc(132px + env(safe-area-inset-bottom))}
+ html body.crm-page .sidebar{height:calc(120px + env(safe-area-inset-bottom))!important;min-height:120px!important}
+ html body.crm-page .sidebar .menu{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important;flex:1!important}
+ html body.crm-page .sidebar .menu a{min-height:49px!important;height:49px!important;padding:5px 2px!important;width:100%!important}
+ html body.crm-page .sidebar .menu a span{font-size:9px!important}
+}
+
+/* Compact navigation uses the clinic palette and the existing sections only. */
+@media(min-width:761px){
+ html body.crm-page{--atlas-sidebar-width:210px}
+ html body.crm-page .sidebar{width:210px!important;min-width:210px!important;padding-left:12px!important;padding-right:12px!important}
+ html body.crm-page .sidebar .menu{gap:5px!important}
+ html body.crm-page .sidebar .menu a{height:40px!important;min-height:40px!important;padding:9px 12px!important;border-radius:9px!important;font-size:13px!important;font-weight:500!important;gap:11px!important;line-height:20px!important}
+ html body.crm-page .sidebar-equipe{min-height:38px!important;padding:8px 12px!important;font-size:12px!important}
+}
+html body.crm-page .sidebar .menu a{border:1px solid transparent!important;box-shadow:none!important;color:#72535f!important}
+html body.crm-page .sidebar .menu a:hover{background:#eee2e7!important;color:#752b42!important}
+html body.crm-page .sidebar .menu a.active,html body.crm-page .sidebar-equipe.active{background:#7b2c42!important;color:#fffdfb!important;border-color:#7b2c42!important;box-shadow:0 3px 9px #681c2b0d!important}
+html body.crm-page .sidebar .crm-nav-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:20px!important;height:20px;flex:0 0 20px;color:#9b7d89!important}
+html body.crm-page .sidebar .crm-nav-icon svg{display:block;width:20px;height:20px;overflow:visible}
+html body.crm-page .sidebar .active .crm-nav-icon{color:#fffdfb!important}
+@media(max-width:760px){html body.crm-page .sidebar .menu a{border-radius:8px!important}html body.crm-page .sidebar .menu a .crm-nav-icon{width:18px!important;height:18px;flex-basis:18px}html body.crm-page .sidebar .menu a .crm-nav-icon svg{width:18px;height:18px}}
+html body.crm-page .paciente-avatar{display:flex!important;align-items:center!important;justify-content:center!important;width:36px!important;height:36px!important;min-width:36px!important;flex:0 0 36px!important;border:1px solid #e8d5dd!important;border-radius:12px!important;background:linear-gradient(145deg,#f6eaf0,#ebdbe2)!important;color:#7b2c42!important;font:600 12px/1 Inter,'Segoe UI',sans-serif!important;letter-spacing:.3px!important}

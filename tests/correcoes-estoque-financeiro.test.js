@@ -45,14 +45,15 @@ test('Postgres: exclusão com saldo é recuperável e preserva os custos histór
   await db.exec('create role anon;create role authenticated;create role service_role bypassrls;create schema auth;create table auth.users(id uuid primary key);grant usage on schema public,auth to service_role;');
   await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261026130322_estoque.sql'),'utf8'));
   await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261103013557_estoque_exclusao_recuperavel.sql'),'utf8'));
+  await db.exec(fs.readFileSync(path.join(__dirname,'../supabase/migrations/20261106150000_estoque_resumo_produtos_ativos.sql'),'utf8'));
   await db.query('insert into auth.users(id) values($1)',[usuarioId]);await db.exec('set role service_role');
   await db.query("insert into estoque_produtos(id,nome,unidade) values($1,'Produto fictício','un')",[produtoId]);
   await db.query("select kahenna_movimentar_estoque(gen_random_uuid(),$1,'entrada',5,10,(now() at time zone 'America/Sao_Paulo')::date,'Teste','',$2)",[produtoId,usuarioId]);
   await db.query('update estoque_produtos set ativo=false where id=$1',[produtoId]);
   const resumo=()=>db.query("select kahenna_estoque_resumo(date_trunc('month',(now() at time zone 'America/Sao_Paulo')::date)::date,(date_trunc('month',(now() at time zone 'America/Sao_Paulo')::date)+interval '1 month')::date) as r");
-  let r=(await resumo()).rows[0].r;assert.equal(r.valor_estoque,0);assert.equal(r.compras_mes,50);
+  let r=(await resumo()).rows[0].r;assert.equal(r.valor_estoque,0);assert.equal(r.compras_mes,0);assert.equal(r.uso_mes,0);
   await assert.rejects(db.query("select kahenna_movimentar_estoque(gen_random_uuid(),$1,'saida',1,null,(now() at time zone 'America/Sao_Paulo')::date,'Teste','',$2)",[produtoId,usuarioId]),/Reative/);
-  await db.query('update estoque_produtos set ativo=true where id=$1',[produtoId]);r=(await resumo()).rows[0].r;assert.equal(r.valor_estoque,50);
+  await db.query('update estoque_produtos set ativo=true where id=$1',[produtoId]);r=(await resumo()).rows[0].r;assert.equal(r.valor_estoque,50);assert.equal(r.compras_mes,50);
   assert.equal((await db.query('select quantidade::float as q from estoque_produtos')).rows[0].q,5);
   assert.equal((await db.query('select count(*)::int as n from estoque_movimentos')).rows[0].n,1);
   await db.exec('reset role');

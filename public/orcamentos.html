@@ -1,0 +1,57 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orçamentos | Kahenna</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="/sidebar.css"><link rel="stylesheet" href="/mobile.css?v=1"><link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=35"><link rel="stylesheet" href="/estoque.css?v=7"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="/caixa.css?v=1"><link rel="stylesheet" href="/crm-layout.css?v=4"><link rel="stylesheet" href="/organizacao.css?v=2"><link rel="stylesheet" href="/orcamentos.css?v=1"><link rel="stylesheet" href="/crm-controls.css?v=2"></head><body class="crm-page"><div class="layout"><aside class="sidebar">
+    <div class="sidebar-main">
+        <div class="logo">
+            <div class="logo-icon">
+                <img class="clinic-logo" src="/logo.svg" alt="Dra. Kahenna Vieira">
+            </div>
+
+            <div class="logo-text">
+                <h2>Dra. Kahenna Vieira</h2>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="/dashboard.html" >
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Início</span>
+            </a>
+
+            <a href="/leads.html">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Pacientes</span>
+            </a>
+
+            <a href="/agenda.html">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Agenda</span>
+            </a>
+
+            <a href="/estoque.html" class="active" aria-current="page"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i><span>Estoque</span></a>
+<a href="/configuracoes.html" data-admin-only hidden>
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Equipe</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="connection-status atlas-status" id="statusSupabase" data-status="verificando">
+            <span class="status-dot" aria-hidden="true"></span>
+
+            <div>
+                <strong id="statusSupabaseTitulo">Acesso restrito</strong>
+
+                <small id="statusSupabaseTexto">Pacientes e agenda</small>
+            </div>
+        </div>
+        <button class="sidebar-logout" type="button" data-logout>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </button>
+    </div>
+</aside>
+<main class="content stock-content"><header class="stock-header"><div><h1>Orçamentos</h1></div><div class="stock-header-actions"><button type="button" class="crm-button" id="orcConfiguracoes">Valores dos procedimentos</button><button type="button" class="stock-primary" id="orcNovo">Novo orçamento</button></div></header><label class="stock-search orc-busca"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="orcBusca" aria-label="Buscar orçamento ou paciente"></label><p id="orcEstado" role="status"></p><div id="orcLista" class="orc-lista"></div></main></div>
+<dialog id="orcDialog" class="orc-dialog" aria-labelledby="orcTitulo"><header><div><span class="crm-overline">PROCEDIMENTOS E PAGAMENTO</span><h2 id="orcTitulo">Orçamento</h2></div><button type="button" id="orcFechar" class="crm-close" aria-label="Fechar orçamento">×</button></header><div class="orc-body"><p id="orcMensagem" role="status"></p><form id="orcForm"><section><label>Paciente<select id="orcPaciente" required><option value="">Selecionar paciente</option></select></label><div class="orc-linhas-header"><h3>Procedimentos</h3></div><div id="orcItens"></div><button type="button" class="orc-adicionar-linha" id="orcAdicionar"><span aria-hidden="true">+</span> Adicionar procedimento</button></section>
+<section class="orc-pagamento-secao"><div class="orc-linhas-header"><h3>Condições de pagamento</h3></div><div id="orcPagamentos"></div><button type="button" id="orcAdicionarPagamento" class="orc-adicionar-linha"><span aria-hidden="true">+</span> Adicionar forma de pagamento</button><p id="orcDistribuicao" class="orc-taxa-legenda"></p><p class="orc-taxa-legenda">Taxas do cartão assumidas pela clínica · crédito até 6x sem juros.</p></section><div class="orc-totais"><div><span>Total do paciente</span><strong id="orcTotal">R$ 0,00</strong></div><div><span>Taxa da clínica</span><strong id="orcTaxa">R$ 0,00</strong></div><div><span>Entrada líquida</span><strong id="orcLiquido">R$ 0,00</strong></div></div><label>Observação<textarea id="orcObservacao" rows="1" data-autosize maxlength="1000"></textarea></label><footer><button type="submit" class="crm-button crm-primary" id="orcConcluir">Concluir</button></footer></form></div><dialog id="orcConfirmacao" class="orc-confirmacao"><header><h2>Conferir orçamento</h2><button type="button" id="orcRevisar" class="crm-close" aria-label="Voltar ao orçamento">×</button></header><div id="orcRevisao" class="orc-revisao"></div><div class="orc-confirmar-total"><span>Total</span><strong id="orcConfirmarTotal"></strong></div><p id="orcConfirmarMensagem" role="status"></p><footer><button type="button" id="orcConfirmar" class="crm-button crm-primary">Confirmar e concluir</button></footer></dialog></dialog><dialog id="orcConfiguracoesDialog" class="orc-dialog"><header><h2>Valores dos procedimentos</h2><button type="button" id="orcConfiguracoesFechar" class="crm-close" aria-label="Fechar configurações">×</button></header><div class="orc-body"><p id="orcCatalogoMensagem" role="status"></p><div id="orcCatalogoLista"></div><div class="orc-novo-preco"><label>Procedimento<input id="orcPrecoNome" maxlength="160"></label><label>Unidade<select id="orcPrecoUnidade"><option value="procedimento">Procedimento</option><option value="ml">ml</option></select></label><label>Valor (R$)<input id="orcPrecoValor" type="number" min="0.01" step="0.01" inputmode="decimal"></label><button type="button" id="orcPrecoAdicionar" class="crm-button">Cadastrar</button></div></div></dialog><script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script><script src="/orcamentos.js?v=1"></script></body></html>

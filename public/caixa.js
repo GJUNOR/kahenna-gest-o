@@ -48,15 +48,14 @@
         $('caixaGastos').textContent = moeda(data.gastos);
         $('caixaResultado').textContent = moeda(data.resultado);
         $('caixaResultado').closest('article').classList.toggle('is-negative', Number(data.resultado) < 0);
-        $('caixaTaxasResumo').textContent = 'Taxas do cartão ' + moeda(data.taxas_cartao);
         $('caixaTaxasPendentes').hidden = !data.taxas_pendentes;
         $('caixaTaxasPendentes').textContent = data.taxas_pendentes + ' recebimento(s) de cartão sem taxa registrada. O resultado inclui esses valores sem desconto.';
         state.linhas = data.lancamentos;
         $('caixaLista').innerHTML = data.lancamentos.length ? data.lancamentos.map((linha, indice) => {
             const d = linha.detalhes || {};
             const editavel = state.tipo === 'gastos';
-            const extra = [d.lote ? 'Lote ' + d.lote : '', d.validade ? 'Validade ' + d.validade.split('-').reverse().join('/') : '', d.observacao].filter(Boolean).join(' · ');
-            return `<article class="cash-row"><time datetime="${esc(linha.dia)}">${esc(linha.dia.split('-').reverse().join('/'))}</time><div class="cash-row-description"><strong>${esc(linha.descricao)}</strong><small>${esc(detalhes(linha))}</small>${extra ? `<details><summary>Detalhes</summary><p>${esc(extra)}</p></details>` : ''}</div><strong class="cash-row-value">${moeda(linha.valor)}</strong>${editavel ? `<div class="cash-row-actions">${linha.origem === 'despesa' ? `<button type="button" data-caixa-editar="${indice}" aria-label="Editar ${esc(linha.descricao)}" title="Editar"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>` : ''}<button type="button" data-caixa-excluir="${indice}" aria-label="Excluir ${esc(linha.descricao)}" title="Excluir"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button></div>` : ''}</article>`;
+            const extra = [d.lote ? 'Lote ' + d.lote : '', d.validade ? 'Validade ' + d.validade.split('-').reverse().join('/') : '', d.observacao, ...(d.nota_itens||[]).map(i=>i.nome+' · '+i.quantidade+' '+i.unidade+' · '+moeda(i.valor)+(i.lote?' · Lote '+i.lote:'')+(i.validade?' · Validade '+i.validade.split('-').reverse().join('/'):''))].filter(Boolean).join(' · ');
+            return `<article class="cash-row ${editavel || Number(linha.valor) < 0 ? 'cash-outflow' : 'cash-inflow'}"><time datetime="${esc(linha.dia)}">${esc(linha.dia.split('-').reverse().join('/'))}</time><div class="cash-row-description"><strong>${esc(linha.descricao)}</strong><small>${esc(detalhes(linha))}</small>${extra ? `<details><summary>Detalhes</summary><p>${esc(extra)}</p></details>` : ''}</div><strong class="cash-row-value">${moeda(linha.valor)}</strong>${editavel ? `<div class="cash-row-actions">${linha.origem === 'despesa' ? `<button type="button" data-caixa-editar="${indice}" aria-label="Editar ${esc(linha.descricao)}" title="Editar"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>` : ''}<button type="button" data-caixa-excluir="${indice}" aria-label="Excluir ${esc(linha.descricao)}" title="Excluir"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button></div>` : ''}</article>`;
         }).join('') : '<div class="stock-empty"><strong>' + (state.tipo === 'gastos' ? 'Nenhuma compra ou despesa neste período' : 'Nenhuma entrada neste período') + '</strong></div>';
         $('caixaPaginacao').hidden = data.total <= 10;
         $('caixaPagina').textContent = 'Página ' + (state.pagina + 1) + ' de ' + Math.max(1, Math.ceil(data.total / 10));
@@ -145,6 +144,7 @@
         finally { $('caixaAbrirTaxas').disabled = false; }
     }
     document.addEventListener('DOMContentLoaded', () => {
+        fetch('/api/organizacao/fornecedores',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;const lista=document.createElement('datalist');lista.id='caixaFornecedores';lista.innerHTML=d.fornecedores.filter(f=>f.ativo).map(f=>'<option value="'+esc(f.nome)+'">').join('');document.body.append(lista);for(const id of ['caixaFornecedor','notaFornecedor'])document.getElementById(id)?.setAttribute('list',lista.id);}).catch(()=>{});
         $('caixaMes').value = window.KahennaAniversarios.hojeBrasil().slice(0, 7);
         $('caixaNovaCompra').addEventListener('click', () => editar('compra'));
         $('caixaNovaDespesa').addEventListener('click', () => editar('despesa'));

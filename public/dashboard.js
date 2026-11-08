@@ -48,7 +48,7 @@ async function carregarReceitaRotina(){
  try{const r=await ler('/api/conversoes/resumo');const moeda=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});hoje.textContent=moeda(r.receitaHoje??r.receita_hoje);mes.textContent=moeda(r.receitaMes??r.receita_mes);hoje.removeAttribute('title');mes.removeAttribute('title');}
  catch(e){hoje.textContent='—';mes.textContent='—';hoje.title=mes.title='Não foi possível carregar a receita. Clique em Atualizar para tentar novamente.';}
 }
-async function resumo(){carregarReceitaRotina();const btn=document.getElementById('btnAtualizar');btn.disabled=true;const error=document.getElementById('erroResumo');error.hidden=true;try{
+async function resumo(){carregarReceitaRotina();carregarFluxoInicio();const btn=document.getElementById('btnAtualizar');btn.disabled=true;const error=document.getElementById('erroResumo');error.hidden=true;try{
  const dateParts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const part=t=>dateParts.find(p=>p.type===t).value;
  const day=new Date(`${part('year')}-${part('month')}-${part('day')}T00:00:00-03:00`);
 
@@ -119,12 +119,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 function renderizarAniversarios(pacientes) {
  const itens=window.KahennaAniversarios.aniversariantesHoje(pacientes);
- const card=document.getElementById('aniversariosCard');
+
  const lista=document.getElementById('aniversariosLista');lista.replaceChildren();
  document.getElementById('aniversariosContagem').textContent=String(itens.length);
  const estado=document.getElementById('aniversariosEstado');
  estado.textContent=itens.length?'':'Nenhum aniversário cadastrado para hoje.';estado.hidden=Boolean(itens.length);
- if(!card.dataset.carregado){card.open=Boolean(itens.length);card.dataset.carregado='true';}
+
  for(const paciente of itens){
   const item=document.createElement('li');const nome=document.createElement('span');nome.textContent=paciente.nome||'Paciente';item.append(nome);
   const url=window.KahennaAniversarios.linkParabens(paciente);
@@ -133,3 +133,5 @@ function renderizarAniversarios(pacientes) {
   lista.append(item);
  }
 }
+
+async function carregarFluxoInicio(){const el=document.getElementById('inicioCaixa');if(!el)return;const admin=document.body.dataset.crmRole==='administrador';el.hidden=!admin;if(!admin)return;const erro=document.getElementById('inicioCaixaErro');try{const mes=window.KahennaAniversarios.hojeBrasil().slice(0,7),d=await ler('/api/caixa/painel?mes='+mes+'&tipo=gastos&pagina=0');for(const [id,k] of [['inicioEntradas','entradas_liquidas'],['inicioSaidas','gastos'],['inicioSaldo','resultado']])document.getElementById(id).textContent=Number(d[k]||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.getElementById('inicioSaldo').classList.toggle('is-negative',Number(d.resultado)<0);erro.hidden=true;}catch(e){for(const id of ['inicioEntradas','inicioSaidas','inicioSaldo'])document.getElementById(id).textContent='—';erro.textContent='Não foi possível atualizar o caixa.';erro.hidden=false;}}

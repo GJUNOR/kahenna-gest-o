@@ -15,7 +15,7 @@
         <nav class="menu">
             <a href="/dashboard.html" >
                 <i class="fa-solid fa-chart-column"></i>
-                <span>Visão Geral</span>
+                <span>Início</span>
             </a>
 
             <a href="/leads.html">
@@ -53,13 +53,13 @@
     </div>
 </aside>
 <main class="content stock-content cash-content">
-<header class="stock-header"><div><h1>Caixa da clínica</h1></div><div class="stock-header-actions"><button type="button" class="stock-secondary" id="caixaNovaDespesa">Nova despesa</button><button type="button" class="stock-primary" id="caixaNovaCompra"><i class="fa-solid fa-plus" aria-hidden="true"></i> Registrar compra</button></div></header>
+<header class="stock-header"><div><h1>Caixa da clínica</h1></div><div class="stock-header-actions"><button type="button" class="stock-secondary" id="caixaImportarNota"><i class="fa-solid fa-file-import" aria-hidden="true"></i> Importar nota</button><button type="button" class="stock-secondary" id="caixaNovaDespesa">Nova despesa</button><button type="button" class="stock-primary" id="caixaNovaCompra"><i class="fa-solid fa-plus" aria-hidden="true"></i> Registrar compra</button></div></header>
 <div class="cash-toolbar"><label class="cash-period">Período<input type="month" id="caixaMes" min="2000-01" max="2099-12" required></label><button type="button" class="stock-icon-button" id="caixaAtualizar" aria-label="Atualizar caixa"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button><button type="button" class="cash-settings" id="caixaAbrirTaxas"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Taxas do cartão</button></div>
 <p id="caixaFeedback" class="cash-feedback" role="status" hidden></p>
 <section class="cash-summary" aria-label="Resultado do mês">
-<article><span class="cash-overline">Entradas líquidas</span><strong id="caixaEntradas">—</strong><small id="caixaTaxasResumo"></small></article>
-<article><span class="cash-overline">Compras e despesas</span><strong id="caixaGastos">—</strong><small>Pagamentos registrados no mês</small></article>
-<article class="cash-result"><span class="cash-overline">Resultado do mês</span><strong id="caixaResultado">—</strong><small>Entradas líquidas menos gastos</small></article>
+<article><span class="cash-overline">Entradas líquidas</span><strong id="caixaEntradas">—</strong></article>
+<article><span class="cash-overline">Compras e despesas</span><strong id="caixaGastos">—</strong></article>
+<article class="cash-result"><span class="cash-overline">Resultado do mês</span><strong id="caixaResultado">—</strong></article>
 </section>
 <p id="caixaTaxasPendentes" class="cash-warning" role="status" hidden></p>
 <section class="stock-panel"><div class="cash-list-header"><div class="cash-tabs" aria-label="Lançamentos do caixa"><button type="button" data-caixa-tipo="gastos" aria-pressed="true">Compras e despesas</button><button type="button" data-caixa-tipo="entradas" aria-pressed="false">Entradas</button></div><label class="stock-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="caixaBusca" aria-label="Buscar lançamento" maxlength="120"></label></div><div id="caixaLista" class="cash-list" aria-live="polite"></div><div class="stock-pagination" id="caixaPaginacao" hidden><button type="button" class="stock-secondary" id="caixaAnterior">Anterior</button><span id="caixaPagina"></span><button type="button" class="stock-secondary" id="caixaProxima">Próxima</button></div></section>

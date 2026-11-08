@@ -1819,6 +1819,8 @@ async function registrarReembolso(botao) {
     finally { botao.disabled = false; }
 }
 
+function iniciaisPaciente(nome) { const partes=String(nome||'').trim().split(/\s+/).filter(Boolean);return partes.slice(0,2).map(p=>Array.from(p)[0]||'').join('').toLocaleUpperCase('pt-BR')||'?'; }
+
 function renderizarTabela(leads) {
     const tbody = obterCorpoTabela();
 
@@ -1907,7 +1909,7 @@ function criarLinhaLead(lead) {
     <div class="paciente-identificacao">
         <div class="paciente-icones">
             <div class="paciente-avatar" aria-hidden="true">
-                <i class="fa-solid fa-user"></i>
+                ${escaparHTML(iniciaisPaciente(nome))}
             </div>
         </div>
 

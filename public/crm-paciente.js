@@ -28,6 +28,7 @@
    const link=whatsapp(d.paciente.telefone);$('crmFichaWhatsapp').hidden=!link;if(link)$('crmFichaWhatsapp').href=link;else $('crmFichaWhatsapp').removeAttribute('href');
    for(const s of Object.keys(nomes)){const detalhe=$('crmFichaSecoes').querySelector(`[data-crm-secao="${s}"]`);detalhe.hidden=['materiais','documentos'].includes(s)&&!d.permissoes[s];detalhe.querySelector('[data-crm-contagem]').textContent=d.contagens[s]??'';}
    $('crmFichaSecoes').querySelector('[data-crm-acao="materiais"]').hidden=!d.permissoes.materiais;
+   $('crmClinicaAtalhos').hidden=!d.permissoes.materiais;
    $('crmFichaEstado').textContent='';$('crmFichaConteudo').hidden=false;
    const alvo=Object.hasOwn(nomes,secao)?$('crmFichaSecoes').querySelector(`[data-crm-secao="${secao}"]`):null;if(alvo&&!alvo.hidden)alvo.open=true;
   }catch(e){if(ticket===fichaTicket){$('crmFichaEstado').textContent=e.message;$('crmFichaEstado').classList.add('crm-error');}}
@@ -88,8 +89,10 @@
  function acao(tipo){
   if(!ficha)return;
   const id=ficha.paciente.id;
+  if(tipo==='planejamento'||tipo==='fotos')return window.KahennaEstetica?.abrir(id,ficha.paciente.nome,tipo==='fotos'?'fotos':'planos');
   if(tipo==='documentos')return abrirPDF();
   const destinos={
+   orcamento:['orcamentos.html','orcDialog',{novo:'1'}],
    agendar:['agenda.html','modalAgendamento',{novo:'1'}],
    retorno:['agenda.html','modalAgendamento',{novo:'1',retorno:'1'}],
    materiais:['estoque.html','atendimentoDialog',{novo_atendimento:'1'}],
@@ -122,7 +125,7 @@
    atualizarFicha(id);
    if(tipo==='agendar'||tipo==='retorno')$('atualizarAgenda')?.click();
    if(tipo==='materiais')$('atualizarEstoque')?.click();
-   if(tipo==='editar'||tipo==='financeiro')$('btnAtualizar')?.click();
+   if(tipo==='editar'||tipo==='financeiro'||tipo==='orcamento')$('btnAtualizar')?.click();
   },{once:true});
   janela.oncancel=e=>{if(abriu)e.preventDefault();};
   janela.showModal();
