@@ -145,7 +145,7 @@
     }
     document.addEventListener('DOMContentLoaded', () => {
         fetch('/api/organizacao/fornecedores',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(!d)return;const lista=document.createElement('datalist');lista.id='caixaFornecedores';lista.innerHTML=d.fornecedores.filter(f=>f.ativo).map(f=>'<option value="'+esc(f.nome)+'">').join('');document.body.append(lista);for(const id of ['caixaFornecedor','notaFornecedor'])document.getElementById(id)?.setAttribute('list',lista.id);}).catch(()=>{});
-        $('caixaMes').value = window.KahennaAniversarios.hojeBrasil().slice(0, 7);
+        const filtroInicial=new URLSearchParams(location.search),mesInicial=filtroInicial.get('mes');$('caixaMes').value = /^\d{4}-\d{2}$/.test(mesInicial||'')?mesInicial:window.KahennaAniversarios.hojeBrasil().slice(0, 7);$('caixaBusca').value=filtroInicial.get('buscar')||'';if(filtroInicial.get('tipo')==='gastos'){state.tipo='gastos';document.querySelectorAll('[data-caixa-tipo]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.caixaTipo===state.tipo)));}
         $('caixaNovaCompra').addEventListener('click', () => editar('compra'));
         $('caixaNovaDespesa').addEventListener('click', () => editar('despesa'));
         $('caixaForm').addEventListener('submit', salvar);

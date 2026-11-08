@@ -12,8 +12,9 @@ function plano(d){
  const pontos=d.pontos.map(p=>{validarId(p.id);if(ids.has(p.id)||!vistas.includes(p.vista)||!['ponto','linha'].includes(p.tipo))throw falha(400,'Marcação inválida.');ids.add(p.id);
   for(const k of ['x','y',...(p.tipo==='linha'?['x2','y2']:[])])if(typeof p[k]!=='number'||!Number.isFinite(p[k])||p[k]<0||p[k]>1)throw falha(400,'Posição inválida.');
   if(!['ml','U','fios'].includes(p.unidade)||typeof p.quantidade!=='number'||!Number.isFinite(p.quantidade)||p.quantidade<=0||p.quantidade>10000||Math.abs(p.quantidade*1000-Math.round(p.quantidade*1000))>0.00001||p.unidade==='fios'&&!Number.isInteger(p.quantidade))throw falha(400,'Quantidade inválida.');
-  return {id:p.id,vista:p.vista,tipo:p.tipo,x:p.x,y:p.y,...(p.tipo==='linha'?{x2:p.x2,y2:p.y2}:{}),produto:texto(p.produto,120,true),procedimento:texto(p.procedimento,60,true),quantidade:p.quantidade,unidade:p.unidade,lote:texto(p.lote||'',120),validade:p.validade?dia(p.validade):'',observacao:texto(p.observacao||'',400)};
+  if(p.ilustracao!=null&&!['realista-v2','vetor-v1'].includes(p.ilustracao))throw falha(400,'Base do mapa inválida.');return {id:p.id,ilustracao:p.ilustracao||'vetor-v1',vista:p.vista,tipo:p.tipo,x:p.x,y:p.y,...(p.tipo==='linha'?{x2:p.x2,y2:p.y2}:{}),produto:texto(p.produto,120,true),procedimento:texto(p.procedimento,60,true),quantidade:p.quantidade,unidade:p.unidade,lote:texto(p.lote||'',120),validade:p.validade?dia(p.validade):'',observacao:texto(p.observacao||'',400)};
  });
+ if(new Set(pontos.map(p=>p.ilustracao)).size>1)throw falha(400,'Atualize a página antes de editar este mapa.');
  const data=dia(d.data_atendimento);if(d.estado==='realizado'&&data>hojeBrasil())throw falha(400,'Um atendimento realizado não pode ter data futura.');
  return {titulo:texto(d.titulo,120,true),estado:d.estado,data_atendimento:data,pontos,observacao:texto(d.observacao||'',2000)};
 }

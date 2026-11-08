@@ -49,7 +49,7 @@
         </header>
 
         <section class="turnos-clinica" aria-label="Horários da clínica" hidden>
-            <h2>Horários da clínica</h2>
+            <div class="turnos-titulo"><h2>Horários da clínica</h2><button type="button" id="editarTurnosClinica" disabled data-admin-only aria-label="Editar horários da clínica" title="Editar horários"><i class="fa-solid fa-pen" aria-hidden="true"></i></button></div>
             <ul id="turnosClinica"></ul>
         </section>
         <section class="agenda-toolbar" aria-label="Navegação da agenda">
@@ -110,6 +110,6 @@
 </div>
 
 <script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script>
-<script src="/agenda.js?v=22"></script>
-</body>
+<script src="/agenda.js?v=24"></script>
+<dialog id="turnosDialog" class="crm-search-dialog turnos-dialog" aria-labelledby="turnosTitulo"><header class="crm-search-header"><h2 id="turnosTitulo">Horários da clínica</h2><button type="button" class="crm-close" id="turnosFechar" aria-label="Fechar horários">×</button></header><form id="turnosForm"><label>Data<input id="turnosData" type="date" required></label><label>Período<select id="turnosPeriodo"><option value="Matutino">Matutino · 08h às 12h</option><option value="Vespertino">Vespertino · 13h às 18h</option><option value="Noturno">Noturno · 18h às 00h</option><option>Sem atendimento</option></select></label><p id="turnosEstado" role="status"></p><button type="submit" id="turnosSalvar" class="crm-button crm-primary">Salvar horário</button></form></dialog><script src="/turnos-editor.js?v=1"></script></body>
 </html>

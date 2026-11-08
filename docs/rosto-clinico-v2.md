@@ -1,0 +1,9 @@
+# Rosto do mapa facial
+
+Asset: public/assets/rosto-clinico-realista-v2.png
+
+Criado com a ferramenta nativa image_gen em 08/11/2026. Personagem adulta fictícia, sem imagem de paciente. O mesmo asset contém três vistas; recortes SVG preservam as coordenadas normalizadas. Mapas anteriores continuam usando a arte vetorial original, identificada nos pontos como vetor-v1; novos pontos usam realista-v2.
+
+## Prompt utilizado
+
+Create a polished realistic medical aesthetic facial chart asset for Kahenna clinic CRM, original fictional adult woman, neutral calm expression, natural realistic facial anatomy, elegant restrained dermatology illustration with soft photographic 3D shading and realistic eyes/nose/lips, not cartoon or doll. Clean warm ivory background #fffdfb. A triptych of SAME woman in THREE equal width vertical panels, left frontal, center full left-facing profile (nose toward left), right full right-facing profile (nose toward right). All faces same scale and align exactly: each panel normalized 400 wide by 500 tall; top of forehead/head at y55, eyes y220, nose tip y280, lips y330, chin y390, neck and shoulders ending y480. Frontal facial skin spans x108 to292 approx; woman light medium warm skin, brown eyes, brown hair neatly pulled back leaving full forehead cheeks temples and jawline unobstructed, no fringe, no jewelry. Profile face positioned centered in panel with nose at x100, rear skull at x285, eyes y220 and chin y390. Three panels abut seamlessly, no dividers, no text, no labels, no symbols, no injection marks, no diagrams, no medical instruments. Entire image landscape aspect ratio 12:5, three equal panels each4:5. Soft clinical portrait, subtle pores, fine anatomical detail, no glamorous makeup. This is a neutral illustration canvas to place user-entered markings; no suggested injection points or treatment advice.

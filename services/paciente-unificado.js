@@ -49,15 +49,16 @@ function criarServico(db){
   const r=await consulta.order('id',{ascending:false}).range(inicio,inicio+19);const itens=(conferir(r)||[]).map(projetar);if(s==='documentos')await auditar(p,u);return {itens,total:r.count||0,pagina:n};
  },
  async buscar(q,page,u){const admin=permissao(u),termo=texto(q,80),n=pagina(page),chave=normal(termo),fone=termo.replace(/\D/g,'');if(chave.length<2)throw falha(400,'Informe pelo menos dois caracteres para buscar.');const bate=v=>normal(v).includes(chave),busca=(c,f,m)=>buscarGrupo(c,f,m,n);
-  const [pacientes,agenda,produtos,lotes,documentos]=await Promise.all([
+  const [pacientes,agenda,produtos,lotes,documentos,extras]=await Promise.all([
    busca(nomesPaciente,p=>bate(p.nome)||(fone.length>=3&&String(p.telefone).includes(fone)),p=>({id:p.visitante_id,nome:p.nome,telefone:p.telefone})),
    busca(()=>t('agendamentos','id,visitante_id,data_avaliacao,status,observacao,paciente:visitantes(nome)').neq('status','cancelado').order('data_avaliacao',{ascending:false}).order('id'),a=>bate((a.paciente?.nome||'')+' '+(a.observacao||'')),a=>({id:a.id,paciente_id:a.visitante_id,nome:a.paciente?.nome||'Paciente',data_avaliacao:a.data_avaliacao,status:a.status})),
    admin?busca(()=>t('estoque_produtos','id,nome,categoria,quantidade,unidade').eq('ativo',true).order('nome').order('id'),p=>bate(p.nome+' '+p.categoria),({id,nome,categoria,quantidade,unidade})=>({id,nome,categoria,quantidade,unidade})):[],
    admin?busca(()=>t('estoque_lotes','id,codigo,validade,quantidade_restante,produto:estoque_produtos(nome,unidade,ativo)').gt('quantidade_restante',0).order('validade',{nullsFirst:false}).order('id'),l=>l.produto?.ativo&&l.codigo&&bate(l.codigo+' '+l.produto.nome),l=>({id:l.id,codigo:l.codigo,validade:l.validade,quantidade_restante:l.quantidade_restante,nome:l.produto.nome,unidade:l.produto.unidade})):[],
-   admin?busca(()=>t('documentos_pacientes','id,paciente_id,nome_original,criado_em,paciente:visitantes(nome)').order('criado_em',{ascending:false}).order('id'),d=>bate(d.nome_original+' '+(d.paciente?.nome||'')),d=>({id:d.id,paciente_id:d.paciente_id,nome_original:d.nome_original,nome:d.paciente?.nome||'Paciente'})):[]
+   admin?busca(()=>t('documentos_pacientes','id,paciente_id,nome_original,criado_em,paciente:visitantes(nome)').order('criado_em',{ascending:false}).order('id'),d=>bate(d.nome_original+' '+(d.paciente?.nome||'')),d=>({id:d.id,paciente_id:d.paciente_id,nome_original:d.nome_original,nome:d.paciente?.nome||'Paciente'})):[],
+   require('./busca-completa').buscarCompleto(db,busca,bate,admin)
   ]);
   await Promise.all([...new Set(documentos.slice(0,8).map(d=>d.paciente_id))].map(p=>auditar(p,u)));
-  const grupos={},mais={};for(const [tipo,rows] of Object.entries({pacientes,agenda,produtos,lotes,documentos})){grupos[tipo]=rows.slice(0,8);mais[tipo]=rows.length>8;}return {grupos,mais,pagina:n};
+  const grupos={},mais={};for(const [tipo,rows] of Object.entries({pacientes,agenda,produtos,lotes,documentos,...extras})){grupos[tipo]=rows.slice(0,8);mais[tipo]=rows.length>8;}return {grupos,mais,pagina:n};
  }
 };}
 module.exports={criarServico,id,normal,telefone,permissao};

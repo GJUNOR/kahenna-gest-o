@@ -146,3 +146,5 @@ function renderizarAniversarios(pacientes) {
 }
 
 async function carregarFluxoInicio(){const el=document.getElementById('inicioCaixa');if(!el)return;const admin=document.body.dataset.crmRole==='administrador';el.hidden=!admin;if(!admin)return;const erro=document.getElementById('inicioCaixaErro');try{const mes=window.KahennaAniversarios.hojeBrasil().slice(0,7),d=await ler('/api/caixa/painel?mes='+mes+'&tipo=gastos&pagina=0');for(const [id,k] of [['inicioEntradas','entradas_liquidas'],['inicioSaidas','gastos'],['inicioSaldo','resultado']])document.getElementById(id).textContent=Number(d[k]||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.getElementById('inicioSaldo').classList.toggle('is-negative',Number(d.resultado)<0);erro.hidden=true;}catch(e){for(const id of ['inicioEntradas','inicioSaidas','inicioSaldo'])document.getElementById(id).textContent='—';erro.textContent='Não foi possível atualizar o caixa.';erro.hidden=false;}}
+
+document.addEventListener("kahenna:turnos",renderizarHorariosInicio);

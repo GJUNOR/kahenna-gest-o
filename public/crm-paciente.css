@@ -62,3 +62,9 @@
   background: rgba(38, 25, 30, .15);
   backdrop-filter: none;
 }
+
+html body.crm-page a.crm-search-result{display:block;box-sizing:border-box;text-decoration:none;font:inherit}
+
+.turnos-titulo{display:flex;align-items:center;gap:8px}.turnos-titulo h2{margin:0}#editarTurnosClinica{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;min-height:30px;border:1px solid #e6d9de;border-radius:9px;background:#f4e9ed;color:#7b3549;cursor:pointer;font-size:12px}.turnos-dialog{width:min(440px,calc(100vw - 24px))}.turnos-dialog form{padding:22px;display:grid;gap:16px}.turnos-dialog label{display:grid;gap:8px;color:#866c77;font-size:12px}.turnos-dialog input,.turnos-dialog select{box-sizing:border-box;width:100%;min-height:44px;padding:10px;border:1px solid #ddcdd1;border-radius:10px;background:#fffdfb;color:#59444c;font:inherit}.turnos-dialog p{margin:0;color:#8f5f73;font-size:12px}.turnos-dialog .crm-button{justify-self:end}
+
+html body.crm-page .turnos-titulo{margin-bottom:10px}html body.crm-page .turnos-titulo h2{margin:0}

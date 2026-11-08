@@ -5,8 +5,8 @@ const HORA_FINAL = 20;
 const INTERVALO_MINUTOS = 60;
 const turnosClinica = new Map();
 for (const [periodo, inicio, fim, novembro, dezembro] of [
-    ["Matutino", 8, 12, "06 09 12 18 21 24 27 30", "03 09 12 15 18 21 24 30"],
-    ["Vespertino", 13, 18, "04 07 10 13 16 19 25 28", "01 04 07 10 16 19 22 25 28 31"],
+    ["Matutino", 8, 12, "06 09 12 18 24 27 30", "03 09 12 15 18 21 24 30"],
+    ["Vespertino", 13, 18, "04 07 10 13 16 19 21 25 28", "01 04 07 10 16 19 22 25 28 31"],
     ["Noturno", 18, 24, "05 11 14 17 20 23 26", "02 05 08 11 14 17 23 26 29"]
 ]) {
     for (const [mes, datas] of [["11", novembro], ["12", dezembro]]) {
@@ -16,7 +16,13 @@ for (const [periodo, inicio, fim, novembro, dezembro] of [
     }
 }
 
-window.KahennaTurnosClinica={obter:dia=>turnosClinica.get(dia)};
+const turnosBase=new Map(turnosClinica),turnosRevisoes=new Map();let turnosCarregando,turnosMudanca=0;
+function aplicarTurnoSalvo(t){turnosRevisoes.set(t.dia,t.revisao);const horarios={Matutino:[8,12],Vespertino:[13,18],Noturno:[18,24]};if(horarios[t.periodo]){const[inicio,fim]=horarios[t.periodo];turnosClinica.set(t.dia,{periodo:t.periodo,inicio,fim});}else turnosClinica.delete(t.dia);}
+function notificarTurnos(){document.dispatchEvent(new Event('kahenna:turnos'));if(document.getElementById('calendarioSemanal'))renderizarCalendario();const campo=document.getElementById('dataAgendamento');if(campo)mostrarTurnoRetorno(campo.value);}
+async function atualizarTurnos(){if(turnosCarregando)return turnosCarregando;const versao=turnosMudanca;turnosCarregando=(async()=>{const r=await fetch('/api/turnos-clinica',{cache:'no-store'}),d=await r.json();if(!r.ok)throw Error(d.mensagem||'Não foi possível carregar os horários.');if(versao!==turnosMudanca)return;turnosClinica.clear();for(const[k,v]of turnosBase)turnosClinica.set(k,v);turnosRevisoes.clear();for(const t of d.turnos||[])aplicarTurnoSalvo(t);notificarTurnos();})().finally(()=>{turnosCarregando=null;});return turnosCarregando;}
+window.KahennaTurnosClinica={obter:dia=>turnosClinica.get(dia),revisao:dia=>turnosRevisoes.get(dia)??null,atualizar:atualizarTurnos,aplicar:t=>{turnosMudanca++;aplicarTurnoSalvo(t);notificarTurnos();}};
+document.addEventListener('DOMContentLoaded',()=>{atualizarTurnos().catch(()=>{});});
+window.addEventListener('focus',()=>{atualizarTurnos().catch(()=>{});});
 
 let inicioSemana = obterInicioSemana(new Date());
 let agendamentos = [];
@@ -220,7 +226,7 @@ function renderizarCalendario() {
         item.append(diaLabel, periodoLabel);
         return [item];
     }));
-    resumo.parentElement.hidden = !resumo.childElementCount;
+    resumo.parentElement.hidden = false;
     const temHorarioNoturno = agendamentos.some(item => new Date(item.data_avaliacao).getHours() >= HORA_FINAL);
     const fimGrade = temHorarioNoturno ? 24 : Math.max(HORA_FINAL, ...turnos.map(turno => turno?.fim || 0));
     document.getElementById("tituloPeriodo").textContent = formatarPeriodo(dias[0], dias[6]);

@@ -1,0 +1,13 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),{randomUUID}=require('node:crypto');
+test('PDF do orçamento usa preços do servidor e não conclui nem lança dinheiro',async()=>{
+ const local=await require('./novidades-local-db.cjs').preparar(),u={id:require('./novidades-local-db.cjs').usuario},paciente=require('./novidades-local-db.cjs').paciente;
+ try{const s=require('../services/orcamentos').criarServico(local.db),catalogo=await s.catalogo(),p=catalogo.find(p=>p.nome==='Preenchimento labial'),antes=(await local.pg.query('select count(*)::int n from lancamentos_financeiros')).rows[0].n;
+ const dados={id:randomUUID(),paciente_id:paciente,titulo:'Procedimentos',itens:[{procedimento_id:p.id,quantidade:2,valor_unitario:1}],pagamento:[{forma_pagamento:'credito',valor:1100,parcelas:6,canal_pagamento:'maquininha',bandeira:'elo'}],observacao:'Nota interna que não deve ir à paciente'};
+ const bytes=await s.pdf(dados,u);assert(bytes.subarray(0,5).equals(Buffer.from('%PDF-')));const pdfjs=await import('pdfjs-dist/legacy/build/pdf.mjs'),loading=pdfjs.getDocument({data:new Uint8Array(bytes),disableFontFace:true,standardFontDataUrl:require('node:path').join(require('node:path').dirname(require.resolve('pdfjs-dist/package.json')),'standard_fonts')+'/'}),doc=await loading.promise;let texto='';for(let n=1;n<=doc.numPages;n++)texto+=(await(await doc.getPage(n)).getTextContent()).items.map(i=>i.str).join(' ');await loading.destroy();assert(texto.includes('Preenchimento labial'));assert(texto.includes('1.100,00'));assert(texto.includes('6x sem juros'));assert(!texto.includes('Nota interna'));assert(!texto.includes('Taxa'));assert.equal((await local.pg.query('select count(*)::int n from lancamentos_financeiros')).rows[0].n,antes);assert.equal((await local.pg.query('select count(*)::int n from orcamentos_pacientes')).rows[0].n,0);assert.equal((await local.pg.query("select count(*)::int n from clinica_acessos where acao='gerar_pdf_orcamento'")).rows[0].n,1);
+ await assert.rejects(s.pdf({...dados,pagamento:[{...dados.pagamento[0],valor:1}]},u),/soma dos pagamentos/);
+ }finally{await local.pg.close();}
+});
+test('nova ilustração é preservada nos pontos; mapas anteriores mantêm a base original',()=>{
+ const {plano}=require('../services/estetica'),p={id:randomUUID(),vista:'frente',tipo:'ponto',x:.5,y:.5,produto:'Produto',procedimento:'Preenchimento',quantidade:1,unidade:'ml'},d={titulo:'Mapa',estado:'planejado',data_atendimento:'2026-11-08',pontos:[p]};assert.equal(plano(d).pontos[0].ilustracao,'vetor-v1');assert.equal(plano({...d,pontos:[{...p,ilustracao:'realista-v2'}]}).pontos[0].ilustracao,'realista-v2');assert.throws(()=>plano({...d,pontos:[{...p,ilustracao:'desconhecida'}]}),/Base do mapa/);
+});

@@ -5,12 +5,12 @@
  const data=v=>v?new Date(v).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'}):'—';
  const dia=v=>String(v||'').slice(0,10).split('-').reverse().join('/');
  const nomes={atendimentos:'Atendimentos e agenda',materiais:'Materiais utilizados',financeiro:'Financeiro',documentos:'PDFs do prontuário'};
- const rotulos={pacientes:'Pacientes',agenda:'Agenda',produtos:'Produtos',lotes:'Lotes',documentos:'PDFs'};
+ const rotulos={pacientes:'Pacientes',agenda:'Agenda',produtos:'Produtos',lotes:'Lotes',documentos:'Prontuários',arquivos:'Arquivos da clínica',fornecedores:'Fornecedores',orcamentos:'Orçamentos',financeiro:'Recebimentos',despesas:'Compras e despesas',planos:'Mapas faciais',fotos:'Fotos de evolução',materiais:'Materiais utilizados',procedimentos:'Procedimentos',secoes:'Seções do CRM'};
  const estados={agendado:'Agendado',realizado:'Realizado',cancelado:'Cancelado'};
  const statusPaciente=v=>String(v||'').replace(/_/g,' ').replace(/^./,c=>c.toUpperCase());
  const foneBonito=v=>{let n=String(v||'').replace(/\D/g,'');if([12,13].includes(n.length)&&n.startsWith('55'))n=n.slice(2);return [10,11].includes(n.length)?'('+n.slice(0,2)+') '+n.slice(2,-4)+'-'+n.slice(-4):String(v||'');};
  let ficha=null,fichaTicket=0,fichaFoco,secCache=new Map(),secTickets=new Map();
- let buscaTicket=0,buscaPagina=0,buscaGrupos={},buscaMais=false,buscaOcupada=false,buscaFoco,buscaTimer;
+ let buscaTicket=0,buscaPagina=0,buscaGrupos={},buscaMais=false,buscaOcupada=false,buscaFoco,buscaTimer,buscaControle;
  const avisos=new Map(),revisoes=new Map();
  async function json(url,op={}){const r=await fetch(url,{cache:'no-store',...op,headers:{Accept:'application/json',...(op.body?{'Content-Type':'application/json'}:{}),...op.headers}});if(r.status===401){location.replace('/login.html');throw Error('Sua sessão expirou.');}const d=await r.json();if(!r.ok)throw Error(d.mensagem||'Não foi possível consultar.');return d;}
  const urlFicha=id=>'/api/clinica/pacientes/'+encodeURIComponent(id);
@@ -180,6 +180,15 @@
     if(tipo==='produtos'){info=i.categoria+' · '+qtd(i.quantidade)+' '+i.unidade;destino='estoque';id=i.nome;}
     if(tipo==='lotes'){titulo=(i.codigo||'Lote')+' · '+i.nome;info=(i.validade?'Validade: '+dia(i.validade):'Sem validade')+' · '+qtd(i.quantidade_restante)+' '+i.unidade;destino='estoque';id=i.nome;}
     if(tipo==='documentos'){titulo=i.nome_original;info=i.nome;id=i.paciente_id;secao='documentos';}
+    if(tipo==='secoes'){destino='secao';id=i.pagina;info='Abrir seção';}
+    if(tipo==='arquivos')return `<a class="crm-search-result" href="/api/organizacao/arquivos/${esc(i.id)}/baixar" download><strong>${esc(i.nome)}</strong><small>${esc(i.categoria)} · ${esc(dia(i.criado_em))}</small></a>`;
+    if(tipo==='fornecedores'){info=[i.categoria,i.contato].filter(Boolean).join(' · ');destino='fornecedor';}
+    if(tipo==='orcamentos'){info=i.titulo+' · '+money(i.total);destino='orcamento';}
+    if(tipo==='financeiro'){info=i.paciente+' · '+money(i.valor);id=i.paciente_id;secao='financeiro';}
+    if(tipo==='despesas'){info=dia(i.data)+' · '+money(i.valor);destino='despesa';id=i.data+'|'+i.nome;}
+    if(tipo==='materiais'){info=i.paciente+' · '+dia(i.data);id=i.paciente_id;secao='materiais';}
+    if(tipo==='procedimentos'){info=money(i.valor)+' / '+i.unidade;destino='procedimento';}
+    if(tipo==='planos'||tipo==='fotos'){info=i.paciente+' · '+dia(i.data);destino=tipo;id=i.paciente_id;secao=i.id;}
     return `<button type="button" class="crm-search-result" data-crm-destino="${destino}" data-crm-id="${esc(id)}" data-crm-secao-destino="${secao}"${tipo==='documentos'?` data-crm-arquivo="${esc(i.id)}"`:''}><strong>${esc(titulo)}</strong><small>${esc(info)}</small></button>`;
    }).join('')}</section>`;
   }).join('');
@@ -188,10 +197,10 @@
   if(append&&buscaOcupada)return;const termo=$('crmBuscaTermo').value.trim(),ticket=++buscaTicket;
   if(termo.length<2){buscaGrupos={};$('crmBuscaResultados').replaceChildren();$('crmBuscaEstado').textContent='';$('crmBuscaMais').hidden=true;return;}
   const page=append?buscaPagina+1:0;if(!append){buscaGrupos={};$('crmBuscaResultados').replaceChildren();}buscaOcupada=true;$('crmBuscaMais').disabled=true;$('crmBuscaEstado').textContent='Buscando…';
-  try{const d=await json('/api/clinica/busca',{method:'POST',body:JSON.stringify({q:termo,pagina:page})});if(ticket!==buscaTicket||!$('crmBusca').open)return;buscaPagina=page;for(const tipo of Object.keys(rotulos)){const mapa=new Map((buscaGrupos[tipo]||[]).map(i=>[String(i.id),i]));for(const item of d.grupos[tipo]||[])mapa.set(String(item.id),item);buscaGrupos[tipo]=[...mapa.values()];}buscaMais=Object.values(d.mais).some(Boolean);renderBusca();$('crmBuscaEstado').textContent=Object.values(buscaGrupos).some(r=>r.length)?'':'Nenhum resultado';$('crmBuscaMais').hidden=!buscaMais;}
-  catch(e){if(ticket===buscaTicket)$('crmBuscaEstado').textContent=e.message;}finally{if(ticket===buscaTicket){buscaOcupada=false;$('crmBuscaMais').disabled=false;}}
+  buscaControle?.abort();buscaControle=new AbortController();try{const d=await json('/api/clinica/busca',{signal:buscaControle.signal,method:'POST',body:JSON.stringify({q:termo,pagina:page})});if(ticket!==buscaTicket||!$('crmBusca').open)return;buscaPagina=page;for(const tipo of Object.keys(rotulos)){const mapa=new Map((buscaGrupos[tipo]||[]).map(i=>[String(i.id),i]));for(const item of d.grupos[tipo]||[])mapa.set(String(item.id),item);buscaGrupos[tipo]=[...mapa.values()];}buscaMais=Object.values(d.mais).some(Boolean);renderBusca();$('crmBuscaEstado').textContent=Object.values(buscaGrupos).some(r=>r.length)?'':'Nenhum resultado';$('crmBuscaMais').hidden=!buscaMais;}
+  catch(e){if(ticket===buscaTicket&&e.name!=='AbortError')$('crmBuscaEstado').textContent=e.message;}finally{if(ticket===buscaTicket){buscaOcupada=false;$('crmBuscaMais').disabled=false;}}
  }
- function abrirBusca(){buscaFoco=document.activeElement;clearTimeout(buscaTimer);++buscaTicket;buscaPagina=0;buscaGrupos={};buscaOcupada=false;$('crmBuscaTermo').value='';$('crmBuscaEstado').textContent='';$('crmBuscaResultados').replaceChildren();$('crmBuscaMais').hidden=true;$('crmBusca').showModal();$('crmBuscaTermo').focus();}
+ function abrirBusca(){buscaFoco=document.activeElement;clearTimeout(buscaTimer);buscaControle?.abort();++buscaTicket;buscaPagina=0;buscaGrupos={};buscaOcupada=false;$('crmBuscaTermo').value='';$('crmBuscaEstado').textContent='';$('crmBuscaResultados').replaceChildren();$('crmBuscaMais').hidden=true;$('crmBusca').showModal();$('crmBuscaTermo').focus();}
  function limparAviso(context){avisos.delete(context);revisoes.set(context,(revisoes.get(context)||0)+1);document.getElementById(context)?.querySelector('.crm-duplicate')?.remove();}
  async function enviarCadastro(url,body,method,context,botao){
   const assinatura=JSON.stringify({url,body}),ok=avisos.get(context),dados={...body};if(ok?.assinatura===assinatura)dados.confirmacao_duplicado=ok.confirmacao;
@@ -225,8 +234,8 @@
   $('crmFicha').addEventListener('click',e=>{const ac=e.target.closest('[data-crm-acao]');if(ac)return acao(ac.dataset.crmAcao);const p=e.target.closest('[data-crm-page]');if(p)return carregarSecao(p.dataset.crmPage,Number(p.dataset.pagina));const pdf=e.target.closest('[data-crm-pdf]');if(pdf)abrirPDF(pdf.dataset.crmPdf);});
   document.addEventListener('click',e=>{const b=e.target.closest('[data-ver-paciente]');if(b){e.preventDefault();e.stopPropagation();abrir(b.dataset.verPaciente,b.dataset.fichaSecao||null);}});
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();if(!$('crmBusca').open&&!$('crmFicha').open)abrirBusca();}});
-  $('crmBuscaTermo').addEventListener('input',()=>{clearTimeout(buscaTimer);++buscaTicket;$('crmBuscaResultados').replaceChildren();$('crmBuscaMais').hidden=true;buscaTimer=setTimeout(()=>buscar(),350);});$('crmBuscaMais').addEventListener('click',()=>buscar(true));
-  $('crmBuscaResultados').addEventListener('click',e=>{const b=e.target.closest('[data-crm-destino]');if(!b)return;if(b.dataset.crmDestino==='estoque'){location.href='/estoque.html?'+new URLSearchParams({buscar:b.dataset.crmId});return;}const {crmId,crmSecaoDestino,crmArquivo}=b.dataset;$('crmBusca').close();abrir(crmId,crmSecaoDestino).then(()=>{if(crmArquivo&&ficha?.paciente.id===crmId)abrirPDF(crmArquivo);});});
+  $('crmBuscaTermo').addEventListener('input',()=>{clearTimeout(buscaTimer);++buscaTicket;$('crmBuscaResultados').replaceChildren();$('crmBuscaMais').hidden=true;buscaTimer=setTimeout(()=>buscar(),250);});$('crmBuscaMais').addEventListener('click',()=>buscar(true));
+  $('crmBuscaResultados').addEventListener('click',e=>{const b=e.target.closest('[data-crm-destino]');if(!b)return;const destino=b.dataset.crmDestino,registro=b.dataset.crmId;if(destino==='secao'){const paginas=['dashboard.html','leads.html','agenda.html','estoque.html','orcamentos.html','fornecedores.html','arquivos.html','configuracoes.html'];if(paginas.includes(registro))location.href='/'+registro;return;}if(destino==='fornecedor'){location.href='/fornecedores.html?fornecedor='+encodeURIComponent(registro);return;}if(destino==='orcamento'){location.href='/orcamentos.html?orcamento='+encodeURIComponent(registro);return;}if(destino==='procedimento'){location.href='/orcamentos.html?configurar=1';return;}if(destino==='despesa'){const [data,...nome]=registro.split('|');location.href='/estoque.html?'+new URLSearchParams({mes:data.slice(0,7),tipo:'gastos',buscar:nome.join('|')});return;}if(destino==='planos'||destino==='fotos'){const item=(buscaGrupos[destino]||[]).find(i=>i.id===b.dataset.crmSecaoDestino);$('crmBusca').close();if(item)window.KahennaEstetica?.abrir(item.paciente_id,item.paciente,destino,item.id);return;}if(b.dataset.crmDestino==='estoque'){location.href='/estoque.html?'+new URLSearchParams({buscar:b.dataset.crmId});return;}const {crmId,crmSecaoDestino,crmArquivo}=b.dataset;$('crmBusca').close();abrir(crmId,crmSecaoDestino).then(()=>{if(crmArquivo&&ficha?.paciente.id===crmId)abrirPDF(crmArquivo);});});
   for(const context of ['modalNovoPacienteOverlay','modalIdentificacaoOverlay','modalEdicaoOverlay'])$(context)?.addEventListener('input',()=>limparAviso(context));
   const params=new URLSearchParams(location.search),p=params.get('paciente'),acaoInicial=params.get('acao');
   if(location.pathname==='/leads.html'&&p){abrir(p).then(()=>{if(ficha&&['financeiro','editar','lembrete'].includes(acaoInicial)){const paciente=perfilLead();$('crmFicha').close();abrirAcaoLocal(acaoInicial,paciente);}});}
