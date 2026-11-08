@@ -17,7 +17,21 @@ function criarServico(db){
    else if(/\.(png|jpe?g)$/i.test(nome)){const png=bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])),jpg=bytes[0]===255&&bytes[1]===216&&bytes[2]===255;if(!png&&!jpg)throw fail(400,'Imagem inválida.');try{bytes=await require('sharp')(bytes,{limitInputPixels:24000000,failOn:'warning'}).rotate().resize({width:2400,height:2400,fit:'inside',withoutEnlargement:true}).jpeg({quality:90}).toBuffer();}catch{throw fail(400,'Não foi possível ler a imagem.');}mime='image/jpeg';ext='jpg';}
    else throw fail(400,'Formatos aceitos: PDF, Word (.docx), JPEG e PNG.');
    const sha256=createHash('sha256').update(bytes).digest('hex'),anterior=ok(await db.from('arquivos_clinica').select('*').eq('id',d.id).maybeSingle());if(anterior){if(anterior.sha256!==sha256)throw fail(409,'Operação já utilizada para outro arquivo.');return {id:anterior.id,titulo:anterior.titulo};}
-   const storage=await bucket(),caminho=d.id+'.'+ext;ok(await storage.upload(caminho,bytes,{contentType:mime,upsert:false,cacheControl:'0'}));const r=await db.from('arquivos_clinica').insert({id:d.id,titulo,categoria,nome_original:ext==='jpg'?nome.replace(/\.[^.]+$/,'.jpg'):nome,mime,caminho,sha256,tamanho:bytes.length,usuario_id:u.id}).select('id,titulo').single();if(r.error){await storage.remove([caminho]);throw fail(503,'Não foi possível registrar o arquivo.');}await audit(u,'enviar_arquivo',d.id);return r.data;
+   const storage=await bucket(),caminho=d.id+'.'+ext;
+   const upload=await storage.upload(caminho,bytes,{contentType:mime,upsert:false,cacheControl:'0'});
+   if(upload.error){
+    const codigo=String(upload.error.code||upload.error.error||''),status=String(upload.error.statusCode||upload.error.status||'');
+    if(!['Duplicate','ResourceAlreadyExists','KeyAlreadyExists'].includes(codigo)&&status!=='409'&&!(status==='400'&&/already exists/i.test(upload.error.message||'')))throw fail(503,'Não foi possível enviar o arquivo. Tente novamente.');
+    const existente=await storage.download(caminho);if(existente.error||!existente.data)throw fail(503,'Não foi possível conferir o envio anterior. Tente novamente.');
+    const recuperado=Buffer.from(await existente.data.arrayBuffer());if(recuperado.length!==bytes.length||createHash('sha256').update(recuperado).digest('hex')!==sha256)throw fail(409,'Este envio já contém outro arquivo. Feche e abra o formulário para iniciar um novo envio.');
+   }
+   const r=await db.from('arquivos_clinica').insert({id:d.id,titulo,categoria,nome_original:ext==='jpg'?nome.replace(/\.[^.]+$/,'.jpg'):nome,mime,caminho,sha256,tamanho:bytes.length,usuario_id:u.id}).select('id,titulo').single();
+   if(r.error){
+    const salvo=await db.from('arquivos_clinica').select('*').eq('id',d.id).maybeSingle();
+    if(!salvo.error&&salvo.data?.sha256===sha256&&salvo.data?.caminho===caminho)return {id:salvo.data.id,titulo:salvo.data.titulo};
+    throw fail(503,'O arquivo foi recebido, mas não foi possível finalizar o cadastro. Tente salvar novamente neste formulário.');
+   }
+   await audit(u,'enviar_arquivo',d.id);return r.data;
   },
   async baixar(id,u){validarId(id);const d=ok(await db.from('arquivos_clinica').select('*').eq('id',id).maybeSingle());if(!d)throw fail(404,'Arquivo não encontrado.');if(!new RegExp('^'+id+'\\.(pdf|docx|jpg)$').test(d.caminho))throw fail(503,'Referência inválida.');await audit(u,'baixar_arquivo',id);const blob=ok(await(await bucket()).download(d.caminho)),bytes=Buffer.from(await blob.arrayBuffer());if(createHash('sha256').update(bytes).digest('hex')!==d.sha256)throw fail(503,'Falha de integridade do arquivo.');return {...d,bytes};}
  };

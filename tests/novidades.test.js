@@ -22,3 +22,12 @@ test('novidades: planos isolados por paciente, revisões, fotos privadas, arquiv
  for(const table of ['planos_faciais','fotos_evolucao','estetica_auditoria','arquivos_clinica','fornecedores_clinica','clinica_acessos'])assert.equal((await pg.query('select has_table_privilege(\'anon\',$1,\'SELECT\') ok',[table])).rows[0].ok,false);
  }finally{await pg.close();}
 });
+
+test('arquivos: retoma upload interrompido sem substituir outro conteúdo',async()=>{
+ const {pg,db,objects}=await preparar(),u={id:usuario};try{
+ const pdf=Buffer.from('%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF'),d={id:randomUUID(),titulo:'Envio retomado',categoria:'Fichas e modelos',nome:'modelo.pdf'},key='kahenna-arquivos/'+d.id+'.pdf';
+ objects.set(key,pdf);const original=db.storage.from.bind(db.storage);db.storage.from=bucket=>{const store=original(bucket);return {...store,upload:async(path,bytes,opts)=>{const r=await store.upload(path,bytes,opts);return r.error?{error:{code:'Duplicate',statusCode:'409',message:'The resource already exists'}}:r;}};};
+ const org=require('../services/organizacao').criarServico(db);await org.enviar(d,pdf,u);await org.enviar(d,pdf,u);assert.equal((await org.arquivos(u)).length,1);assert.deepEqual((await org.baixar(d.id,u)).bytes,pdf);
+ const outro={...d,id:randomUUID()};objects.set('kahenna-arquivos/'+outro.id+'.pdf',Buffer.from('outro conteúdo'));await assert.rejects(org.enviar(outro,pdf,u),/outro arquivo/);assert.equal(objects.get('kahenna-arquivos/'+outro.id+'.pdf').toString(),'outro conteúdo');
+ }finally{await pg.close();}
+});
