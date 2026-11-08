@@ -6,8 +6,9 @@ const fichaHTML=fsSync.readFileSync(path.join(__dirname,'../public/crm-paciente.
 const pdfHTML=fsSync.readFileSync(path.join(__dirname,'../public/documentos-dialog.html'),'utf8');
 const agendaHTML=fsSync.readFileSync(path.join(__dirname,'../public/agenda.html'),'utf8');
 const agendaFormulario=agendaHTML.slice(agendaHTML.indexOf('<div class="schedule-modal"'),agendaHTML.indexOf('<script src="/auth-ui.js"'));
+const materiaisHTML=fsSync.readFileSync(path.join(__dirname,'../views/estoque-materiais.html'),'utf8');
 const PAGINAS=['dashboard.html','leads.html','agenda.html','estoque.html','configuracoes.html'];
-const MENU=[['dashboard.html','Visão Geral','fa-chart-column',false],['leads.html','Pacientes','fa-user-group',false],['agenda.html','Agenda','fa-calendar-days',false],['estoque.html','Estoque','fa-boxes-stacked',true],['configuracoes.html','Equipe','fa-users-gear',true]];
+const MENU=[['dashboard.html','Visão Geral','fa-chart-column',false],['leads.html','Pacientes','fa-user-group',false],['agenda.html','Agenda','fa-calendar-days',false],['estoque.html','Caixa','fa-wallet',true],['configuracoes.html','Equipe','fa-users-gear',true]];
 function prepararCampos(html){
  return html.replace(/<(form|input|textarea)\b[^>]*>/gi,(tag,tipo)=>{
   if(tipo==='input'&&/\btype\s*=\s*["'](?:hidden|password|file|checkbox|radio)["']/i.test(tag))return tag;
@@ -73,7 +74,9 @@ const estiloPainel=`<style>
 async function enviarPagina(req,res,arquivo){
  if(!PAGINAS.includes(arquivo))throw new Error('Página não permitida.');
  const papel=obterPapel(req.usuario)==='administrador'?'administrador':'secretaria';
- const html=paginasPorPapel.get(arquivo)[papel];
+ const html=arquivo==='estoque.html'&&req.query.novo_atendimento==='1'
+  ?renderizarPagina(materiaisHTML,papel,arquivo)
+  :paginasPorPapel.get(arquivo)[papel];
  const interno=req.get('sec-fetch-dest')==='iframe'||req.query.painel==='1';
  res.set('Cache-Control','no-store');
  return res.type('html').send(interno?html.replace('</head>',estiloPainel+'</head>'):montarEstrutura(html,papel,arquivo));

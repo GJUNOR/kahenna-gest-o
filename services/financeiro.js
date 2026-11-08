@@ -100,7 +100,13 @@ async function registrar(visitanteId, dados, usuario) {
     const valor = Number(dados.valor), descricao = String(dados.descricao || "").trim();
     const parcelas = forma === "credito" ? Number(dados.parcelas || 1) : 1;
     if (dados.tipo !== "atendimento" || !Number.isFinite(valor) || valor <= 0 || valor > 1000000 || !descricao || descricao.length > 200 || Math.abs(valor * 100 - Math.round(valor * 100)) > 0.000001) throw erro("Informe a descrição e um valor válido para o atendimento.");
-    if (!Number.isInteger(parcelas) || parcelas < 1 || parcelas > 12) throw erro("Número de parcelas inválido.");
+    if (!Number.isInteger(parcelas) || parcelas < 1 || parcelas > 6) throw erro("Selecione de 1 a 6 parcelas sem juros.");
+    if (["debito", "credito"].includes(forma)) {
+        if (!["maquininha", "link"].includes(dados.canal_pagamento) || !["visa", "mastercard", "elo", "amex", "outras"].includes(dados.bandeira)) throw erro("Selecione como recebeu e a bandeira do cartão.");
+        if (forma === "debito" && dados.canal_pagamento === "link") throw erro("Débito disponível somente na maquininha.");
+    } else {
+        dados = { ...dados, canal_pagamento: null, bandeira: null };
+    }
     return executar("kahenna_registrar_financeiro", visitanteId, { ...dados, descricao, valor, forma_pagamento: forma, parcelas }, usuario);
 }
 async function reembolsar(visitanteId, dados, usuario) {

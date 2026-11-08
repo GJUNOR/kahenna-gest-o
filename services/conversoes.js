@@ -457,7 +457,7 @@ async function calcularResumoReceita() {
 
     const { data: lancamentos, error: erroFinanceiro } = await supabase
         .from("lancamentos_financeiros")
-        .select("tipo, valor, criado_em")
+        .select("tipo, valor, taxa_valor, criado_em")
         .gte("criado_em", inicioMes.toISOString())
         .lt("criado_em", inicioProximoMes.toISOString());
 
@@ -465,7 +465,7 @@ async function calcularResumoReceita() {
 
     (lancamentos || []).forEach((lancamento) => {
         const sinal = lancamento.tipo === "reembolso" ? -1 : 1;
-        const valor = Number(lancamento.valor || 0) * sinal;
+        const valor = Number(lancamento.valor || 0) * sinal - Number(lancamento.taxa_valor || 0);
         receitaMes += valor;
         const dataLancamento = new Date(lancamento.criado_em);
         if (dataLancamento >= inicioHoje && dataLancamento < inicioAmanha) {

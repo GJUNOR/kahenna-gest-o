@@ -24,6 +24,7 @@ app.use('/',require('./routes/agendamentos'));
 app.use('/api/conversoes',require('./routes/conversoes'));
 app.use('/api/financeiro',require('./routes/financeiro'));
 app.use('/api/estoque',require('./routes/estoque')(require('./config/supabase')));
+app.use('/api/caixa',require('./routes/caixa')(require('./config/supabase')));
 app.use('/api/equipe',exigirAdministradorApi,require('./routes/equipe'));
 for (const pasta of ['build','standard_fonts','wasm','cmaps']) app.use('/assets/pdfjs/'+pasta,express.static(path.join(__dirname,'node_modules/pdfjs-dist',pasta),{index:false}));
 app.use(express.static(path.join(__dirname,'public'),{

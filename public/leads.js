@@ -984,6 +984,8 @@ async function abrirModalEdicao(lead) {
     }
 
     leadEmEdicao = lead;
+    taxasCartaoCache = null;
+    atualizarParcelasAtendimento();
     const campoAgendamento = obterElemento("editarDataAvaliacao");
     if (campoAgendamento) campoAgendamento.dataset.agendamentoId = "";
     const feedback = obterElemento("financeiroFeedback");
@@ -1571,6 +1573,8 @@ function configurarModalEdicao() {
     obterElemento("financeiroPacote")?.addEventListener("change", atualizarOpcoesPacote);
     obterElemento("financeiroParcelas")?.addEventListener("change", atualizarValorPacote);
     obterElemento("financeiroPagamentoAvaliacao")?.addEventListener("change", atualizarParcelasAtendimento);
+    for (const id of ["financeiroCanal", "financeiroBandeira", "financeiroParcelasAtendimento"]) obterElemento(id)?.addEventListener("change", atualizarTaxaCartao);
+    obterElemento("financeiroValorLivre")?.addEventListener("input", atualizarTaxaCartao);
     obterElemento("registrarAvaliacao")?.addEventListener("click", registrarAvaliacaoFinanceira);
     obterElemento("registrarPacote")?.addEventListener("click", registrarPacoteFinanceiro);
     atualizarOpcoesPacote();
@@ -1603,6 +1607,40 @@ const TABELA_PACOTES = {
     20: { vista: 4500, parcelado: 5000, max: 10 }
 };
 
+let taxasCartaoCache = null, consultaTaxasCartao = null, taxaCartaoVersao = 0;
+async function atualizarTaxaCartao() {
+    const bloco = obterElemento('financeiroDadosCartao');
+    if (!bloco) return;
+    const versao = ++taxaCartaoVersao;
+    const forma = obterValorElemento('financeiroPagamentoAvaliacao');
+    bloco.hidden = !['credito', 'debito'].includes(forma);
+    if (bloco.hidden) return;
+    const canalSelect = obterElemento('financeiroCanal');
+    canalSelect.querySelector('[value="link"]').disabled = forma === 'debito';
+    if (forma === 'debito') canalSelect.value = 'maquininha';
+    const saida = obterElemento('financeiroTaxaPrevia');
+    const bandeira = obterValorElemento('financeiroBandeira');
+    if (!bandeira) { saida.textContent = ''; return; }
+    try {
+        if (!taxasCartaoCache) {
+            if (!consultaTaxasCartao) consultaTaxasCartao = fetch('/api/financeiro/taxas-cartao', { cache: 'no-store' }).then(async r => {
+                if (!r.ok) throw Error('Não foi possível consultar as taxas.');
+                return (await r.json()).taxas;
+            }).finally(() => { consultaTaxasCartao = null; });
+            taxasCartaoCache = await consultaTaxasCartao;
+        }
+        if (versao !== taxaCartaoVersao) return;
+        const canal = canalSelect.value;
+        const grupo = bandeira === 'outras' ? 'outras' : canal === 'link' ? 'todas' : ['visa', 'mastercard'].includes(bandeira) ? 'visa_mastercard' : 'elo_amex';
+        const n = forma === 'credito' ? obterValorElemento('financeiroParcelasAtendimento') || 1 : 1;
+        const taxa = taxasCartaoCache[`${canal}:${grupo}:${forma}:${n}`];
+        if (taxa == null) { saida.textContent = 'Cadastre a taxa desta opção em Caixa → Taxas do cartão.'; return; }
+        const bruto = lerValorMonetario(obterValorElemento('financeiroValorLivre')) || 0;
+        const desconto = Math.round((bruto * taxa / 100 + Number.EPSILON) * 100) / 100;
+        saida.textContent = `Taxa ${Number(taxa).toLocaleString('pt-BR')}% · ${formatarMoeda(desconto)} · Líquido ${formatarMoeda(bruto - desconto)}`;
+    } catch (erro) { if (versao === taxaCartaoVersao) saida.textContent = erro.message; }
+}
+
 function atualizarParcelasAtendimento() {
     const grupo = obterElemento("grupoParcelasAtendimento");
     const select = obterElemento("financeiroParcelasAtendimento");
@@ -1611,6 +1649,7 @@ function atualizarParcelasAtendimento() {
     grupo.hidden = !credito;
     select.disabled = !credito;
     if (!credito) select.value = "1";
+    atualizarTaxaCartao();
 }
 
 function atualizarOpcoesPacote() {
@@ -1707,6 +1746,8 @@ async function registrarAvaliacaoFinanceira() {
             valor: lerValorMonetario(obterValorElemento("financeiroValorLivre")),
             forma_pagamento: forma,
             parcelas: forma === "credito" ? Number(obterValorElemento("financeiroParcelasAtendimento") || 1) : 1,
+            canal_pagamento: ["credito", "debito"].includes(forma) ? obterValorElemento("financeiroCanal") : null,
+            bandeira: ["credito", "debito"].includes(forma) ? obterValorElemento("financeiroBandeira") : null,
             observacao: null
         }, botao);
     } catch (erro) { mostrarFeedbackFinanceiro(erro.message || "Não foi possível registrar a avaliação.", "erro"); }
@@ -1748,7 +1789,7 @@ function renderizarHistoricoFinanceiro(lancamentos) {
     lista.innerHTML = lancamentos.map((item) => `
         <article class="financeiro-item ${item.tipo === "reembolso" ? "reembolso" : ""}">
             <div><strong>${escaparHTML(item.descricao)}</strong><small>${formatarData(item.criado_em)} · ${escaparHTML(item.registrado_por_nome || item.registrado_por_email)}</small>${item.observacao ? `<small>${escaparHTML(item.observacao)}</small>` : ""}</div>
-            <div><strong>${item.tipo === "reembolso" ? "− " : "+ "}${formatarMoeda(item.valor)}</strong>${item.tipo !== "reembolso" ? `<button type="button" data-reembolsar="${item.id}" data-valor="${item.valor}">Reembolsar</button>` : ""}</div>
+            <div><strong>${item.tipo === "reembolso" ? "− " : "+ "}${formatarMoeda(item.valor)}</strong>${item.tipo !== "reembolso" && item.taxa_percentual != null ? `<small class="financeiro-liquido">Taxa ${formatarMoeda(item.taxa_valor)} · Líquido ${formatarMoeda(Number(item.valor) - Number(item.taxa_valor))}</small>` : ""}${item.tipo !== "reembolso" ? `<button type="button" data-reembolsar="${item.id}" data-valor="${item.valor}">Reembolsar</button>` : ""}</div>
         </article>`).join("");
     lista.querySelectorAll("[data-reembolsar]").forEach((botao) => botao.addEventListener("click", () => registrarReembolso(botao)));
 }

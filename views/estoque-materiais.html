@@ -1,0 +1,94 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Estoque | Dra. Kahenna Vieira</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="/sidebar.css"><link rel="stylesheet" href="/mobile.css?v=1"><link rel="stylesheet" href="/kahenna-theme.css?v=30"><link rel="stylesheet" href="/mobile-refined.css?v=35"><link rel="stylesheet" href="/estoque.css?v=7"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="/crm-layout.css?v=4"><link rel="stylesheet" href="/crm-controls.css?v=2"></head><body class="crm-page"><div class="layout"><aside class="sidebar">
+    <div class="sidebar-main">
+        <div class="logo">
+            <div class="logo-icon">
+                <img class="clinic-logo" src="/logo.svg" alt="Dra. Kahenna Vieira">
+            </div>
+
+            <div class="logo-text">
+                <h2>Dra. Kahenna Vieira</h2>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="/dashboard.html" >
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Visão Geral</span>
+            </a>
+
+            <a href="/leads.html">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Pacientes</span>
+            </a>
+
+            <a href="/agenda.html">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Agenda</span>
+            </a>
+
+            <a href="/estoque.html" class="active" aria-current="page"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i><span>Estoque</span></a>
+<a href="/configuracoes.html" data-admin-only hidden>
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Equipe</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="connection-status atlas-status" id="statusSupabase" data-status="verificando">
+            <span class="status-dot" aria-hidden="true"></span>
+
+            <div>
+                <strong id="statusSupabaseTitulo">Acesso restrito</strong>
+
+                <small id="statusSupabaseTexto">Pacientes e agenda</small>
+            </div>
+        </div>
+        <button class="sidebar-logout" type="button" data-logout>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sair</span>
+        </button>
+    </div>
+</aside>
+<main class="content stock-content">
+<header class="stock-header"><div><span class="stock-eyebrow">CUIDADO EM CADA DETALHE</span><h1>Estoque</h1><p>Organize os produtos da clínica e acompanhe cada custo.</p></div><div class="stock-header-actions"><button type="button" class="stock-secondary" id="novoAtendimento">Registrar atendimento</button><button type="button" class="stock-primary" id="novoProduto"><i class="fa-solid fa-plus" aria-hidden="true"></i> Novo produto</button></div></header>
+<div class="stock-period"><label for="mesEstoque">Período <input type="month" id="mesEstoque" min="2000-01" max="2099-12" required></label><button type="button" class="stock-icon-button" id="atualizarEstoque" aria-label="Atualizar estoque"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button></div>
+<p id="stockFeedback" class="stock-feedback" role="status" hidden></p>
+<section class="stock-metrics" aria-label="Resumo do estoque"><article><span class="stock-metric-icon"><i class="fa-solid fa-box-open" aria-hidden="true"></i></span><p>Valor em estoque</p><strong id="valorEstoque">—</strong><small>Produtos disponíveis agora</small></article><article><span class="stock-metric-icon"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></span><p>Compras do mês</p><strong id="comprasMes">—</strong><small>Entradas registradas no período</small></article></section>
+<section class="stock-panel" aria-labelledby="tituloProdutos"><div class="stock-panel-heading"><div><h2 id="tituloProdutos">Produtos da clínica</h2><p id="contagemProdutos">Carregando os produtos…</p></div></div><div class="stock-toolbar"><label class="stock-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="buscaEstoque" type="search" aria-label="Buscar produto" maxlength="120"></label><select id="categoriaEstoque" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select><div class="stock-tabs" aria-label="Situação dos produtos"><button type="button" data-filtro="todos" class="is-active" aria-pressed="true">Todos</button><button type="button" data-filtro="baixo" aria-pressed="false">Estoque baixo</button></div></div>
+<div id="listaProdutos" aria-live="polite"></div><div class="stock-pagination"><button type="button" id="produtosAnterior" class="stock-secondary">Anterior</button><span id="paginaProdutos"></span><button type="button" id="produtosProximo" class="stock-secondary">Próxima</button></div></section>
+<details class="stock-panel stock-history"><summary id="tituloMovimentos">Movimentações</summary><div id="listaMovimentos" aria-live="polite"></div><div class="stock-pagination"><button type="button" id="historicoAnterior" class="stock-secondary">Anterior</button><span id="paginaHistorico"></span><button type="button" id="historicoProximo" class="stock-secondary">Próxima</button></div></details>
+</main></div>
+<dialog id="produtoDialog" class="stock-dialog stock-dialog-wide" aria-labelledby="produtoTitulo">
+<header><h2 id="produtoTitulo">Novo produto</h2><button type="button" class="stock-dialog-close" data-fechar aria-label="Fechar cadastro de produto">×</button></header>
+<form id="produtoForm">
+<label id="produtoModeloLabel">Cadastro rápido<select id="produtoModelo"><option value="">Personalizado</option></select></label>
+<div id="produtoExistente" class="stock-existing-product" hidden><strong id="produtoExistenteNome"></strong><button type="button" id="produtoExistenteCompra" class="stock-secondary">Adicionar compra</button></div>
+<label>Nome do produto<input id="produtoNome" maxlength="120" required></label>
+<div class="stock-form-grid"><label>Categoria<input id="produtoCategoria" list="categoriasSugeridas" maxlength="60"></label><label>Unidade de uso<select id="produtoUnidade"><option value="un">Unidade</option><option value="ml">Mililitro (ml)</option><option value="g">Grama (g)</option><option value="caixa" hidden>Caixa</option><option value="pacote" hidden>Pacote</option><option value="frasco" hidden>Frasco</option></select></label></div>
+<label>Estoque mínimo<input id="produtoMinimo" type="number" min="0" max="999999.999" step="0.001" value="0" required></label>
+<fieldset id="produtoConversao" hidden><legend>Controle por unidade</legend><label class="stock-check"><input id="converterSaldo" type="checkbox"> Converter o saldo das embalagens</label><div id="camposConversao" class="stock-form-grid" hidden><label>Unidade de uso<select id="conversaoUnidade"><option value="un">Unidade</option><option value="ml">Mililitro (ml)</option><option value="g">Grama (g)</option></select></label><label>Conteúdo de cada embalagem<input id="conversaoConteudo" type="number" min="0.001" max="999999.999" step="0.001"></label></div><output id="conversaoResumo" class="stock-available" hidden></output></fieldset>
+<label class="stock-check"><input id="produtoComCompra" type="checkbox"> Registrar compra</label>
+<fieldset id="produtoCompra" hidden><legend>Compra</legend>
+<div class="stock-form-grid"><label>Quantidade comprada<input id="compraQuantidade" type="number" min="0.001" max="999999.999" step="0.001"></label><label>Comprado em<select id="compraEmbalagem"><option value="un">Unidades</option><option value="caixa">Caixas</option><option value="pacote">Pacotes</option><option value="frasco">Frascos</option><option value="ml">Mililitros</option><option value="l">Litros</option><option value="g">Gramas</option><option value="kg">Quilos</option></select></label></div>
+<label id="compraConteudoLabel">Conteúdo por embalagem<input id="compraConteudo" type="number" min="0.001" max="999999.999" step="0.001" value="1"></label>
+<div class="stock-form-grid"><label>Valor da compra (R$)<input id="compraValor" type="number" min="0" max="99999999999.99" step="0.01"></label><label>Data da compra<input id="compraData" type="date" min="1900-01-01"></label></div>
+<details><summary>Custo por unidade (opcional)</summary><label>Custo por unidade de uso (R$)<input id="compraCusto" type="number" min="0" max="99999999.99999999" step="0.00000001"></label></details>
+<label>Fornecedor (opcional)<input id="compraFornecedor" maxlength="120"></label>
+<div class="stock-form-grid"><label>Lote (opcional)<input id="compraLote" maxlength="80"></label><label>Validade (opcional)<input id="compraValidade" type="date" min="1900-01-01" max="2200-12-31"></label></div>
+<div class="stock-purchase-summary" aria-live="polite"><div><span>Quantidade em estoque</span><strong id="compraUnidades">—</strong></div><div><span>Custo por unidade</span><strong id="compraCustoCalculado">—</strong></div><div><span>Total da compra</span><strong id="compraTotal">—</strong></div></div>
+</fieldset><p id="produtoErro" role="alert" class="stock-form-error" hidden></p><footer><button type="button" data-fechar class="stock-secondary">Cancelar</button><button type="submit" id="produtoSalvar" class="stock-primary">Salvar</button></footer></form></dialog>
+
+<dialog id="movimentoDialog" class="stock-dialog" aria-labelledby="movimentoTitulo"><header><h2 id="movimentoTitulo">Registrar compra</h2><button type="button" class="stock-dialog-close" data-fechar aria-label="Fechar movimentação">×</button></header><p id="movimentoProduto" class="stock-dialog-intro"></p><p id="movimentoSaldo" class="stock-available"></p><form id="movimentoForm"><div class="stock-form-grid"><label>Finalidade<select id="movimentoFinalidade"><option value="uso">Uso avulso</option><option value="descarte">Perda ou descarte</option></select></label><label>Lote<select id="movimentoLote"><option value="">Automático por validade</option></select></label></div><div class="stock-form-grid"><label id="quantidadeLabel">Quantidade<input name="quantidade" id="movimentoQuantidade" type="number" min="0.001" max="999999.999" step="0.001" required></label><label>Data<input name="ocorrido_em" id="movimentoData" type="date" min="1900-01-01" required></label></div><div id="camposCompra"><label id="custoLabel">Custo por unidade (R$)<input name="custo_unitario" id="movimentoCusto" type="number" min="0" max="999999.9999" step="0.0001"></label><label>Fornecedor <span>(opcional)</span><input name="fornecedor" id="movimentoFornecedor" maxlength="120"></label></div><label>Observação <span>(opcional)</span><textarea name="motivo" id="movimentoMotivo" maxlength="300" rows="1" data-autosize></textarea></label><div class="stock-calculation"><span id="calculoLabel">Total da compra</span><strong id="movimentoTotal">R$ 0,00</strong></div><p id="movimentoErro" role="alert" class="stock-form-error" hidden></p><footer><button type="button" data-fechar class="stock-secondary">Cancelar</button><button type="submit" id="movimentoSalvar" class="stock-primary">Registrar compra</button></footer></form></dialog>
+<dialog id="excluirDialog" class="stock-dialog" aria-labelledby="excluirTitulo"><header><h2 id="excluirTitulo">Excluir produto?</h2><button type="button" class="stock-dialog-close" data-fechar aria-label="Fechar confirmação">×</button></header><p id="excluirNome" class="stock-dialog-intro"></p><p id="excluirExplicacao" class="stock-delete-explanation"></p><p id="excluirErro" class="stock-form-error" role="alert" hidden></p><footer><button type="button" data-fechar class="stock-secondary">Cancelar</button><button type="button" id="excluirConfirmar" class="stock-primary">Excluir produto</button></footer></dialog><datalist id="categoriasSugeridas"><option value="Descartáveis"><option value="Produtos estéticos"><option value="Produtos"><option value="Materiais"><option value="Higiene"><option value="Outros"></datalist>
+<dialog id="atendimentoDialog" class="stock-dialog stock-dialog-wide" aria-labelledby="atendimentoTitulo"><header><h2 id="atendimentoTitulo">Materiais do atendimento</h2><button type="button" class="stock-dialog-close" data-fechar aria-label="Fechar atendimento">×</button></header><form id="atendimentoForm">
+<label>Paciente<select id="atendimentoPaciente" required><option value="">Selecione</option></select></label>
+<div class="stock-form-grid"><label>Atendimento<input id="atendimentoDescricao" maxlength="200"></label><label>Data<input id="atendimentoData" type="date" min="1900-01-01" required></label></div>
+<fieldset class="stock-selection"><legend>Produtos disponíveis</legend><div id="atendimentoItens" aria-busy="true"></div><span id="atendimentoSelecionados" class="stock-selection-count" aria-live="polite">0 selecionados</span></fieldset>
+<details id="atendimentoOpcoesLista" class="stock-list-options"><summary>Lista padrão</summary><label class="stock-check"><input id="atendimentoSalvarPadrao" type="checkbox" checked> Salvar como lista padrão deste paciente</label><button type="button" class="stock-secondary" id="atendimentoSomenteLista">Salvar somente a lista</button></details>
+<div class="stock-calculation"><span>Custo estimado dos materiais</span><strong id="atendimentoTotal">R$ 0,00</strong></div>
+<p id="atendimentoErro" class="stock-form-error" role="alert" hidden></p><footer><button type="button" class="stock-secondary" data-fechar>Cancelar</button><button type="submit" id="atendimentoConfirmar" class="stock-primary">Confirmar baixa</button></footer></form></dialog>
+
+<script src="/auth-ui.js"></script><script src="/session-ui.js?v=2"></script><script src="/aniversarios.js?v=1"></script><script src="/estoque-compras.js?v=3"></script><script src="/estoque-atendimentos.js?v=7"></script><script src="/estoque.js?v=11"></script></body></html>
