@@ -77,3 +77,14 @@ html body.crm-page .cash-inflow .cash-row-value{color:#377451;background:#edf5ef
 html body.crm-page .cash-tabs [data-caixa-tipo=entradas][aria-pressed=true]{color:#377451;background:#edf5ef}html body.crm-page .cash-tabs [data-caixa-tipo=gastos][aria-pressed=true]{color:#a45150;background:#fbefed}
 html body.crm-page .cash-dialog h2{font-size:23px!important}html body.crm-page .cash-dialog :is(label,summary){font-size:12px!important}
 @media(max-width:560px){html body.crm-page .cash-content .stock-header h1{font-size:26px!important}html body.crm-page .cash-content .cash-summary strong{font-size:20px!important;margin:0!important}html body.crm-page .cash-content .cash-summary article{padding:14px 16px}html body.crm-page .cash-content .cash-row-value{font-size:13px!important;padding:4px 7px}}
+
+@media(max-width:760px){
+html body.crm-page :is(.crm-close,.stock-dialog-close,#fecharModalAgendamento){width:44px!important;height:44px!important;min-height:44px!important;touch-action:manipulation}
+html body.crm-page :is(.cash-row-actions button,.crm-entry button){min-width:40px;min-height:40px;touch-action:manipulation}
+html body.crm-page .orc-item{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px}html body.crm-page .orc-item>button{width:44px;min-height:44px}
+html body.crm-page .orc-pagamento-basico>button{width:44px;min-height:44px}
+html body.crm-page .orc-adicionar-linha{min-height:44px;touch-action:manipulation}
+html body.crm-page .estetica-dose>button{width:40px;min-height:44px;flex-basis:40px;touch-action:manipulation}
+html body.crm-page dialog{overscroll-behavior:contain;scroll-padding-block:16px}
+html body.crm-page :is(button,a,input,select,textarea){-webkit-tap-highlight-color:#8b425b1c}
+}
