@@ -51,7 +51,7 @@ function renderizarPagina(html,papel,arquivo){
  page=page.replace('<head>','<head><link rel="icon" href="/favicon.ico?v=1" sizes="any">'+conexoes)
   .replace('/font-awesome/6.5.2/css/all.min.css','/font-awesome/6.7.2/css/all.min.css');
  let extra='<script src="/paciente-busca.js?v=2"></script>'+esteticaHTML+'<script src="/rosto-clinico.js?v=1"></script><script src="/estetica.js?v=2"></script>'+fichaHTML+'<script src="/campos-ui.js?v=2"></script>';
- if(arquivo==='estoque.html'){extra+=notasHTML+'<script src="/notas.js?v=1"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/notas.css?v=1"></head>');}
+ if(arquivo==='estoque.html'){extra+=notasHTML+'<script src="/notas.js?v=2"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/notas.css?v=1"></head>');}
  if(arquivo==='dashboard.html'){
   page=page.replace('<link rel="stylesheet" href="/kahenna-theme.css', '<link rel="stylesheet" href="/agenda-form.css?v=4"><link rel="stylesheet" href="/kahenna-theme.css');
   extra+=agendaFormulario+'<script src="/agenda.js?v=22"></script>';
