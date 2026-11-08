@@ -3,7 +3,7 @@
     const $ = id => document.getElementById(id);
     const moeda = valor => Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     const esc = valor => String(valor ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const state = { pagina: 0, tipo: 'gastos', consulta: 0, linhas: [], registro: null, excluir: null, taxas: {}, revisaoTaxas: 0, salvando: false };
+    const state = { pagina: 0, tipo: 'entradas', consulta: 0, linhas: [], registro: null, excluir: null, taxas: {}, revisaoTaxas: 0, salvando: false };
     let buscaTimer, foco;
     async function api(caminho, opcoes = {}) {
         const resposta = await fetch('/api/caixa' + caminho, {

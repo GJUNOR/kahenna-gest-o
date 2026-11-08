@@ -103,3 +103,44 @@ html body.crm-page .inicio-agendas{display:grid;grid-template-columns:repeat(2,m
 html body.crm-page .inicio-agendas>.widget{grid-column:auto!important;grid-row:auto!important}
 
 html body.crm-page .paciente-proximo{display:inline-block;max-width:100%;box-sizing:border-box;white-space:normal}
+
+html body.crm-page select.crm-paciente-original[hidden]{display:none!important}
+
+/* Phone-only compact layout; desktop dimensions are unchanged. */
+@media(max-width:760px){
+ html body.crm-page .sidebar{height:calc(104px + env(safe-area-inset-bottom))!important;min-height:104px!important;padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important;gap:6px!important;box-sizing:border-box}
+ html body.crm-page .sidebar .sidebar-main{height:92px!important;min-height:92px!important;align-items:center!important;gap:4px!important;overflow:visible!important}
+ html body.crm-page .sidebar .menu{height:92px!important;min-height:92px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;align-content:center!important;gap:2px!important}
+ html body.crm-page .sidebar .menu a{height:44px!important;min-height:44px!important;padding:4px 1px!important;gap:3px!important}
+ html body.crm-page .sidebar .menu a span{font-size:8px!important;line-height:11px!important;white-space:nowrap!important}
+ html body.crm-page .sidebar-main .crm-global-search{position:static!important;flex:0 0 40px!important;width:40px!important;height:44px!important;min-height:44px!important;margin:0!important;padding:0!important;border-radius:10px!important;box-shadow:none!important}
+ html body.crm-page .sidebar-bottom{display:grid!important;grid-template-columns:1fr!important;gap:2px!important;width:44px!important;min-width:44px!important;margin:0!important;padding:0!important;align-self:center!important}
+ html body.crm-page .sidebar-bottom :is(.sidebar-equipe,.sidebar-logout){display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;width:44px!important;min-width:44px!important;min-height:44px!important;height:44px!important;margin:0!important;padding:3px!important;font-size:8px!important;border-radius:9px!important}
+ html body.crm-page .sidebar-bottom :is(.sidebar-equipe,.sidebar-logout) span{font-size:8px!important;line-height:11px!important}
+ html body.crm-page .sidebar-bottom .crm-nav-icon,html body.crm-page .sidebar-bottom .crm-nav-icon svg{width:17px!important;height:17px!important;flex-basis:17px!important}
+ html body.crm-page .crm-painel{height:calc(100% - 104px - env(safe-area-inset-bottom))!important}
+ html body.crm-page :is(.content>.topbar,.content>.page-header,.content>.stock-header,.agenda-topbar){min-height:0!important;height:auto!important;padding:14px 16px!important;gap:9px!important;margin-bottom:14px!important}
+ html body.crm-page :is(.topbar,.page-header,.stock-header,.agenda-topbar) h1{font-size:26px!important;line-height:1.2!important;margin:0!important}
+ html body.crm-page :is(main,.stock-content){padding-inline:12px!important}
+ html body.crm-page .widget{padding:16px!important;margin-bottom:14px!important;border-radius:15px!important;min-height:0!important}
+ html body.crm-page .widget-header{gap:11px!important;margin-bottom:14px!important}
+ html body.crm-page .widget-title{font-size:18px!important;line-height:1.35!important}
+ html body.crm-page .routine-cards{gap:9px!important;margin-bottom:14px!important}
+ html body.crm-page .routine-card{padding:13px!important;min-height:76px!important}.crm-page .routine-card h3{font-size:9px!important;margin-bottom:7px!important}.crm-page .routine-card strong{font-size:21px!important}
+ html body.crm-page .inicio-agendas>.widget{padding:15px!important}.crm-page .inicio-agendas .widget-title{font-size:17px!important}
+ html body.crm-page :is(.cash-list-header,.stock-panel-header,.table-header){padding:13px!important;gap:10px!important}
+ html body.crm-page :is(.cash-dialog,.org-dialog,.orc-dialog,.estetica-dialog,.crm-profile-dialog){max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;border-radius:16px!important}
+ html body.crm-page :is(.orc-dialog>header,.estetica-header,.crm-profile-header){padding:17px 60px 16px 17px!important}
+ html body.crm-page :is(.orc-body,.crm-profile-body){padding:14px!important}
+ html body.crm-page :is(.orc-dialog,.estetica-dialog,.crm-profile-dialog) h2{font-size:23px!important;line-height:1.3!important}
+ html body.crm-page :is(.cash-dialog,.modal-edicao,.reminder-dialog) select{appearance:none!important;background-color:#fdfaf9!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23885b6b' stroke-width='1.7'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;padding-right:34px!important;border-radius:10px!important}
+ html body.crm-page :is(input,select,textarea){min-height:44px!important;border-radius:10px!important}html body.crm-page input[type=checkbox],html body.crm-page input[type=radio]{min-height:0!important}
+ html body.crm-page .cash-toolbar{gap:8px!important;margin-bottom:14px!important}.cash-period input{width:152px!important}
+ html body.crm-page .patient-period-tabs{display:flex!important;flex-wrap:wrap!important;gap:3px!important;max-width:100%}.patient-period-tabs button{min-height:40px!important;padding:8px 10px!important;font-size:11px!important}
+}
+
+@media(max-width:760px){html body.crm-page .sidebar .sidebar-main{display:flex!important;flex-direction:row!important;flex:1!important;min-width:0!important}html body.crm-page .sidebar .menu{margin:0!important;min-width:0!important;flex:1!important}html body.crm-page :is(.content>.topbar,.content>.page-header,.content>.stock-header,.agenda-topbar){width:100%!important;margin-inline:0!important;margin-top:0!important;padding:10px 0!important;gap:8px!important}html body.crm-page :is(.content>.topbar,.content>.page-header,.content>.stock-header,.agenda-topbar)>div:first-child{min-height:0!important}}
+
+html body.crm-page .inicio-horarios-sutil{display:flex;flex-wrap:wrap;gap:5px 18px;align-items:center;grid-column:1/-1;color:#9c858f;font:400 11px/1.6 Inter,sans-serif;margin:-6px 2px 15px;padding:0 3px}.inicio-horarios-sutil[hidden]{display:none!important}.inicio-horarios-sutil span{white-space:nowrap}@media(max-width:760px){html body.crm-page .inicio-horarios-sutil{font-size:10px;gap:3px 12px;margin:0 0 12px;padding:0}}
+
+@media(max-width:760px){html body.crm-page .content>main{width:100%!important;max-width:none!important;box-sizing:border-box!important;margin:0!important;padding:0!important}html body.crm-page .inicio-agendas .routine-agenda-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;align-items:stretch!important}html body.crm-page .inicio-agendas .routine-agenda-actions>:is(a,button){width:100%!important;min-width:0!important;max-width:none!important;height:44px!important;min-height:44px!important;padding:0 6px!important;font-size:11px!important;line-height:1.3!important;white-space:normal!important}.inicio-agendas .today-patient strong{font-size:12px!important}.inicio-agendas .summary-appointment{gap:8px!important;padding:10px!important}}

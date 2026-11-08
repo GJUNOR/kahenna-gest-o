@@ -135,6 +135,13 @@ async function criarOuAtualizarAgendamento({
             observacao || null
     };
 
+    if(retornoDe == null && existente?.retorno_de) retornoDe=existente.retorno_de;
+    if (retornoDe == null && String(observacao || '').trim().toLowerCase() === 'retorno') {
+        const {data: anterior, error: erroAnterior} = await supabase.from('agendamentos').select('id').eq('visitante_id',visitanteId).neq('status','cancelado').not('atendido_em','is',null).lt('data_avaliacao',dataConvertida.toISOString()).order('data_avaliacao',{ascending:false}).order('id',{ascending:false}).limit(1).maybeSingle();
+        if(erroAnterior)throw erroAnterior;
+        if(!anterior)throw Object.assign(new Error('Não há atendimento concluído para vincular este retorno.'),{statusCode:400});
+        retornoDe=anterior.id;
+    }
     if (retornoDe !== undefined && retornoDe !== null) {
         if (!Number.isSafeInteger(Number(retornoDe)) || Number(retornoDe) < 1) throw Object.assign(new Error("Atendimento de origem inválido."), { statusCode: 400 });
         const { data: origem, error: erroOrigem } = await supabase.from("agendamentos").select("id,visitante_id,data_avaliacao,atendido_em,status").eq("id", Number(retornoDe)).eq("visitante_id", visitanteId).maybeSingle();

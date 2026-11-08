@@ -16,6 +16,8 @@ for (const [periodo, inicio, fim, novembro, dezembro] of [
     }
 }
 
+window.KahennaTurnosClinica={obter:dia=>turnosClinica.get(dia)};
+
 let inicioSemana = obterInicioSemana(new Date());
 let agendamentos = [];
 let pacientes = [];
@@ -180,7 +182,7 @@ async function carregarAgenda() {
         if (!resposta.ok) throw new Error(await lerErro(resposta));
         const retorno = await resposta.json();
         if (consulta !== consultaSemana) return;
-        agendamentos = retorno.data || [];
+        agendamentos = (retorno.data || []).filter(item=>item.status!=='cancelado');
         renderizarCalendario();
         document.getElementById("resumoAgenda").textContent = `${agendamentos.length} ${agendamentos.length === 1 ? "agendamento" : "agendamentos"}`;
         ocultarMensagem();
@@ -273,7 +275,7 @@ function renderizarCalendario() {
 
 function criarCartaoAgendamento(item) {
     const paciente = item.paciente || {};
-    const retorno = String(item.observacao || "").trim().toLowerCase() === "retorno";
+    const retorno = Boolean(item.retorno_de) || String(item.observacao || "").trim().toLowerCase() === "retorno";
     const horario = valorHoraInput(
         new Date(item.data_avaliacao)
     );
@@ -393,7 +395,7 @@ async function salvarAgendamento(evento) {
 
 async function cancelarAgendamento() {
     if (!agendamentoSelecionado) return;
-    if (!window.confirm("Deseja realmente cancelar este horário? O registro continuará salvo no histórico.")) return;
+    if (!window.confirm("Cancelar este horário? Ele será removido da agenda.")) return;
     const botao = document.getElementById("cancelarAgendamento");
     botao.disabled = true;
     try {

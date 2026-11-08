@@ -532,7 +532,7 @@ function iniciarAtualizacaoAutomatica() {
 }
 
 async function carregarLeadsEmSegundoPlano() {
-    if (atualizandoEmSegundoPlano) {
+    if (document.visibilityState !== 'visible' || document.querySelector('dialog[open], .modal-edicao-overlay.open') || atualizandoEmSegundoPlano) {
         return;
     }
 
@@ -1938,9 +1938,9 @@ function criarLinhaLead(lead) {
 
         <td class="coluna-acoes">
             <div class="grupo-acoes-paciente">
-              <button type="button" class="crm-ver-mais crm-patient-history" data-ver-paciente="${escaparAtributo(id)}" aria-label="Histórico de ${escaparAtributo(nome)}">
+              <button type="button" class="crm-ver-mais crm-patient-history" data-ver-paciente="${escaparAtributo(id)}" aria-label="Ver mais sobre ${escaparAtributo(nome)}">
                 <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
-                <span>Histórico</span>
+                <span>Ver mais</span>
               </button>
             </div>
         </td>

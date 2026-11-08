@@ -1,6 +1,7 @@
 'use strict';
 const escapar=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dados=(r)=>Array.isArray(r)?r:(r.data||r.dados||[]);
+const ehRetorno=item=>Boolean(item.retorno_de)||String(item.observacao||'').trim().toLowerCase()==='retorno';
 let modoLista='semana',mesLista='',semanaDados=[],pacientesLista=[],inicioSemanaLista,listaConsulta=0,dadosMesAtual=[],chaveMesAtual='';
 async function carregarListaPeriodo(){
  const ticket=++listaConsulta;
@@ -29,7 +30,7 @@ async function carregarListaPeriodo(){
    itens=totalDias?(mesLista===chaveMesAtual?dadosMesAtual:dados(await ler('/api/agendamentos?'+new URLSearchParams({inicio:inicio.toISOString(),fim:fim.toISOString()})))).filter(item=>item.status!=='cancelado'&&new Date(item.data_avaliacao)>=inicio&&new Date(item.data_avaliacao)<fim):[];
   }
   if(ticket!==listaConsulta)return;
-  itens=itens.filter(i=>!i.atendido_em&&i.status!=='realizado'&&(modoLista==='retornos'?Boolean(i.retorno_de):!i.retorno_de));
+  itens=itens.filter(i=>!i.atendido_em&&i.status!=='realizado'&&(modoLista==='retornos'?ehRetorno(i):!ehRetorno(i)));
   const dias=Array.from({length:totalDias},(_,i)=>new Date(inicio.getTime()+i*86400000));
   lista.innerHTML=dias.map(data=>{
    const fim=new Date(data.getTime()+86400000);
@@ -52,7 +53,8 @@ async function carregarReceitaRotina(){
  try{const r=await ler('/api/conversoes/resumo');const moeda=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});hoje.textContent=moeda(r.receitaHoje??r.receita_hoje);mes.textContent=moeda(r.receitaMes??r.receita_mes);hoje.removeAttribute('title');mes.removeAttribute('title');}
  catch(e){hoje.textContent='—';mes.textContent='—';hoje.title=mes.title='Não foi possível carregar a receita. Clique em Atualizar para tentar novamente.';}
 }
-async function resumo(){carregarReceitaRotina();carregarFluxoInicio();const btn=document.getElementById('btnAtualizar');btn.disabled=true;const error=document.getElementById('erroResumo');error.hidden=true;try{
+function renderizarHorariosInicio(){const el=document.getElementById('inicioHorarios');if(!el||!window.KahennaTurnosClinica)return;const hoje=new Date(window.KahennaAniversarios.hojeBrasil()+'T12:00:00-03:00'),fragmento=document.createDocumentFragment();for(let n=0;n<7;n++){const d=new Date(hoje.getTime()+n*86400000),dia=window.KahennaAniversarios.hojeBrasil(d),turno=window.KahennaTurnosClinica.obter(dia);if(!turno)continue;const span=document.createElement('span');span.textContent=d.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',weekday:'short',day:'2-digit',month:'2-digit'}).replace('.','')+' · '+turno.inicio+'h–'+(turno.fim===24?'00':turno.fim)+'h';fragmento.append(span);}el.replaceChildren(fragmento);el.hidden=!el.childElementCount;}
+async function resumo(){renderizarHorariosInicio();carregarReceitaRotina();carregarFluxoInicio();const btn=document.getElementById('btnAtualizar');btn.disabled=true;const error=document.getElementById('erroResumo');error.hidden=true;try{
  const dateParts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const part=t=>dateParts.find(p=>p.type===t).value;
  const day=new Date(`${part('year')}-${part('month')}-${part('day')}T00:00:00-03:00`);
 
@@ -64,7 +66,7 @@ async function resumo(){carregarReceitaRotina();carregarFluxoInicio();const btn=
  if(patients.status==='rejected'){document.getElementById('aniversariosEstado').textContent='Não foi possível consultar os aniversários. Tente atualizar.';document.getElementById('aniversariosLista').replaceChildren();document.getElementById('aniversariosContagem').textContent='—';throw patients.reason;}
  const ps=dados(patients.value);renderizarAniversarios(ps);
  chaveMesAtual=monthBookings.status==='fulfilled'?mesAtual:'';dadosMesAtual=monthBookings.status==='fulfilled'?dados(monthBookings.value):[];
- const novos=dadosMesAtual.filter(i=>!i.retorno_de&&!i.atendido_em&&i.status!=='cancelado'&&i.status!=='realizado'&&new Date(i.data_avaliacao)>=day&&new Date(i.data_avaliacao)<fimMes).sort((a,b)=>new Date(a.data_avaliacao)-new Date(b.data_avaliacao));
+ const novos=dadosMesAtual.filter(i=>!ehRetorno(i)&&!i.atendido_em&&i.status!=='cancelado'&&i.status!=='realizado'&&new Date(i.data_avaliacao)>=day&&new Date(i.data_avaliacao)<fimMes).sort((a,b)=>new Date(a.data_avaliacao)-new Date(b.data_avaliacao));
  document.getElementById('inicioNovosLista').innerHTML=monthBookings.status==='rejected'?'<p class="empty-state">Não foi possível carregar os agendamentos.</p>':novos.length?novos.slice(0,4).map(i=>'<button type="button" class="inicio-novo-paciente" data-ver-paciente="'+escapar(i.visitante_id)+'"><span>'+escapar(i.paciente?.nome||ps.find(p=>p.visitante_id===i.visitante_id)?.nome||'Paciente')+'</span><time>'+escapar(new Date(i.data_avaliacao).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit'}))+'</time></button>').join(''):'<p class="empty-state">Nenhum novo atendimento agendado neste mês.</p>';
  if(bookings.status==='rejected')throw bookings.reason;const bs=dados(bookings.value);
  const today=bs.filter(x=>new Date(x.data_avaliacao)>=day&&new Date(x.data_avaliacao)<new Date(day.getTime()+86400000)&&x.status!=='cancelado');
