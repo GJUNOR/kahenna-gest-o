@@ -1,16 +1,17 @@
 'use strict';
 const escapar=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dados=(r)=>Array.isArray(r)?r:(r.data||r.dados||[]);
-let modoLista='semana',mesLista='',semanaDados=[],pacientesLista=[],inicioSemanaLista,listaConsulta=0;
+let modoLista='semana',mesLista='',semanaDados=[],pacientesLista=[],inicioSemanaLista,listaConsulta=0,dadosMesAtual=[],chaveMesAtual='';
 async function carregarListaPeriodo(){
  const ticket=++listaConsulta;
- const mensal=modoLista==='mes';
+ const mensal=modoLista!=='semana';
  const lista=document.getElementById('agendaSemana');
  const erro=document.getElementById('erroSemana');
  document.getElementById('verPacientesSemana').setAttribute('aria-pressed',String(!mensal));
- document.getElementById('verPacientesMes').setAttribute('aria-pressed',String(mensal));
+ document.getElementById('verPacientesMes').setAttribute('aria-pressed',String(modoLista==='mes'));
+ document.getElementById('verPacientesRetornos').setAttribute('aria-pressed',String(modoLista==='retornos'));
  document.getElementById('navegacaoMesPacientes').hidden=!mensal;
- document.getElementById('tituloListaPacientes').textContent=mensal?'Pacientes do mês':'Pacientes desta semana';
+ document.getElementById('tituloListaPacientes').textContent=modoLista==='retornos'?'Retornos do mês':mensal?'Pacientes do mês':'Pacientes desta semana';
  if(!inicioSemanaLista||!mesLista)return;
  lista.setAttribute('aria-busy','true');
  erro.hidden=true;
@@ -22,10 +23,13 @@ async function carregarListaPeriodo(){
    totalDias=new Date(Date.UTC(ano,mes,0)).getUTCDate();
    const fim=new Date(inicio.getTime()+totalDias*86400000);
    document.getElementById('mesPacientesTitulo').textContent=inicio.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',month:'long',year:'numeric'});
+   const hoje=new Date(window.KahennaAniversarios.hojeBrasil()+'T00:00:00-03:00');
+   if(inicio<hoje){inicio=hoje;totalDias=Math.max(0,Math.round((fim-inicio)/86400000));}
    lista.innerHTML='<p class="empty-state">Carregando pacientes…</p>';
-   itens=dados(await ler('/api/agendamentos?'+new URLSearchParams({inicio:inicio.toISOString(),fim:fim.toISOString()}))).filter(item=>item.status!=='cancelado');
+   itens=totalDias?(mesLista===chaveMesAtual?dadosMesAtual:dados(await ler('/api/agendamentos?'+new URLSearchParams({inicio:inicio.toISOString(),fim:fim.toISOString()})))).filter(item=>item.status!=='cancelado'&&new Date(item.data_avaliacao)>=inicio&&new Date(item.data_avaliacao)<fim):[];
   }
   if(ticket!==listaConsulta)return;
+  itens=itens.filter(i=>!i.atendido_em&&i.status!=='realizado'&&(modoLista==='retornos'?Boolean(i.retorno_de):!i.retorno_de));
   const dias=Array.from({length:totalDias},(_,i)=>new Date(inicio.getTime()+i*86400000));
   lista.innerHTML=dias.map(data=>{
    const fim=new Date(data.getTime()+86400000);
@@ -55,9 +59,13 @@ async function resumo(){carregarReceitaRotina();carregarFluxoInicio();const btn=
  const weekStart=new Date(day.getTime()-((day.getUTCDay()+6)%7)*86400000);
  const end=new Date(weekStart.getTime()+7*86400000);
  const params=new URLSearchParams({inicio:weekStart.toISOString(),fim:end.toISOString()});
- const [patients,bookings]=await Promise.allSettled([ler('/api/leads'),ler('/api/agendamentos?'+params)]);
+ const mesAtual=part('year')+'-'+part('month'),inicioMes=new Date(mesAtual+'-01T00:00:00-03:00'),fimMes=new Date(Date.UTC(Number(part('year')),Number(part('month')),1,3));
+ const [patients,bookings,monthBookings]=await Promise.allSettled([ler('/api/leads'),ler('/api/agendamentos?'+params),ler('/api/agendamentos?'+new URLSearchParams({inicio:day.toISOString(),fim:fimMes.toISOString()}))]);
  if(patients.status==='rejected'){document.getElementById('aniversariosEstado').textContent='Não foi possível consultar os aniversários. Tente atualizar.';document.getElementById('aniversariosLista').replaceChildren();document.getElementById('aniversariosContagem').textContent='—';throw patients.reason;}
  const ps=dados(patients.value);renderizarAniversarios(ps);
+ chaveMesAtual=monthBookings.status==='fulfilled'?mesAtual:'';dadosMesAtual=monthBookings.status==='fulfilled'?dados(monthBookings.value):[];
+ const novos=dadosMesAtual.filter(i=>!i.retorno_de&&!i.atendido_em&&i.status!=='cancelado'&&i.status!=='realizado'&&new Date(i.data_avaliacao)>=day&&new Date(i.data_avaliacao)<fimMes).sort((a,b)=>new Date(a.data_avaliacao)-new Date(b.data_avaliacao));
+ document.getElementById('inicioNovosLista').innerHTML=monthBookings.status==='rejected'?'<p class="empty-state">Não foi possível carregar os agendamentos.</p>':novos.length?novos.slice(0,4).map(i=>'<button type="button" class="inicio-novo-paciente" data-ver-paciente="'+escapar(i.visitante_id)+'"><span>'+escapar(i.paciente?.nome||ps.find(p=>p.visitante_id===i.visitante_id)?.nome||'Paciente')+'</span><time>'+escapar(new Date(i.data_avaliacao).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit'}))+'</time></button>').join(''):'<p class="empty-state">Nenhum novo atendimento agendado neste mês.</p>';
  if(bookings.status==='rejected')throw bookings.reason;const bs=dados(bookings.value);
  const today=bs.filter(x=>new Date(x.data_avaliacao)>=day&&new Date(x.data_avaliacao)<new Date(day.getTime()+86400000)&&x.status!=='cancelado');
  document.getElementById('agendamentosHoje').textContent=today.length;
@@ -77,8 +85,9 @@ async function resumo(){carregarReceitaRotina();carregarFluxoInicio();const btn=
 }catch(e){error.textContent=e.message;error.hidden=false;document.getElementById('agendaResumo').innerHTML=document.getElementById('agendaSemana').innerHTML='<p class="empty-state">Os dados não foram carregados.</p>';}finally{btn.disabled=false;}}
 document.addEventListener('DOMContentLoaded',()=>{
  document.getElementById('btnAtualizar').addEventListener('click',resumo);
- for(const modo of ['Semana','Mes'])document.getElementById('verPacientes'+modo).addEventListener('click',()=>{
-  modoLista=modo==='Semana'?'semana':'mes';
+ document.getElementById('inicioVerMes').addEventListener('click',()=>{document.getElementById('verPacientesMes').click();document.getElementById('tituloListaPacientes').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});});
+ for(const modo of ['Semana','Mes','Retornos'])document.getElementById('verPacientes'+modo).addEventListener('click',()=>{
+  modoLista=modo==='Semana'?'semana':modo==='Retornos'?'retornos':'mes';
   carregarListaPeriodo();
  });
  for(const [id,delta] of [['mesPacientesAnterior',-1],['mesPacientesProximo',1]])document.getElementById(id).addEventListener('click',()=>{

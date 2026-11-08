@@ -122,10 +122,10 @@
    janela.oncancel=null;
    foco?.focus({preventScroll:true});
    if(!abriu)return;
-   atualizarFicha(id);
+   if(id)atualizarFicha(id);
    if(tipo==='agendar'||tipo==='retorno')$('atualizarAgenda')?.click();
    if(tipo==='materiais')$('atualizarEstoque')?.click();
-   if(tipo==='editar'||tipo==='financeiro'||tipo==='orcamento')$('btnAtualizar')?.click();
+   if(tipo==='editar'||tipo==='financeiro'||tipo==='orcamento'||tipo==='cadastrar')$('btnAtualizar')?.click();
   },{once:true});
   janela.oncancel=e=>{if(abriu)e.preventDefault();};
   janela.showModal();
@@ -209,6 +209,7 @@
  window.CrmPaciente={abrir,abrirBusca,enviarCadastro,limparAviso};
  document.addEventListener('DOMContentLoaded',()=>{
   const button=document.createElement('button');button.type='button';button.className='crm-global-search';button.setAttribute('aria-label','Busca geral');button.title='Busca geral';button.innerHTML='<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Buscar</span>';document.querySelector('.sidebar-main .menu')?.before(button);button.addEventListener('click',abrirBusca);
+  document.querySelector('[data-crm-cadastrar]')?.addEventListener('click',()=>abrirJanelaAcao('/leads.html?acao=cadastrar','modalNovoPacienteOverlay',null,'cadastrar'));
   $('crmAcaoVoltar').addEventListener('click',()=>$('crmJanelaAcao').close());
   const menu=document.querySelector('.sidebar-main .menu');
   menu?.addEventListener('click',event=>{

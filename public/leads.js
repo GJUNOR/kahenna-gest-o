@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Atlas CRM: leads.js carregado.");
 
     configurarEventos();
+    if(new URLSearchParams(location.search).get("acao")==="cadastrar") abrirModalNovoPaciente();
 
     const financeiroHoje = carregarMovimentacoesFinanceirasHoje();
     await carregarLeads();
@@ -1837,7 +1838,7 @@ function renderizarTabela(leads) {
     if (!Array.isArray(leads) || leads.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="${exibindoFinanceiroHoje ? 6 : 4}" class="estado-tabela">
+                <td colspan="${exibindoFinanceiroHoje ? 7 : 5}" class="estado-tabela">
                     Nenhum paciente encontrado.
                 </td>
             </tr>
@@ -1880,6 +1881,7 @@ function criarLinhaLead(lead) {
         ? String(lead.ultimo_atendimento).slice(0, 10).split("-").reverse().join("/")
         : "—";
 
+    const proximoAgendamento = lead.proximo_agendamento ? new Date(lead.proximo_agendamento).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'}) : 'Sem agendamento';
     const status = obterStatusLead(lead);
 
     const movimentacoesHoje =
@@ -1928,6 +1930,7 @@ function criarLinhaLead(lead) {
         <td class="coluna-ultimo-atendimento">
             ${escaparHTML(ultimoAtendimento)}
         </td>
+        <td class="coluna-proximo-agendamento"><span class="paciente-proximo ${lead.proximo_agendamento ? 'is-scheduled' : 'is-empty'}">${escaparHTML(proximoAgendamento)}</span></td>
 
 
 

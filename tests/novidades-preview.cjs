@@ -14,7 +14,7 @@ async function iniciar(port=0,demonstracao=false){
  app.get('/api/conversoes/resumo',async(q,r)=>{const data=(await pg.query("select coalesce(sum(case when tipo='reembolso' then -valor else valor-taxa_valor end),0) total from lancamentos_financeiros")).rows[0];r.json({receitaHoje:Number(data.total),receitaMes:Number(data.total)});});
  app.get('/api/agendamentos',(q,r)=>r.json([]));
  app.get('/api/financeiro/taxas-cartao',async(q,r)=>r.json(await require('../services/caixa').criarServico(db).taxas()));
- app.get('/api/visitantes',(q,r)=>r.json([{visitante_id:paciente,nome:'Paciente fictício',telefone:'11999990000'}]));app.get('/api/leads',async(q,r)=>r.json((await pg.query('select * from visitantes order by nome')).rows));
+ app.get('/api/visitantes',(q,r)=>r.json([{visitante_id:paciente,nome:'Paciente fictício',telefone:'11999990000'}]));app.get('/api/leads',async(q,r)=>{const rows=(await pg.query('select * from visitantes order by nome')).rows,proximos=await require('../services/proximos-agendamentos').carregarProximos(db,rows.map(p=>p.visitante_id));r.json(rows.map(p=>({...p,proximo_agendamento:proximos.get(p.visitante_id)||null})));});
  app.get('/api/*rest',(q,r)=>r.json({sucesso:true,dados:[],lancamentos:[],pacientes:[],agendamentos:[]}));
  const {enviarPagina,PAGINAS,renderizarPagina}=require('../middleware/paginas');
  for(const p of PAGINAS)app.get('/'+p,auth,(q,r)=>{delete require.cache[require.resolve('../middleware/paginas')];return require('../middleware/paginas').enviarPagina(q,r,p);});

@@ -89,9 +89,11 @@ async function listarVisitantes() {
         }
         if (atendimentos.length < tamanhoPagina) break;
     }
+    const proximos = await require('./proximos-agendamentos').carregarProximos(supabase, visitantes.map(p=>p.visitante_id));
     return visitantes.map(paciente => ({
         ...paciente,
-        ultimo_atendimento: datas.get(paciente.visitante_id) ?? null
+        ultimo_atendimento: datas.get(paciente.visitante_id) ?? null,
+        proximo_agendamento: proximos.get(paciente.visitante_id) ?? null
     }));
 }
 

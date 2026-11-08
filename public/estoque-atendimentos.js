@@ -53,7 +53,7 @@
    $('atendimentoPaciente').innerHTML='<option value="">'+(ps.length?'Selecione':'Nenhum paciente cadastrado')+'</option>'+ps.map(p=>`<option value="${esc(p.visitante_id)}">${esc(p.nome)}</option>`).join('');
    for(const p of stock)disponiveis.set(p.id,{...p,ativo:true});produtos=new Map(disponiveis);desenhar();if(pacienteId&&ps.some(p=>p.visitante_id===pacienteId)){$('atendimentoPaciente').value=pacienteId;await lista();}
   }catch(e){if(ticket===sessao){erro(e);$('atendimentoItens').innerHTML='<p class="stock-selection-empty">Não foi possível carregar os produtos</p>';}}
-  finally{if(ticket===sessao){carregando=false;$('atendimentoPaciente').disabled=false;$('atendimentoItens').setAttribute('aria-busy','false');}}
+  finally{if(ticket===sessao){carregando=false;$('atendimentoPaciente').disabled=false;window.KahennaPacienteBusca?.atualizar();$('atendimentoItens').setAttribute('aria-busy','false');}}
  }
  async function lista(){
   const ticket=++listaTicket,session=sessao,p=$('atendimentoPaciente').value;

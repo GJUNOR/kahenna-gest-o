@@ -43,21 +43,21 @@ function renderizarPagina(html,papel,arquivo){
   return `<a href="/${pagina}"${classes?' class="'+classes+'"':''}${ativo?' aria-current="page"':''}${admin?' data-admin-only'+(role==='administrador'?'':' hidden'):''}><i class="crm-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONES_MENU[pagina]}</svg></i><span>${label}</span></a>`;
  };
  const menu=MENU.slice(0,-1).map(item=>linkMenu(item)).join('\n');
- let page=html.replace('/crm-controls.css?v=2','/crm-controls.css?v=4').replace('/mobile-refined.css?v=35','/mobile-refined.css?v=43').replace(/<body([^>]*)>/i,(_,attrs)=>`<body${attrs.replace(/\sdata-crm-role="[^"]*"/g,'')} data-crm-role="${role}">`).replace(/<nav\s+class="menu"[^>]*>[\s\S]*?<\/nav>/i,`<nav class="menu" aria-label="Navegação principal">${menu}</nav>`);
+ let page=html.replace(/<div class="connection-status[^"]*"[^>]*>[\s\S]*?<\/div>\s*<\/div>/i,'').replace('/crm-controls.css?v=2','/crm-controls.css?v=4').replace('/mobile-refined.css?v=35','/mobile-refined.css?v=43').replace(/<body([^>]*)>/i,(_,attrs)=>`<body${attrs.replace(/\sdata-crm-role="[^"]*"/g,'')} data-crm-role="${role}">`).replace(/<nav\s+class="menu"[^>]*>[\s\S]*?<\/nav>/i,`<nav class="menu" aria-label="Navegação principal">${menu}</nav>`);
  const origens=['https://cdnjs.cloudflare.com','https://fonts.googleapis.com','https://fonts.gstatic.com'];
  page=page.replace('<div class="sidebar-bottom">','<div class="sidebar-bottom">'+linkMenu(MENU.at(-1),'sidebar-equipe'));
  const conexoes=origens.filter(origem=>!page.includes('href="'+origem+'"'))
   .map(origem=>'<link rel="preconnect" href="'+origem+'"'+(origem.endsWith('gstatic.com')?' crossorigin':'')+'>').join('');
  page=page.replace('<head>','<head><link rel="icon" href="/favicon.ico?v=1" sizes="any">'+conexoes)
   .replace('/font-awesome/6.5.2/css/all.min.css','/font-awesome/6.7.2/css/all.min.css');
- let extra=esteticaHTML+'<script src="/rosto-clinico.js?v=1"></script><script src="/estetica.js?v=2"></script>'+fichaHTML+'<script src="/campos-ui.js?v=2"></script>';
+ let extra='<script src="/paciente-busca.js?v=1"></script>'+esteticaHTML+'<script src="/rosto-clinico.js?v=1"></script><script src="/estetica.js?v=2"></script>'+fichaHTML+'<script src="/campos-ui.js?v=2"></script>';
  if(arquivo==='estoque.html'){extra+=notasHTML+'<script src="/notas.js?v=1"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/notas.css?v=1"></head>');}
  if(arquivo==='dashboard.html'){
   page=page.replace('<link rel="stylesheet" href="/kahenna-theme.css', '<link rel="stylesheet" href="/agenda-form.css?v=4"><link rel="stylesheet" href="/kahenna-theme.css');
   extra+=agendaFormulario+'<script src="/agenda.js?v=21"></script>';
  }
  if(role==='administrador'&&!page.includes('id="documentosDialog"')){extra+=pdfHTML+'<script src="/documentos.js?v=4"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/documentos.css?v=3"></head>');}
- return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=5"><link rel="stylesheet" href="/estetica.css?v=2"><link rel="stylesheet" href="/refino-ui.css?v=2"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=10"></script></body>'));
+ return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=5"><link rel="stylesheet" href="/estetica.css?v=2"><link rel="stylesheet" href="/refino-ui.css?v=3"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=12"></script></body>'));
 }
 const paginasPorPapel=new Map(PAGINAS.map(arquivo=>{
  const html=fsSync.readFileSync(path.join(__dirname,'../public',arquivo),'utf8');

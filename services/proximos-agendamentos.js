@@ -1,0 +1,3 @@
+'use strict';
+async function carregarProximos(db,ids,agora=new Date()){const resultado=new Map(),permitidos=new Set(ids),tamanho=250;if(!permitidos.size)return resultado;for(let inicio=0;;inicio+=tamanho){const {data,error}=await db.from('agendamentos').select('visitante_id,data_avaliacao').eq('status','agendado').is('atendido_em',null).gte('data_avaliacao',agora.toISOString()).order('data_avaliacao').order('id').range(inicio,inicio+tamanho-1);if(error)throw error;for(const a of data||[])if(permitidos.has(a.visitante_id)&&!resultado.has(a.visitante_id))resultado.set(a.visitante_id,new Date(a.data_avaliacao).toISOString());if((data||[]).length<tamanho||resultado.size===permitidos.size)break;}return resultado;}
+module.exports={carregarProximos};
