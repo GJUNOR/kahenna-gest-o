@@ -48,6 +48,7 @@ function renderizarPagina(html,papel,arquivo){
  page=page.replace('<div class="sidebar-bottom">','<div class="sidebar-bottom">'+linkMenu(MENU.at(-1),'sidebar-equipe'));
  const conexoes=origens.filter(origem=>!page.includes('href="'+origem+'"'))
   .map(origem=>'<link rel="preconnect" href="'+origem+'"'+(origem.endsWith('gstatic.com')?' crossorigin':'')+'>').join('');
+ page=page.replace(/<header class="(?:topbar|agenda-topbar|stock-header|page-header)">([\s\S]*?)<\/header>/,(bloco,conteudo)=>{const titulo=conteudo.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/)?.[0]||'';const acoes=conteudo.replace(/<div\b[^>]*>[\s\S]*?<h1\b[^>]*>[\s\S]*?<\/h1>[\s\S]*?<\/div>/,'');return titulo.replace('<h1','<h1 class="crm-page-heading"')+'<div class="crm-page-actions" role="group" aria-label="Ações da página">'+acoes+'</div>';});
  page=page.replace('<head>','<head><link rel="icon" href="/favicon.ico?v=1" sizes="any">'+conexoes)
   .replace('/font-awesome/6.5.2/css/all.min.css','/font-awesome/6.7.2/css/all.min.css');
  let extra='<script src="/paciente-busca.js?v=2"></script>'+esteticaHTML+'<script src="/rosto-clinico.js?v=2"></script><script src="/estetica.js?v=4"></script>'+fichaHTML+'<script src="/campos-ui.js?v=2"></script>';
@@ -57,7 +58,7 @@ function renderizarPagina(html,papel,arquivo){
   extra+=agendaFormulario+'<script src="/agenda.js?v=24"></script>';
  }
  if(role==='administrador'&&!page.includes('id="documentosDialog"')){extra+=pdfHTML+'<script src="/documentos.js?v=4"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/documentos.css?v=3"></head>');}
- return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=6"><link rel="stylesheet" href="/estetica.css?v=3"><link rel="stylesheet" href="/refino-ui.css?v=6"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=13"></script></body>'));
+ return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=6"><link rel="stylesheet" href="/estetica.css?v=3"><link rel="stylesheet" href="/refino-ui.css?v=7"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=13"></script></body>'));
 }
 const paginasPorPapel=new Map(PAGINAS.map(arquivo=>{
  const html=fsSync.readFileSync(path.join(__dirname,'../public',arquivo),'utf8');

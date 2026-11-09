@@ -150,7 +150,9 @@
         $('caixaNovaDespesa').addEventListener('click', () => editar('despesa'));
         $('caixaForm').addEventListener('submit', salvar);
         $('caixaAtualizar').addEventListener('click', carregar);
-        $('caixaMes').addEventListener('change', () => { state.pagina = 0; carregar(); });
+        let mesAtual=$('caixaMes').value;const rotuloPeriodo=()=>{const [ano,mes]=$('caixaMes').value.split('-').map(Number);const texto=new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(ano,mes-1,1))).replace(' de ',' ');$('caixaMesRotulo').textContent=texto.charAt(0).toUpperCase()+texto.slice(1);$('caixaMesAnterior').disabled=$('caixaMes').value<='2000-01';$('caixaMesProximo').disabled=$('caixaMes').value>='2099-12';};rotuloPeriodo();$('caixaMes').addEventListener('click',()=>{try{$('caixaMes').showPicker?.();}catch{}});
+        $('caixaMes').addEventListener('change',()=>{if(!$('caixaMes').value||!$('caixaMes').checkValidity()){$('caixaMes').value=mesAtual;return;}mesAtual=$('caixaMes').value;rotuloPeriodo();state.pagina=0;carregar();});
+        for(const[id,delta]of[['caixaMesAnterior',-1],['caixaMesProximo',1]])$(id).addEventListener('click',()=>{const[ano,mes]=$('caixaMes').value.split('-').map(Number),d=new Date(Date.UTC(ano,mes-1+delta,1));const valor=d.toISOString().slice(0,7);if(valor<'2000-01'||valor>'2099-12')return;$('caixaMes').value=valor;$('caixaMes').dispatchEvent(new Event('change',{bubbles:true}));});
         $('caixaBusca').addEventListener('input', () => { clearTimeout(buscaTimer); buscaTimer = setTimeout(() => { state.pagina = 0; carregar(); }, 150); });
         document.querySelectorAll('[data-caixa-tipo]').forEach(button => button.addEventListener('click', () => {
             state.tipo = button.dataset.caixaTipo; state.pagina = 0;
