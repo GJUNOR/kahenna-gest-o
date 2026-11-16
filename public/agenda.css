@@ -43,3 +43,79 @@
 .crm-page .appointment-card.appointment-attended :is(button,span,small) {
   color: #45623e !important;
 }
+.crm-page #calendarioSemanal .calendar-slot {
+    padding: 5px;
+    border-color: #eee6e4;
+}
+
+.crm-page #calendarioSemanal .calendar-slot:has(.appointment-card) {
+    display: flex;
+    flex-direction: column;
+    padding-block: 0 !important;
+}
+
+.crm-page #calendarioSemanal .appointment-card {
+    flex: 1 0 auto;
+    --appointment-accent: #98546a;
+    --appointment-status: #784457;
+    --appointment-surface: #faf0f2;
+    --appointment-border: #ead7de;
+    padding: 7px 8px;
+    background: var(--appointment-surface) !important;
+    border: 1px solid var(--appointment-border) !important;
+    border-left: 3px solid var(--appointment-accent) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 6px #4622310a !important;
+}
+
+.crm-page #calendarioSemanal .appointment-return {
+    --appointment-accent: #9b82a7;
+    --appointment-status: #72567e;
+    --appointment-surface: #f5eff8;
+    --appointment-border: #e4d7ec;
+}
+
+.crm-page #calendarioSemanal .appointment-attended {
+    --appointment-accent: #7f9e87;
+    --appointment-status: #456950;
+    --appointment-surface: #eff6ef;
+    --appointment-border: #d8e7da;
+}
+
+.crm-page #calendarioSemanal .appointment-card > .agenda-card-note {
+    margin: 3px 0;
+    color: #76636a !important;
+}
+
+.crm-page #calendarioSemanal .appointment-card > .agenda-card-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2px 8px;
+    color: #66535a !important;
+    font-variant-numeric: tabular-nums;
+}
+
+.crm-page #calendarioSemanal .agenda-card-details .agenda-card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    color: var(--appointment-status) !important;
+}
+
+.agenda-card-status::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--appointment-accent);
+}
+.crm-page #calendarioSemanal :is(.calendar-slot, .time-label) {
+    border-bottom-color: transparent !important;
+}
+
+.crm-page #calendarioSemanal :is(.calendar-slot, .time-label, .day-header, .calendar-corner) {
+    border-inline-color: transparent !important;
+}
