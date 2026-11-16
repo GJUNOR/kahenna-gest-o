@@ -6,6 +6,25 @@ const {enviarPagina}=require('./middleware/paginas');
 const {exigirAutenticacaoApi,exigirAutenticacaoPagina,exigirAdministradorApi,exigirAdministradorPagina}=require('./middleware/auth');
 const app=express();
 app.disable('x-powered-by');app.set('trust proxy',1);
+app.use((req,res,next)=>{
+    res.set({
+        'Permissions-Policy':'camera=(), microphone=(), geolocation=()',
+        'Cross-Origin-Resource-Policy':'same-origin'
+    });
+    if(process.env.NODE_ENV==='production'){
+        if(!req.secure && req.path!=='/health' && process.env.SITE_URL){
+            const destino=new URL(process.env.SITE_URL);
+            destino.pathname=req.path;
+            destino.search=req.originalUrl.includes('?')?req.originalUrl.slice(req.originalUrl.indexOf('?')):'';
+            if(destino.protocol==='https:')return res.redirect(308,destino.href);
+        }
+        if(req.secure)res.set('Strict-Transport-Security','max-age=31536000');
+    }
+    if(!['GET','HEAD','OPTIONS'].includes(req.method) && req.get('Sec-Fetch-Site')==='cross-site'){
+        return res.status(403).json({sucesso:false,mensagem:'Origem não autorizada.'});
+    }
+    next();
+});
 app.use(express.json({limit:'1mb'}));app.use(express.urlencoded({extended:false,limit:'1mb'}));
 app.use((req,res,next)=>{res.set({'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Frame-Options':'SAMEORIGIN','Referrer-Policy':'same-origin'});if(!['GET','HEAD','OPTIONS'].includes(req.method)&&req.headers.origin){const host=`${req.protocol}://${req.get('host')}`;const allowed=(process.env.ALLOWED_ORIGINS||host).split(',').map(x=>x.trim());if(!allowed.includes(req.headers.origin))return res.status(403).json({sucesso:false,mensagem:'Origem não autorizada.'});}next();});
 app.get('/health',(req,res)=>res.json({sucesso:true,servidor:'online'}));

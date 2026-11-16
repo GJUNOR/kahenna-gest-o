@@ -7,7 +7,7 @@ const supabaseUrl = String(
 ).trim();
 
 const supabaseKey = String(
-    process.env.KAHENNA_SUPABASE_KEY || ""
+    process.env.KAHENNA_SUPABASE_PUBLISHABLE_KEY || process.env.KAHENNA_SUPABASE_KEY || ""
 ).trim();
 
 if (!supabaseUrl || !supabaseKey) {
