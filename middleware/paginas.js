@@ -58,7 +58,7 @@ function renderizarPagina(html,papel,arquivo){
   extra+=agendaFormulario+'<script src="/agenda.js?v=24"></script>';
  }
  if(role==='administrador'&&!page.includes('id="documentosDialog"')){extra+=pdfHTML+'<script src="/documentos.js?v=4"></script>';page=page.replace('</head>','<link rel="stylesheet" href="/documentos.css?v=3"></head>');}
- return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=6"><link rel="stylesheet" href="/estetica.css?v=3"><link rel="stylesheet" href="/refino-ui.css?v=7"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=14"></script></body>'));
+ return prepararCampos(page.replace('</head>','<link rel="stylesheet" href="/crm-paciente.css?v=6"><link rel="stylesheet" href="/estetica.css?v=3"><link rel="stylesheet" href="/refino-ui.css?v=8"></head>').replace('</body>',extra+'<script src="/crm-paciente.js?v=14"></script></body>'));
 }
 const paginasPorPapel=new Map(PAGINAS.map(arquivo=>{
  const html=fsSync.readFileSync(path.join(__dirname,'../public',arquivo),'utf8');
